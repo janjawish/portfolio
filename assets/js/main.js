@@ -140,7 +140,7 @@ function openModal(p){
 
   const linksWrap = document.createElement('div'); linksWrap.style.marginTop='.6rem';
   if(p.links && p.links.demo){ const b=document.createElement('button'); b.className='btn'; b.textContent='Voir le site'; b.addEventListener('click', ()=> window.open(p.links.demo,'_blank')); linksWrap.appendChild(b); }
-  if(p.links && p.links.repo){ const b=document.createElement('button'); b.className='btn'; b.style.marginLeft='.5rem'; b.textContent='GitHub'; b.addEventListener('click', ()=> window.open(p.links.repo,'_blank')); linksWrap.appendChild(b); }
+  if(p.links && p.links.repo){ const b=document.createElement('button'); b.className='btn'; b.style.marginLeft='.5rem'; b.textContent='Visiter'; b.addEventListener('click', ()=> window.open(p.links.repo,'_blank')); linksWrap.appendChild(b); }
   if(p.links && p.links.video){ const b=document.createElement('button'); b.className='btn'; b.style.marginLeft='.5rem'; b.textContent='YouTube'; b.addEventListener('click', ()=> window.open(p.links.video,'_blank')); linksWrap.appendChild(b); }
 
   side.append(hMeta, ul, linksWrap);
