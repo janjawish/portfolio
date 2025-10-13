@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jan Jawish — JJ</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-palette="home" id="top">
+  <div class="bg-blobs"></div>
+  
+  <div class="topbar">
+    <div class="container wrap">
+      <a class="logo" href="index.html" title="Retour à l’accueil"><img src="assets/img/logo.png" alt="JJ logo"></a>
+      <nav class="segmenteded segmented" id="segNav">
+        <span class="seg-slider"></span>
+        <button class="seg-item" data-href="projets.html">Projets</button>
+        <button class="seg-item" data-href="a-propos.html">Qui suis‑je ?</button>
+        <button class="seg-item" data-href="contact.html">Contact</button>
+      </nav>
+    </div>
+  </div>
+  <main>
+    <section class="hero">
+      <h1>Jan Jawish</h1>
+    </section>
+
+    <section id="quick-section" class="container section">
+      <h2>Sélection rapide</h2>
+      <div class="grid" id="quick-grid"></div>
+      <div style="margin-top:1rem;">
+        <button class="btn" data-href="projets.html" onclick="window.location.href='projets.html'">Voir tous les projets</button>
+      </div>
+    </section>
+  </main>
+  
+  <footer class="footer">
+    <div class="container" style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+      <div>© <span id="year"></span> Jan Jawish</div>
+      <div class="links">
+        <a href="mailto:contact@janjawish.fr">contact@janjawish.fr</a>
+        <a target="_blank" href="https://github.com/drox100t">GitHub</a>
+        <a target="_blank" href="https://www.linkedin.com/in/jan-jawish-344808359/">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/projects.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

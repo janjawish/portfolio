@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>404 — Page introuvable • Jan Jawish</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .e404-hero{
+      text-align:center; padding:9rem 0 3rem;
+    }
+    .e404-code{
+      font-weight:800; letter-spacing:-.03em;
+      font-size:clamp(4rem, 14vw, 10rem);
+      margin:0 0 .25rem 0;
+      background:linear-gradient(90deg, var(--blob1), var(--blob2));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      filter:drop-shadow(0 12px 30px rgba(0,0,0,.35));
+      user-select:none; pointer-events:none;
+    }
+    .e404-text{ color:var(--muted); margin:.25rem 0 1rem; }
+    .e404-actions{ display:flex; gap:.6rem; justify-content:center; flex-wrap:wrap; }
+  </style>
+</head>
+<body data-palette="projets">
+  <div class="bg-blobs"></div>
+
+  <!-- Topbar (même markup que le site) -->
+  <div class="topbar">
+    <div class="container wrap">
+      <a class="logo" href="index.html" title="Retour à l’accueil"><img src="assets/img/logo.png" alt="JJ logo"></a>
+      <nav class="segmented" id="segNav">
+        <span class="seg-slider"></span>
+        <button class="seg-item" data-href="projets.html">Projets</button>
+        <button class="seg-item" data-href="a-propos.html">Qui suis-je ?</button>
+        <button class="seg-item" data-href="contact.html">Contact</button>
+      </nav>
+    </div>
+  </div>
+
+  <main class="page">
+    <section class="e404-hero">
+      <div class="container">
+        <div class="e404-code">404</div>
+        <h1 style="margin:0 0 .5rem 0;">Page introuvable</h1>
+        <p class="e404-text">Le lien est peut-être erroné ou la page a été déplacée.</p>
+        <div class="e404-actions">
+          <button class="btn" onclick="location.href='index.html'">← Retour à l’accueil</button>
+          <button class="btn" onclick="location.href='projets.html'">Voir les projets</button>
+          <button class="btn" onclick="history.back()">Revenir à la page précédente</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container" style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+      <div>© <span id="year"></span> Jan Jawish</div>
+      <div class="links">
+        <a href="mailto:contact@janjawish.fr">contact@janjawish.fr</a>
+        <a target="_blank" href="https://github.com/drox100t">GitHub</a>
+        <a target="_blank" href="https://www.linkedin.com/in/jan-jawish-344808359/">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/projects.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/security.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — Jan Jawish</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-palette="contact">
+  <div class="bg-blobs"></div>
+  
+  <div class="topbar">
+    <div class="container wrap">
+      <a class="logo" href="index.html" title="Retour à l’accueil"><img src="assets/img/logo.png" alt="JJ logo"></a>
+      <nav class="segmenteded segmented" id="segNav">
+        <span class="seg-slider"></span>
+        <button class="seg-item" data-href="projets.html">Projets</button>
+        <button class="seg-item" data-href="a-propos.html">Qui suis‑je ?</button>
+        <button class="seg-item active" data-href="contact.html">Contact</button>
+      </nav>
+    </div>
+  </div>
+  <main class="container" style="padding:2rem 0 3rem; max-width:760px;">
+    <h1>Contact</h1>
+    <p>Écrivez‑moi&nbsp;: <button class="btn" onclick="window.location.href='mailto:contact@janjawish.fr'">@ contact@janjawish.fr</button></p>
+    <form class="card" style="padding:1rem; margin-top:1rem;" onsubmit="event.preventDefault(); window.location.href=`mailto:contact@janjawish.fr?subject=${encodeURIComponent(this.subject.value)}&body=${encodeURIComponent('Nom: '+this.name.value+'\nEmail: '+this.email.value+'\n\n'+this.message.value)}`">
+      <div class="content">
+        <div class="meta">Envoi par votre client e‑mail (aucun cookie, aucun stockage).</div>
+        <div style="display:grid; gap:.6rem; grid-template-columns:1fr 1fr;">
+          <div style="grid-column:span 1;">
+            <label>Nom <br><input name="name" required style="width:100%;padding:.7rem;border-radius:12px;border:1px solid #ffffff22;background:#1A1B1E;color:#fff;"></label>
+          </div>
+          <div style="grid-column:span 1;">
+            <label>Email <br><input name="email" type="email" required style="width:100%;padding:.7rem;border-radius:12px;border:1px solid #ffffff22;background:#1A1B1E;color:#fff;"></label>
+          </div>
+          <div style="grid-column:span 2;">
+            <label>Sujet <br><input name="subject" required style="width:100%;padding:.7rem;border-radius:12px;border:1px solid #ffffff22;background:#1A1B1E;color:#fff;"></label>
+          </div>
+          <div style="grid-column:span 2;">
+            <label>Message <br><textarea name="message" required rows="6" style="width:100%;padding:.7rem;border-radius:12px;border:1px solid #ffffff22;background:#1A1B1E;color:#fff;"></textarea></label>
+          </div>
+          <div style="grid-column:span 2; display:flex; gap:.6rem; align-items:center;">
+            <input type="checkbox" id="consent" required> <label for="consent">J’accepte que ces informations soient utilisées pour me répondre. Aucune autre finalité.</label>
+          </div>
+        </div>
+        <button class="btn" type="submit">Envoyer</button>
+      </div>
+    </form>
+  </main>
+  
+  <footer class="footer">
+    <div class="container" style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+      <div>© <span id="year"></span> Jan Jawish</div>
+      <div class="links">
+        <a href="mailto:contact@janjawish.fr">contact@janjawish.fr</a>
+        <a target="_blank" href="https://github.com/drox100t">GitHub</a>
+        <a target="_blank" href="https://www.linkedin.com/in/jan-jawish-344808359/">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

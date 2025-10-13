@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1C1C1E"/><stop offset="1" stop-color="#3A3A3C"/></linearGradient></defs>
+  <rect width="1600" height="1000" fill="url(#g)"/>
+  <g fill="#F5F5F7" opacity="0.6">
+    <circle cx="140" cy="110" r="10" fill="#FF5F57"/>
+    <circle cx="170" cy="110" r="10" fill="#FEBC2E"/>
+    <circle cx="200" cy="110" r="10" fill="#28C840"/>
+    <rect x="120" y="150" width="1360" height="740" rx="24" ry="24" fill="#FFFFFF10"/>
+  </g>
+  <text x="50%" y="54%" text-anchor="middle" fill="#F5F5F7" font-size="64" font-family="Arial, Helvetica, sans-serif">Visuel à remplacer</text>
+</svg>
