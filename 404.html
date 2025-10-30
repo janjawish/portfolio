@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>404</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noaccueil,follow" />
+  <meta name="robots" content="noindex,follow" />
   <meta name="theme-color" content="#0b0f1a" />
   <style>
     :root{
@@ -173,7 +173,7 @@
         <div class="left">
           <div class="panel">
             <div class="actions">
-              <a class="btn primary" id="go-now" href="accueil" rel="nofollow">Retourner au portfolio ↗</a>
+              <a class="btn primary" id="go-now" href="index.html" rel="nofollow">Retourner au portfolio ↗</a>
               <a class="btn" href="mailto:contact@janjawish.fr">✉️&nbsp;contact@janjawish.fr</a>
             </div>
           </div>
@@ -201,7 +201,7 @@
     document.getElementById('y').textContent = new Date().getFullYear();
 
     // redirection -> change la cible si besoin (ex: '/')
-    const TARGET = 'accueil';
+    const TARGET = 'index.html';
     const SECS   = 6; // délai
     let t = SECS;
     const counter = document.getElementById('count');
