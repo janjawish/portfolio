@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>404</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noaccueil,follow" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <style>
+    :root{
+      --bg: #0b0f1a;
+      --glass: rgba(255,255,255,0.08);
+      --stroke: rgba(255,255,255,0.22);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.70);
+      --chip: rgba(255,255,255,0.10);
+      --chip-stroke: rgba(255,255,255,0.18);
+      --shadow: 0 30px 80px rgba(0,0,0,0.45);
+      --radius-xl: 24px;
+    }
+
+    /* Page */
+    html,body{height:100%; background:var(--bg); color:var(--text); margin:0;}
+    .root{
+      position:relative; min-height:100%; display:grid; place-items:center; overflow:hidden;
+      isolation:isolate;
+    }
+
+    /* Liquid background (iOS-like) */
+    .blurfield{
+      position:absolute; inset:-20% -10% -20% -10%; z-index:-2;
+      background:
+        radial-gradient(1200px 600px at -10% -20%, rgba(255,128,0,0.15), transparent 60%),
+        radial-gradient(1000px 600px at 120% 120%, rgba(98,0,255,0.18), transparent 55%),
+        radial-gradient(900px 520px at 30% 120%,  rgba(0,160,255,0.16), transparent 58%),
+        radial-gradient(800px 520px at 120% 0%,   rgba(255,0,160,0.14), transparent 58%);
+      filter: saturate(130%);
+    }
+
+    .blob{
+      position:absolute; filter: blur(40px) saturate(140%);
+      transform: translate(-50%,-50%);
+      will-change: transform, opacity;
+      mix-blend-mode: screen;
+      opacity:.65;
+      border-radius:40%;
+      animation: float 14s ease-in-out infinite;
+    }
+    .blob.b1{ width:700px; height:700px; left:18%; top:24%; background: radial-gradient(circle at 30% 30%, rgba(255,148,0,.85), rgba(255,148,0,0) 70%); animation-duration: 16s;}
+    .blob.b2{ width:680px; height:680px; left:78%; top:68%; background: radial-gradient(circle at 60% 60%, rgba(116,0,255,.8), rgba(116,0,255,0) 70%); animation-duration: 18s; animation-delay: -2s;}
+    .blob.b3{ width:600px; height:600px; left:60%; top:18%; background: radial-gradient(circle at 50% 50%, rgba(0,164,255,.8), rgba(0,164,255,0) 70%); animation-duration: 20s; animation-delay: -4s;}
+    @keyframes float{
+      0%,100%{ transform: translate(-50%,-50%) scale(1); }
+      50%{ transform: translate(calc(-50% + 30px), calc(-50% - 20px)) scale(1.06); }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .blob{ animation:none }
+    }
+
+    /* Card en verre (“liquid glass”) */
+    .card{
+      width:min(960px, 94vw);
+      border-radius: var(--radius-xl);
+      padding: clamp(18px, 3vw, 28px);
+      backdrop-filter: blur(28px) saturate(160%) contrast(1.05);
+      -webkit-backdrop-filter: blur(28px) saturate(160%) contrast(1.05);
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      position:relative;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:0; pointer-events:none;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.07));
+      mix-blend-mode: overlay;
+      opacity:.18;
+    }
+
+    /* Layout */
+    .head{
+      display:flex; align-items:center; gap:14px; margin-bottom:8px;
+    }
+    .dots{ display:flex; gap:8px; }
+    .dot{ width:12px; height:12px; border-radius:999px; }
+    .dot.red{ background:#ff5f57 } .dot.yellow{ background:#ffbd2e } .dot.green{ background:#28c840 }
+
+    h1{ margin:8px 0 6px; font-size: clamp(28px, 4vw, 40px); letter-spacing:.2px; }
+    p.lead{ margin:0 0 14px; color:var(--muted); font-size: clamp(15px, 1.8vw, 18px); }
+
+    .grid{
+      display:grid; grid-template-columns: 1fr 280px; gap:18px; margin-top:14px;
+    }
+    .left{
+      min-height:280px; display:flex; flex-direction:column; gap:16px;
+    }
+
+    .panel{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .actions{
+      display:flex; flex-wrap:wrap; gap:10px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 14px; border-radius: 999px;
+      color:#fff; text-decoration:none; font-weight:700;
+      border:1px solid var(--chip-stroke); background: var(--chip);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.32); }
+    .btn.primary{ background: rgba(168,128,255,0.22); border-color: rgba(168,128,255,0.42); }
+
+    .contacts{
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .chip{
+      display:flex; align-items:center; gap:10px; 
+      border:1px solid var(--chip-stroke); background: var(--chip);
+      padding:10px 12px; border-radius:14px;
+      color:#fff; text-decoration:none; font-weight:600;
+    }
+    .chip:hover{ background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.32); }
+    .chip .tag{ opacity:.7; font-weight:700; font-size:.9rem; }
+
+    .code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: rgba(0,0,0,0.35);
+      border:1px dashed rgba(255,255,255,0.22);
+      border-radius: 12px; padding:10px 12px; color:#fff;
+      overflow:auto; white-space:nowrap; font-size:.9rem;
+    }
+
+    .footer{
+      margin-top: 16px;
+      display:flex; justify-content:space-between; align-items:center;
+      color: rgba(255,255,255,0.6); font-size:.95rem;
+    }
+
+    @media (max-width: 860px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+</head>
+<body>
+  <main class="root">
+    <!-- liquid backdrop -->
+    <div class="blurfield"></div>
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+
+    <!-- card -->
+    <section class="card" role="dialog" aria-labelledby="t">
+      <div class="head" aria-hidden="true">
+        <div class="dots">
+          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        </div>
+        <strong>Erreur 404</strong>
+      </div>
+
+      <h1 id="t">Oups, cette page est introuvable (404)</h1>
+      <p class="lead">Pas de panique — on te ramène au <strong>portfolio</strong> automatiquement.</p>
+
+      <div class="grid">
+        <div class="left">
+          <div class="panel">
+            <div class="actions">
+              <a class="btn primary" id="go-now" href="accueil" rel="nofollow">Retourner au portfolio ↗</a>
+              <a class="btn" href="mailto:contact@janjawish.fr">✉️&nbsp;contact@janjawish.fr</a>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="code"><span id="msg">Redirection dans <span id="count">6</span>s…</span></div>
+          </div>
+        </div>
+
+        <aside class="panel contacts" aria-label="Contacts">
+          <a class="chip" href="mailto:contact@janjawish.fr">📨 <span class="tag">Mail</span> contact@janjawish.fr</a>
+          <a class="chip" href="https://github.com/janjawish" target="_blank" rel="noopener">💻 <span class="tag">GitHub</span> janjawish</a>
+          <a class="chip" href="https://www.linkedin.com/in/janjawish" target="_blank" rel="noopener">🔗 <span class="tag">LinkedIn</span> /in/janjawish</a>
+        </aside>
+      </div>
+
+      <div class="footer">
+        <span>© <span id="y"></span> Jan Jawish</span>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // année
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // redirection -> change la cible si besoin (ex: '/')
+    const TARGET = 'accueil';
+    const SECS   = 6; // délai
+    let t = SECS;
+    const counter = document.getElementById('count');
+    const timer = setInterval(()=>{
+      t--; if(counter) counter.textContent = t;
+      if(t<=0){ clearInterval(timer); location.assign(TARGET); }
+    }, 1000);
+
+    // lien "retourner au portfolio" annule la redirection auto (au cas où)
+    document.getElementById('go-now')?.addEventListener('click', ()=> clearInterval(timer));
+  </script>
+</body>
+</html>

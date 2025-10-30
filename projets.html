@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projets</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+</head>
+<body data-palette="projets" id="top">
+  <div class="bg-blobs"></div>
+  
+  <div class="topbar">
+    <div class="container wrap">
+      <nav class="segmenteded segmented" id="segNav">
+        <span class="seg-slider"></span>
+        <button class="seg-item" data-href="accueil">Accueil</button>
+        <button class="seg-item active" data-href="projets">Projets</button>
+        <button class="seg-item" data-href="a-propos">Qui suis‑je ?</button>
+      </nav>
+    </div>
+  </div>
+  <main class="container" style="padding:2rem 0 3rem;">
+    <h1 style="margin-bottom:.5rem;">Projets</h1>
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">Tous</button>
+      <button class="filter-btn" data-filter="web">Web</button>
+      <button class="filter-btn" data-filter="audiovisuel">Audiovisuel</button>
+      <button class="filter-btn" data-filter="graphique">Création graphique</button>
+      <button class="filter-btn" data-filter="photo">Photographie</button>
+    </div>
+    <div id="projects-grid" class="grid"></div>
+
+    <div id="photos-grid" class="grid" style="margin-top:1rem;"></div>
+  </main>
+  <button id="backTop" class="btn" aria-label="Revenir en haut">↑ Haut</button>
+  
+  <footer class="footer">
+    <div class="container" style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+      <div class="foot-btn">© <span id="year"></span> Jan Jawish</div>
+      <div class="links">
+        <a class="foot-btn" href="mailto:contact@janjawish.fr">contact@janjawish.fr</a>
+        <a class="foot-btn" target="_blank" href="https://github.com/janjawish">GitHub</a>
+        <a class="foot-btn" target="_blank" href="https://www.linkedin.com/in/jan-jawish-344808359/">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/projects.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

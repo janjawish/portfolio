@@ -1,0 +1,14 @@
+# Originaux RAW/TIFF/PSD
+*.CR2
+*.NEF
+*.ARW
+*.RAF
+*.ORF
+*.RW2
+*.TIFF
+*.TIF
+*.PSD
+*.PNG
+# Export plein format > on garde que les versions web
+*_ORIG.*
+fullres/

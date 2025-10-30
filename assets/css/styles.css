@@ -1,0 +1,1644 @@
+
+/* JJ Portfolio v4 — Apple-inspired with centered navbar & refined interactions */
+
+/* Global behavior */
+html{ scroll-behavior:smooth; }
+html, body{ scrollbar-width:none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar{ width:0; height:0; }
+
+:root{
+  --bg:#0B0B0C;
+  --surface:#111214;
+  --text:#F5F5F7;
+  --muted:#B9BBC6;
+  --accent:#0A84FF;
+  --shadow:0 12px 30px rgba(0,0,0,.45);
+  --radius:18px;
+  --blob1:#0A84FF; --blob2:#FF9F0A;
+}
+body[data-palette="home"]{ --blob1:#0A84FF; --blob2:#FF9F0A; }
+body[data-palette="projets"]{ --blob1:#7D7AFF; --blob2:#64D2FF; }
+body[data-palette="apropos"]{ --blob1:#30D158; --blob2:#0A84FF; }
+body[data-palette="contact"]{ --blob1:#FF375F; --blob2:#FFD60A; }
+
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",Inter,"Segoe UI",Roboto,Helvetica,Arial,"Noto Sans",sans-serif;
+  background:var(--bg); color:var(--text);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+.container{ width:min(1160px, 92%); margin-inline:auto; }
+.hidden{ display:none !important; }
+
+/* Background blobs */
+.bg-blobs{
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(44rem 44rem at 30% 40%, color-mix(in srgb, var(--blob1) 70%, transparent), transparent 60%),
+    radial-gradient(44rem 44rem at 70% 45%, color-mix(in srgb, var(--blob2) 70%, transparent), transparent 60%),
+    radial-gradient(60rem 60rem at 50% 80%, #ffffff10, transparent 60%);
+  /* blur allégé = rendu fluide, même look */
+  filter: blur(24px) saturate(115%);
+  opacity: .9; /* garde l’impact visuel sans sur-blur */
+}
+
+/* Mobile/tablette : encore plus léger */
+@media (max-width: 1024px){
+  .bg-blobs{
+    filter: blur(18px) saturate(110%);
+  }
+}
+
+
+/* Topbar: logo left, nav centered */
+.topbar{ position:sticky; top:12px; z-index:50; }
+.topbar .wrap{ position:relative; padding:0 .75rem; height:48px; }
+.logo{
+  position:absolute; left:12px; top:50%; transform:translateY(-50%);
+  display:flex; align-items:center; gap:.5rem; text-decoration:none; color:var(--text); font-weight:800;
+}
+.logo img{ height:28px; width:auto; display:block; }
+
+.segmented{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  display:flex; align-items:center; gap:.25rem;
+  padding:.35rem; border-radius:999px;
+  background:transparent;
+  border:1px solid #FFFFFF22; box-shadow:var(--shadow);
+  backdrop-filter:saturate(140%) blur(16px); -webkit-backdrop-filter:saturate(140%) blur(16px);
+}
+/* Use buttons to avoid status-bar URL preview */
+.seg-item{ position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center;
+  min-width:120px; padding:.6rem 1.1rem; border-radius:999px; color:#EDEEF3; font-weight:600; letter-spacing:.2px;
+  background:transparent; border:0; cursor:pointer; }
+.seg-item:hover{ color:white; }
+.seg-item.active{ color:#fff; }
+.seg-slider{ position:absolute; left:0; top:4px; bottom:4px; width:120px; background:rgb(144, 129, 229); border: blue; border-radius:999px;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+  transform:translateX(0);
+  transition:transform .42s cubic-bezier(.22,.61,.36,1), width .28s ease, opacity .2s ease;
+  opacity:0;
+}
+.segmented:hover .seg-slider{ opacity:1; }
+
+/* Prénom */
+.hero{ text-align:center; padding:9rem 0 2rem; }
+.hero h1{ margin:0; font-weight:8000; line-height:4; font-size:clamp(2.8rem, 7.2vw, 5.8rem); letter-spacing:-.01em; }
+
+
+/* affichage d'accueil des projets mise en disposition */
+.section{ padding:1rem 0 3rem; }
+.grid{ display:grid; grid-template-columns:repeat(12,1fr); gap:1rem; }
+.card{ grid-column:span 12; border-radius:24px; overflow:hidden; background:color-mix(in srgb, var(--surface) 90%, transparent); box-shadow:var(--shadow); transition:transform .35s cubic-bezier(.22,.61,.36,1), box-shadow .35s ease; cursor:pointer; }
+@media(min-width:720px){ .card{ grid-column:span 6; } }
+@media(min-width:1024px){ .card{ grid-column:span 4; } }
+.card .thumb{ aspect-ratio:16/10; background:transparent; display:grid; place-items:center; }
+.card .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.card .content{ padding:1rem 1rem 1.1rem; }
+.card .meta{ color:var(--muted); font-size:.8rem; margin-bottom:.4rem; }
+.card h3{ margin:.1rem 0 .2rem; font-size:1.05rem; }
+.card p{ color:var(--muted); margin:.2rem 0 .6rem; }
+.card:hover{ transform:translateY(-3px); box-shadow:0 18px 46px rgba(0,0,0,.35); }
+
+
+/* les boutons d'ouvrir */
+.btn{ display:inline-block; border:1px solid #FFFFFF33; border-radius:999px; padding:.85rem 1.25rem; background:transparent; color:#fff; font-weight:600; position:relative; transition: transform .35s cubic-bezier(.22,.61,.36,1), box-shadow .35s ease, background .25s ease, color .25s ease; cursor:pointer; }
+.btn::after{ content:''; position:absolute; left:10%; right:10%; bottom:-6px; height:10px; background:radial-gradient(60% 80% at 50% 50%, rgba(255,255,255,.18), transparent 70%); filter:blur(6px); opacity:0; transition:opacity .35s ease; }
+.btn:hover{ transform:translateY(-2px); background:#fff; color:#111; }
+.btn:hover::after{ opacity:1; }
+
+
+/* boutons filtres */
+.filters{ display:flex; gap:.5rem; flex-wrap:wrap; margin:1rem 0 1.25rem; }
+.filter-btn{ border:1px solid #FFFFFF33; border-radius:999px; padding:.5rem .9rem; background:color-mix(in srgb, var(--surface) 80%, transparent); color:#FFF; cursor:pointer; transition:all .35s cubic-bezier(.22,.61,.36,1); }
+.filter-btn:hover{ background:#fff; color:#111; }
+.filter-btn.active{ background:#fff; color:#111; box-shadow:0 10px 25px rgba(0,0,0,.25); }
+
+
+
+
+
+
+
+
+
+
+/* Ouverture de la fenêtre des projets*/
+.modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:100; animation:fade-in .2s ease; }
+@keyframes fade-in{ from{opacity:0} to{opacity:1} }
+@keyframes fade-out{ to{opacity:0} }
+@keyframes scale-in{ from{ transform:translateY(8px) scale(.98); opacity:.98 } to{ transform:translateY(0) scale(1); opacity:1 } }
+@keyframes scale-out{ to{ transform:translateY(8px) scale(.98); opacity:.98 } }
+.modal{ width:min(980px, 90%); max-height:82vh; overflow:auto; background:color-mix(in srgb, var(--surface) 92%, transparent); border-radius:18px; box-shadow:var(--shadow); animation:scale-in .25s ease both; }
+.modal.closing{ animation:scale-out .2s ease both; }
+.modal::-webkit-scrollbar{ width:0; height:0; }
+.titlebar{ display:flex; align-items:center; gap:.5rem; padding:.7rem .9rem; border-bottom:1px solid #ffffff22; position:sticky; top:0; background:inherit; z-index:2; }
+.traffic{ display:flex; gap:.45rem; } .dot{ width:12px; height:12px; border-radius:50%; } .dot.red{background:#FF5F57;} .dot.yellow{background:#FEBC2E;} .dot.green{background:#28C840;}
+.titlebar .title{ margin-inline:auto; color:#EDEEF3; font-weight:700; letter-spacing:.2px; }
+.close-x{ position:absolute; top:.5rem; right:.7rem; font-size:.9rem; background:#ffffff18; border:0; border-radius:999px; padding:.35rem .6rem; cursor:pointer; }
+.modal-body{ display:grid; grid-template-columns:1fr; } @media(min-width:900px){ .modal-body{ grid-template-columns:3fr 2fr; } }
+/* Wrapper média 16:9 robuste : tout remplit le conteneur */
+.modal .media{
+  position:relative;
+  background:#000;
+}
+.modal .media::before{
+  content:"";
+  display:block;
+  padding-top:56.25%; /* 16:9 */
+}
+/* L’iframe, une image ou le carrousel occupent 100% de l’espace */
+.modal .media > iframe,
+.modal .media > img,
+.modal .media > .carousel{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  border:0; display:block;
+}
+/* Les images “cover” dans les vidéos, mais on va ajuster le carrousel plus bas */
+.modal .media > img{ object-fit:cover; }
+
+
+
+
+
+
+
+
+
+
+/* Carousel for 'création graphique' */
+.carousel{ position:relative; overflow:hidden; border-radius:14px; }
+.carousel-track{ display:flex; transition:transform .45s cubic-bezier(.22,.61,.36,1); }
+.carousel-slide{ min-width:100%; aspect-ratio:16/9; background:#000; display:grid; place-items:center; }
+.carousel-slide img{ width:100%; height:100%; object-fit:cover; }
+.carousel .nav{ position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:999px;
+  background:color-mix(in srgb, var(--surface) 80%, transparent); border:1px solid #FFFFFF22; display:grid; place-items:center; cursor:pointer; color:#fff; font-weight:700; }
+.carousel .nav:hover{ background:#fff; color:#111; }
+.carousel .prev{ left:10px; } .carousel .next{ right:10px; }
+
+/* Fullscreen photo gallery */
+.modal.fullscreen{ width:96vw; height:92vh; max-height:92vh; }
+.fs-grid{ padding:1rem; display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:12px; }
+.fs-grid .cell{ border-radius:14px; overflow:hidden; border:1px solid #FFFFFF22; background:color-mix(in srgb, var(--surface) 85%, transparent); }
+.fs-grid img{ width:100%; height:100%; object-fit:cover; display:block; }
+.modal.fullscreen .modal-body{ display:block; padding:0; }
+.modal.fullscreen .titlebar{ position:sticky; top:0; }
+
+/* Static 'window' for About page */
+.window{ background:color-mix(in srgb, var(--surface) 92%, transparent); border-radius:18px; box-shadow:var(--shadow); overflow:hidden; margin:1rem 0 1.5rem; }
+.window .titlebar{ border-bottom:1px solid #ffffff22; }
+.window .content{ padding:1rem 1.2rem; }
+.skills{ display:grid; grid-template-columns:repeat(12,1fr); gap:12px; }
+.skill-card{ grid-column:span 12; display:flex; align-items:center; gap:.8rem; padding:.9rem 1rem; border-radius:14px; border:1px solid #FFFFFF22; background:color-mix(in srgb, var(--surface) 88%, transparent); }
+.skill-card svg{ width:28px; height:28px; }
+@media(min-width:800px){ .skill-card{ grid-column:span 4; } }
+
+/* Footer */
+.footer{ padding:3rem 0; color:var(--muted); }
+.footer .links{ display:flex; gap:1rem; flex-wrap:wrap; }
+.footer a{ color:inherit; }
+
+/* Back-to-top */
+#backTop{ position:fixed; right:16px; bottom:16px; z-index:60; opacity:0; pointer-events:none; transition:opacity .3s ease, transform .3s ease; transform:translateY(8px); }
+#backTop.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
+/* === THEME LIGHT (tokens) ================================ */
+:root[data-theme="light"]{
+  --bg:#F5F5F7;
+  --surface:#FFFFFF;
+  --text:#0B0B0C;
+  --muted:#4B4F5C;
+  --accent:#0A84FF; /* inchangé */
+  --shadow:0 12px 30px rgba(0,0,0,.15);
+}
+
+/* Ajustements doux en clair (aucun override agressif) */
+:root[data-theme="light"] .seg-item{ color:#111; }
+:root[data-theme="light"] .seg-item.active,
+:root[data-theme="light"] .seg-item:hover{ color:#111; }
+:root[data-theme="light"] .seg-slider{ background:#111; }
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .window,
+:root[data-theme="light"] .modal,
+:root[data-theme="light"] .skill-card{
+  border-color:#00000014;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+}
+:root[data-theme="light"] .btn{ color:#111; }
+:root[data-theme="light"] .btn:hover{ background:#111; color:#fff; }
+
+/* === TOGGLE — fin, sobre, FOND 100% TRANSPARENT ============ */
+:root{ --toggle-accent: var(--accent, #0A84FF); }
+
+.toggle{
+  position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  width:48px; height:24px; border:0; padding:0; border-radius:999px;
+  background:transparent; cursor:pointer; -webkit-tap-highlight-color:transparent;
+  outline-offset:4px; z-index:60; /* au-dessus des blobs/nav */
+}
+
+/* Track : transparent (aucune couleur de fond) */
+.toggle::before{
+  content:""; position:absolute; inset:0; border-radius:inherit;
+  background:transparent; /* <= transparent de vrai */
+  border:1px solid rgba(255,255,255,.35);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  box-shadow: 0 6px 16px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.28);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+/* Thumb */
+.toggle::after{
+  content:""; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%;
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.70));
+  box-shadow: 0 3px 8px rgba(0,0,0,.25);
+  transition: transform .18s cubic-bezier(.22,.61,.36,1), box-shadow .18s ease;
+  will-change: transform;
+}
+
+/* Etat ON (ON = thème clair) : liseré/halo discret, pas de remplissage */
+.toggle.is-on::before{
+  border-color: color-mix(in srgb, var(--toggle-accent) 60%, rgba(255,255,255,.35));
+  box-shadow:
+    0 8px 20px color-mix(in srgb, var(--toggle-accent) 35%, transparent),
+    inset 0 1px 0 rgba(255,255,255,.32);
+}
+.toggle.is-on::after{
+  transform: translateX(24px);
+  box-shadow: 0 3px 8px color-mix(in srgb, var(--toggle-accent) 40%, rgba(0,0,0,.25));
+}
+
+/* Mobile : bouton plus compact et clique facile */
+/* ==== Améliorations MOBILE pour le toggle ====================== */
+/* évite tout texte parasite / héritage */
+.toggle{ font-size:0; line-height:0; }
+
+/* ≤ 640px : place le bouton EN FIXE dans l’angle, au-dessus de la topbar
+   pour ne pas gêner la nav et garantir la zone tactile */
+@media (max-width: 640px){
+  /* ne rajoute pas de padding dans ta topbar, on isole le bouton */
+  .topbar .wrap{ padding-right: 0 !important; }
+
+  .toggle{
+    position: fixed;                 /* détaché du flux de la nav */
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: calc(env(safe-area-inset-right, 0px) + 10px);
+    width: 50px;                     /* zone tactile ≥ 44px */
+    height: 28px;
+    z-index: 200;                    /* au-dessus des ombres du header */
+  }
+  .toggle::after{
+    width: 20px; height: 20px;       /* pastille un poil plus grande */
+    top: 4px; left: 4px;
+  }
+  .toggle.is-on::after{ transform: translateX(26px); }
+
+  /* option: petit halo pour la visibilité sur fonds très clairs/sombres */
+  .toggle::before{
+    box-shadow:
+      0 6px 16px rgba(0,0,0,.20),
+      0 0 0 1px rgba(255,255,255,.18) inset;
+  }
+}
+
+/* iOS Safari : évite que les gestes système bloquent le clic */
+@supports (-webkit-touch-callout: none){
+  .toggle{ touch-action: manipulation; }
+}
+
+
+/* Fallback sans backdrop-filter */
+@supports not (backdrop-filter: blur(1px)){
+  .toggle::before{ border-color: rgba(255,255,255,.25); box-shadow: 0 6px 16px rgba(0,0,0,.18); }
+}
+
+/* Accessibilité animation */
+@media (prefers-reduced-motion: reduce){
+  .toggle, .toggle::before, .toggle::after{ transition:none !important; }
+}
+/* === Cartes translucides + bordure colorée douce (opt-in via .glass-soft) === */
+:root{
+  --edge-hue: 215;           /* teinte bleutée discrète (changeable carte par carte) */
+  --edge-alpha: .45;         /* intensité de la lueur de bord (0–1) */
+}
+.glass-soft{
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) padding-box,
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--edge-hue), 85%, 60%, var(--edge-alpha)) 0turn,
+      hsla(var(--edge-hue), 85%, 60%, 0) .5turn,
+      hsla(var(--edge-hue), 85%, 60%, var(--edge-alpha)) 1turn
+    ) border-box;
+  border:1px solid transparent;        /* le dégradé s’applique sur la bordure */
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+}
+
+/* survol/focus : un poil plus présent, mais toujours soft */
+.glass-soft:hover,
+.glass-soft:focus-within{ --edge-alpha: .65; }
+
+/* Thème clair : fond un peu plus laiteux, ombre adoucie */
+:root[data-theme="light"] .glass-soft{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.50), rgba(255,255,255,.25)) padding-box,
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--edge-hue), 85%, 50%, .30) 0turn,
+      hsla(var(--edge-hue), 85%, 50%, 0) .5turn,
+      hsla(var(--edge-hue), 85%, 50%, .30) 1turn
+    ) border-box;
+}
+
+/* Fallback sans backdrop-filter */
+@supports not (backdrop-filter: blur(1px)){
+  .glass-soft{
+    background:
+      rgba(255,255,255,.06) padding-box,
+      linear-gradient(180deg, rgba(255,255,255,.15), rgba(0,0,0,.20)) border-box;
+  }
+}
+/* ========= Footer pills (liquid glass transparent) ========= */
+:root{
+  --foot-hue: 215;     /* 215=bleu doux ; 165=vert ; 280=violet */
+  --foot-alpha: .42;   /* intensité du bord coloré */
+}
+
+.footer .foot-btn{
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: .5rem;
+  height: 38px; padding: 0 14px;
+  border-radius: 999px;
+  font-weight: 600; font-size: .95rem; line-height: 1;
+  text-decoration: none;
+  color: #EAEFF7;
+  position: relative;
+  /* verre : fond réellement transparent + blur */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) padding-box,
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--foot-hue),85%,60%,var(--foot-alpha)) 0turn,
+      hsla(var(--foot-hue),85%,60%,0) .5turn,
+      hsla(var(--foot-hue),85%,60%,var(--foot-alpha)) 1turn
+    ) border-box;
+  border: 1px solid transparent;
+  backdrop-filter: saturate(140%) blur(12px);
+  -webkit-backdrop-filter: saturate(140%) blur(12px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.25);
+  transition: transform .15s ease, box-shadow .2s ease, color .15s ease, background .2s ease;
+  will-change: transform;
+}
+
+.footer .foot-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.3);
+}
+
+.footer .foot-btn:active{
+  transform: translateY(0);
+  box-shadow: 0 6px 16px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+/* Focus accessible */
+.footer .foot-btn:focus-visible{
+  outline: none;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, #fff 80%, transparent),
+    0 0 0 6px color-mix(in srgb, hsl(var(--foot-hue) 85% 60%) 45%, transparent);
+}
+
+/* Thème clair : teinte plus douce et texte sombre */
+:root[data-theme="light"] .footer .foot-btn{
+  color:#121316;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.25)) padding-box,
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--foot-hue),85%,50%,.28) 0turn,
+      hsla(var(--foot-hue),85%,50%,0) .5turn,
+      hsla(var(--foot-hue),85%,50%,.28) 1turn
+    ) border-box;
+  box-shadow: 0 6px 16px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.6);
+}
+
+/* Espacement automatique entre boutons existants du footer */
+.footer .foot-btn + .foot-btn{ margin-left: .75rem; }
+
+/* Mobile : boutons plus hauts et wrap si besoin */
+@media (max-width: 640px){
+  .footer{ display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; }
+  .footer .foot-btn{ height: 42px; padding: 0 16px; }
+  .footer .foot-btn + .foot-btn{ margin-left: 0; }
+}
+
+/* Fallback sans backdrop-filter : garde bord discret */
+@supports not (backdrop-filter: blur(1px)){
+  .footer .foot-btn{
+    background:
+      transparent padding-box,
+      linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.22)) border-box;
+  }
+}
+/* === Bouton pill "liquid glass" transparent ===================== */
+:root{
+  --btn-glass-hue: 215;   /* 215=bleu doux | 165=vert | 280=violet */
+  --btn-glass-alpha: .42; /* intensité du liseré (0–1) */
+}
+
+.btn.glass-btn, .reopen-hidden-btn{
+  position: relative;
+  border-radius: 999px;
+  padding: .9rem 1.25rem;          /* garde la taille actuelle */
+  font-weight: 700;
+  color: #EAEFF7;
+  background:
+    /* centre quasi transparent pour laisser voir le fond */
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) padding-box,
+    /* liseré coloré doux sur la bordure */
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--btn-glass-hue),85%,60%,var(--btn-glass-alpha)) 0turn,
+      hsla(var(--btn-glass-hue),85%,60%,0) .5turn,
+      hsla(var(--btn-glass-hue),85%,60%,var(--btn-glass-alpha)) 1turn
+    ) border-box;
+  border: 1px solid transparent;   /* nécessaire pour afficher le dégradé de bord */
+  backdrop-filter: saturate(140%) blur(12px);
+  -webkit-backdrop-filter: saturate(140%) blur(12px);
+  box-shadow: 0 10px 26px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.28);
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease, color .15s ease;
+  will-change: transform;
+}
+
+.btn.glass-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.32);
+}
+
+.btn.glass-btn:active{
+  transform: translateY(0);
+  box-shadow: 0 8px 20px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.22);
+}
+
+.btn.glass-btn:focus-visible{
+  outline: none;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, #fff 80%, transparent),
+    0 0 0 6px color-mix(in srgb, hsl(var(--btn-glass-hue) 85% 60%) 45%, transparent);
+}
+
+/* Thème clair : teinte plus douce, texte sombre */
+:root[data-theme="light"] .btn.glass-btn{
+  color:#121316;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.25)) padding-box,
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--btn-glass-hue),85%,50%,.28) 0turn,
+      hsla(var(--btn-glass-hue),85%,50%,0) .5turn,
+      hsla(var(--btn-glass-hue),85%,50%,.28) 1turn
+    ) border-box;
+  box-shadow: 0 8px 20px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.55);
+}
+
+/* Fallback si pas de blur */
+@supports not (backdrop-filter: blur(1px)){
+  .btn.glass-btn{
+    background:
+      transparent padding-box,
+      linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.22)) border-box;
+  }
+}
+/* === Filtres : pills transparentes + bord coloré doux =================== */
+:root{
+  --chip-hue: 215;   /* 215=bleu doux | 165=vert | 280=violet */
+  --chip-alpha: .42; /* intensité du liseré (0–1) */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.filters{
+  display:flex; flex-wrap:wrap; gap:.6rem;
+}
+
+.filters .filter-btn{
+  appearance:none; -webkit-tap-highlight-color:transparent;
+  border-radius:999px; border:1px solid transparent;
+  padding:.55rem 1rem;
+  font-weight:600; line-height:1; cursor:pointer;
+  color:#EAEFF7;
+  background:
+    /* centre quasi transparent pour laisser voir le fond */
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) padding-box,
+    /* liseré coloré subtil sur la bordure */
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--chip-hue),85%,60%,var(--chip-alpha)) 0turn,
+      hsla(var(--chip-hue),85%,60%,0) .5turn,
+      hsla(var(--chip-hue),85%,60%,var(--chip-alpha)) 1turn
+    ) border-box;
+  backdrop-filter:saturate(140%) blur(10px);
+  -webkit-backdrop-filter:saturate(140%) blur(10px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.25);
+  transition: transform .12s ease, box-shadow .2s ease, color .15s ease, background .2s ease;
+}
+
+/* hover/active press */
+.filters .filter-btn:hover{ transform:translateY(-1px); }
+.filters .filter-btn:active{ transform:translateY(0); box-shadow:0 6px 16px rgba(0,0,0,.18); }
+
+/* état ACTIF : pilule pleine (blanche), texte sombre, bord discret */
+.filters .filter-btn.active{
+  color:#111;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.85)) padding-box,
+    linear-gradient(180deg, rgba(255,255,255,.4), rgba(0,0,0,.15)) border-box;
+  box-shadow: 0 10px 26px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.65);
+}
+
+/* thème clair : teintes plus douces et texte sombre par défaut */
+:root[data-theme="light"] .filters .filter-btn{
+  color:#121316;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.25)) padding-box,
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--chip-hue),85%,50%,.28) 0turn,
+      hsla(var(--chip-hue),85%,50%,0) .5turn,
+      hsla(var(--chip-hue),85%,50%,.28) 1turn
+    ) border-box;
+  box-shadow: 0 6px 16px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.6);
+}
+:root[data-theme="light"] .filters .filter-btn.active{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,1), rgba(255,255,255,.92)) padding-box,
+    linear-gradient(180deg, rgba(255,255,255,.5), rgba(0,0,0,.1)) border-box;
+}
+
+/* mobile : zone tactile un peu plus grande */
+@media (max-width: 640px){
+  .filters{ gap:.5rem; }
+  .filters .filter-btn{ padding:.6rem 1rem; }
+}
+
+/* fallback sans blur : garde un bord discret */
+@supports not (backdrop-filter: blur(1px)){
+  .filters .filter-btn{
+    background:
+      transparent padding-box,
+      linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.22)) border-box;
+  }
+}
+/* ===== Fenêtre "Qui suis-je ?" — panneau glass distinct ===== */
+:root{
+  --win-hue: 215;   /* teinte du liseré de la fenêtre (215=bleu, 165=vert, 280=violet) */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.window.glass-window{
+  background:
+    /* centre quasi transparent pour laisser voir le fond */
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)) padding-box,
+    /* bord coloré très doux façon liquid glass */
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--win-hue),85%,60%,.40) 0turn,
+      hsla(var(--win-hue),85%,60%,0) .5turn,
+      hsla(var(--win-hue),85%,60%,.40) 1turn
+    ) border-box;
+  border:1px solid transparent;
+  backdrop-filter: saturate(140%) blur(16px);
+  -webkit-backdrop-filter: saturate(140%) blur(16px);
+  box-shadow: 0 14px 34px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.18);
+}
+
+/* barre de titre : fine séparation discrète, pas l’énorme trait gris */
+.window.glass-window .titlebar{
+  border-bottom:1px solid color-mix(in srgb, #fff 14%, transparent);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* avatar : cadre glass très léger (remplace ton bg:#00000030 inline) */
+.avatar-glass{
+  width:160px; aspect-ratio:1/1; border-radius:14px; overflow:hidden;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)) padding-box,
+    linear-gradient(180deg, rgba(255,255,255,.2), rgba(0,0,0,.25)) border-box;
+  border:1px solid transparent;
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  box-shadow: 0 10px 26px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.25);
+}
+
+/* ===== Compétences — chips bien distinctes de la fenêtre ===== */
+:root{
+  --chip-hue: 215;   /* teinte du liseré des chips */
+  --chip-alpha:.42;
+}
+
+.skills.chips-glass{
+  display:flex; flex-wrap:wrap; gap:1rem;
+}
+
+/* cible les éléments internes (boutons ou liens) générés par about.js */
+.skills.chips-glass > *{
+  border-radius:16px; border:1px solid transparent;
+  padding:.9rem 1.1rem; display:inline-flex; align-items:center; gap:.6rem;
+  font-weight:700; line-height:1; color:#EAEFF7; white-space:nowrap;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) padding-box,
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--chip-hue),85%,60%,var(--chip-alpha)) 0turn,
+      hsla(var(--chip-hue),85%,60%,0) .5turn,
+      hsla(var(--chip-hue),85%,60%,var(--chip-alpha)) 1turn
+    ) border-box;
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.25);
+  transition: transform .12s ease, box-shadow .2s ease, background .2s ease, color .15s ease;
+}
+
+/* hover/focus sur chip — légère élévation */
+.skills.chips-glass > *:hover{ transform: translateY(-1px); }
+.skills.chips-glass > *:focus-visible{
+  outline:none;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, #fff 80%, transparent),
+    0 0 0 6px color-mix(in srgb, hsl(var(--chip-hue) 85% 60%) 45%, transparent);
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Thème clair : fenêtre et chips adoucies + texte sombre */
+:root[data-theme="light"] .window.glass-window{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.25)) padding-box,
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--win-hue),85%,50%,.28) 0turn,
+      hsla(var(--win-hue),85%,50%,0) .5turn,
+      hsla(var(--win-hue),85%,50%,.28) 1turn
+    ) border-box;
+  box-shadow: 0 10px 26px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.35);
+}
+:root[data-theme="light"] .skills.chips-glass > *{
+  color:#121316;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.25)) padding-box,
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--chip-hue),85%,50%,.28) 0turn,
+      hsla(var(--chip-hue),85%,50%,0) .5turn,
+      hsla(var(--chip-hue),85%,50%,.28) 1turn
+    ) border-box;
+  box-shadow: 0 6px 16px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.55);
+}
+
+/* Mobile : respire mieux */
+@media (max-width: 720px){
+  .avatar-glass{ width:120px; }
+  .skills.chips-glass{ gap:.75rem; }
+  .skills.chips-glass > *{ padding:.8rem 1rem; }
+}
+
+/* Fallback sans blur : garde juste un bord discret */
+@supports not (backdrop-filter: blur(1px)){
+  .window.glass-window{
+    background: transparent padding-box,
+      linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.22)) border-box;
+  }
+  .skills.chips-glass > *{
+    background: transparent padding-box,
+      linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.22)) border-box;
+  }
+}
+/* ===== Fenêtre "Mes passions" — panneau glass ===== */
+:root{ --passions-hue: 215; } /* liseré de la fenêtre (bleu doux) */
+
+
+
+
+
+
+
+
+
+
+
+.window.glass-window{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)) padding-box,
+    conic-gradient(from 180deg at 50% 50%,
+      hsla(var(--passions-hue),85%,60%,.40) 0turn,
+      hsla(var(--passions-hue),85%,60%,0) .5turn,
+      hsla(var(--passions-hue),85%,60%,.40) 1turn
+    ) border-box;
+  border:1px solid transparent;
+  backdrop-filter:saturate(140%) blur(16px);
+  -webkit-backdrop-filter:saturate(140%) blur(16px);
+  box-shadow: 0 14px 34px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.18);
+}
+.window.glass-window .titlebar{
+  border-bottom:1px solid color-mix(in srgb, #fff 14%, transparent);
+}
+.window.glass-window .button{
+  border-bottom:1px solid color-mix(in srgb, #fff 14%, transparent);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==== PASSIONS: chips clean (sans halo au centre) ===================== */
+/* Teinte par section inchangée (via --chip-hue déjà posée sur #books/#artists/#films/#interests) */
+
+.chips-grid > *{
+  position: relative;
+  border-radius: 18px;
+  /* centre ultra sobre/translucide */
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  /* bord coloré discret (sans gradient au milieu) */
+  border: 1px solid
+    color-mix(in srgb, hsl(var(--chip-hue) 85% 60%) 30%, rgba(255,255,255,.14));
+  /* verre */
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  /* ombre douce + léger highlight interne */
+  box-shadow:
+    0 10px 26px rgba(0,0,0,.20),
+    inset 0 1px 0 rgba(255,255,255,.22);
+  /* layout/typo inchangés */
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1rem; min-height:64px; padding:1rem 1.25rem;
+  color:#EAEFF7; font-weight:600;
+  transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+}
+
+/* hover/focus: léger lift, pas de glow central */
+.chips-grid > *:hover{ transform: translateY(-1px); }
+.chips-grid > *:focus-visible{
+  outline: none;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, #fff 80%, transparent),
+    0 0 0 6px color-mix(in srgb, hsl(var(--chip-hue) 85% 60%) 35%, transparent),
+    0 10px 26px rgba(0,0,0,.20),
+    inset 0 1px 0 rgba(255,255,255,.22);
+}
+
+/* Thème clair: centre un peu plus laiteux + bord adouci */
+:root[data-theme="light"] .chips-grid > *{
+  color:#121316;
+  background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.25));
+  border-color: color-mix(in srgb, hsl(var(--chip-hue) 85% 50%) 22%, rgba(0,0,0,.10));
+  box-shadow: 0 8px 20px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.55);
+}
+
+/* Fallback sans blur: simple bord discret */
+@supports not (backdrop-filter: blur(1px)){
+  .chips-grid > *{
+    background: rgba(255,255,255,.06);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== Overlay (fond de modale) ======================================= */
+.modal-backdrop{
+  position: fixed; inset: 0; z-index: 9998;
+  background: rgba(10,10,12,.28);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  animation: modalFadeIn .18s ease;
+}
+@keyframes modalFadeIn{ from{opacity:0} to{opacity:1} }
+
+/* ===== Panneau de modale (liquid glass) =============================== */
+:root{ --modal-hue: 215; } /* 215=bleu doux (changeable) */
+
+.modal.glass-window{
+  position: relative;
+  z-index: 9999;
+  width: min(960px, 92vw);
+  margin: 2rem auto;
+  border-radius: 18px;
+
+  /* centre transparent (on voit le fond) */
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+
+  /* bord coloré discret — pas de conic (donc pas de “pic” au centre) */
+  border: 1px solid
+    color-mix(in srgb, hsl(var(--modal-hue) 85% 60%) 30%, rgba(255,255,255,.14));
+
+  /* verre */
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+
+  /* ombre + micro highlight interne */
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.18);
+
+  /* petite entrée */
+  transform: translateY(6px) scale(.99);
+  animation: panelIn .22s cubic-bezier(.22,.61,.36,1) forwards;
+}
+@keyframes panelIn{ to{ transform: translateY(0) scale(1); } }
+
+/* barre de titre : séparation très discrète */
+.modal.glass-window .titlebar{
+  border-bottom: 1px solid color-mix(in srgb, #fff 12%, transparent);
+  border-top-left-radius: 18px; border-top-right-radius: 18px;
+}
+
+/* corps de modale : respiration */
+.modal.glass-window .modal-body{
+  padding: 1.25rem 1.4rem 1.6rem;
+}
+
+/* médias à l'intérieur : coins doux seulement (laisser le fill 16:9 intact) */
+.modal .media > img,
+.modal .media > iframe{
+  border-radius:12px;
+}
+
+
+/* bouton de fermeture si présent */
+.modal .close-x{
+  position:absolute; right:.8rem; top:.6rem;
+  background:transparent; border:0; font-size:1.1rem; cursor:pointer;
+  color: color-mix(in srgb, #fff 85%, transparent);
+}
+
+/* État closing (anim sortie) — déjà déclenché par ton JS */
+.modal.closing{
+  animation: panelOut .18s ease forwards;
+}
+@keyframes panelOut{ to{ transform: translateY(6px) scale(.985); opacity:.8; } }
+
+/* ===== Thème clair : centre laiteux + bord adouci ===================== */
+:root[data-theme="light"] .modal-backdrop{
+  background: rgba(240,244,247,.55);
+}
+:root[data-theme="light"] .modal.glass-window{
+  background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.25));
+  border-color: color-mix(in srgb, hsl(var(--modal-hue) 85% 50%) 22%, rgba(0,0,0,.10));
+  box-shadow: 0 14px 30px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+/* ===== Plein écran (galerie) : garde un style sobre =================== */
+.modal.fullscreen{
+  width: 100%; height: auto; max-width: none; margin: 0 auto;
+  background: linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.35)); /* plus dense pour les images */
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 12px;
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+}
+.modal.fullscreen .titlebar{
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+
+/* ===== Mobile ========================================================= */
+@media (max-width: 640px){
+  .modal.glass-window{ width: calc(100vw - 1.5rem); margin: .75rem auto; border-radius: 16px; }
+  .modal.glass-window .modal-body{ padding: 1rem; }
+}
+
+/* ===== Fallback sans blur ============================================ */
+@supports not (backdrop-filter: blur(1px)){
+  .modal-backdrop{ background: rgba(10,10,12,.65); }
+  .modal.glass-window{ background: rgba(20,20,22,.85); }
+}
+/* ==== Relevé visuel des modales (plus présentes) ===================== */
+/* Overlay un poil plus dense + blur un peu plus fort */
+.modal-backdrop{
+  background: rgba(10,10,12,.38);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+}
+
+/* Panneau : centre un peu plus laiteux + bord lisible + ombre plus profonde */
+.modal.glass-window,
+.modal:not(.fullscreen){
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+  border-color: color-mix(in srgb, hsl(var(--modal-hue,215) 85% 60%) 42%, rgba(255,255,255,.20));
+  box-shadow:
+    0 30px 60px rgba(0,0,0,.45),   /* ombre externe plus profonde */
+    inset 0 1px 0 rgba(255,255,255,.22);
+}
+
+/* Liseré interne subtil (netté du bord) */
+.modal.glass-window::before,
+.modal:not(.fullscreen)::before{
+  content:""; position:absolute; inset:0; border-radius:inherit;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+  pointer-events:none;
+}
+
+/* Halo périphérique doux (pas au centre) pour détacher le panneau */
+.modal.glass-window::after,
+.modal:not(.fullscreen)::after{
+  content:""; position:absolute; inset:-14px; border-radius:24px; pointer-events:none;
+  background:
+    radial-gradient(120% 140% at 50% -20%, rgba(255,255,255,.20) 0%, transparent 55%),
+    radial-gradient(140% 120% at 50% 120%, rgba(0,0,0,.35) 0%, transparent 60%);
+  filter: blur(14px);
+  opacity:.35;
+}
+
+/* Barre de titre : séparation un peu plus marquée */
+.modal.glass-window .titlebar,
+.modal:not(.fullscreen) .titlebar{
+  border-bottom: 1px solid color-mix(in srgb, #fff 18%, transparent);
+}
+
+/* Light mode : mêmes idées mais plus doux */
+:root[data-theme="light"] .modal-backdrop{
+  background: rgba(240,244,247,.65);
+}
+:root[data-theme="light"] .modal.glass-window,
+:root[data-theme="light"] .modal:not(.fullscreen){
+  background: linear-gradient(180deg, rgba(255,255,255,.70), rgba(255,255,255,.40));
+  border-color: color-mix(in srgb, hsl(var(--modal-hue,215) 85% 50%) 28%, rgba(0,0,0,.12));
+  box-shadow: 0 22px 46px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.45);
+}
+:root[data-theme="light"] .modal.glass-window::before,
+:root[data-theme="light"] .modal:not(.fullscreen)::before{
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* === Désactiver la sélection de texte + curseur texte partout ========== */
+/* Global: pas de sélection, pas de menu iOS au long-press */
+html, body, body *:not(input):not(textarea):not([contenteditable="true"]) {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none; /* iOS: pas de menu Copier/Coller */
+}
+
+/* Curseur par défaut sur le texte/containers (pas de I-beam) */
+html, body, body *:not(a):not(button):not([role="button"]):not(input):not(textarea):not([contenteditable="true"]) {
+  cursor: default;
+}
+
+/* Garder les bons curseurs pour les éléments interactifs */
+a, button, [role="button"] { cursor: pointer; }
+
+/* Inputs/textarea: on réactive sélection + curseur texte si tu en as */
+input, textarea, [contenteditable="true"] {
+  -webkit-user-select: text; -moz-user-select: text; user-select: text;
+  cursor: text;
+}
+
+/* Bonus: empêcher le glisser-déposer d’images et la sélection par drag */
+img { -webkit-user-drag: none; user-select: none; }
+
+
+
+
+
+/*3d*/
+/* ===== 3D Text propre (extrusion réelle, sans librairie) ===== */
+.hero-3d-clean{
+  padding: clamp(48px, 10vw, 120px) 0;
+  display: grid;
+  place-items: center;
+}
+
+/* réglages généraux */
+.text3d{
+  --font-size: clamp(40px, 12vw, 140px);
+  --depth: 28;            /* nb de couches d'extrusion (20–40 conseillé) */
+  --step: 2px;            /* distance entre couches (épaisseur) */
+  --hue: 210;             /* teinte lumière (210 = bleuté) */
+  --front: #f7fbff;       /* face avant */
+  position: relative;
+  display: grid;
+  place-items: center;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* chaque couche ajoutée par JS prendra cette base */
+.text3d .layer{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+  font: 900 var(--font-size) / 1 "SF Pro Display", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  letter-spacing: .02em;
+  color: #0b111a; /* sera surchargé pour les couches */
+  will-change: transform;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* la face avant (plus lumineuse) */
+.text3d .face{
+  position: relative;
+  display: inline-block;
+  font: 900 var(--font-size) / 1 "SF Pro Display", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  letter-spacing: .02em;
+  color: var(--front);
+  -webkit-text-stroke: .6px rgba(255,255,255,.35);
+  text-shadow:
+    0 14px 28px rgba(0,0,0,.35),
+    0 2px 0 rgba(0,0,0,.12);
+  transform: translateZ(calc(var(--depth) * var(--step)));
+}
+
+/* rendu plus « propre » sur fonds clairs/sombres */
+@media (prefers-color-scheme: light){
+  .text3d .face{ color:#1a1e24; -webkit-text-stroke:.6px rgba(0,0,0,.18); }
+}
+
+/* (optionnel) effet tilt discret si tu ajoutes la classe .interactive au wrapper */
+.text3d.interactive{ transition: transform .2s ease; }
+@media (prefers-reduced-motion: reduce){
+  .text3d.interactive{ transform: none !important; }
+}
+
+
+
+/*responsive*/
+/* NAV centrée — scrollable sur mobile */
+.segmented{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  display:flex; align-items:center; gap:.25rem;
+  padding:.35rem .5rem; border-radius:999px;
+  background:transparent;
+  border:1px solid #FFFFFF22; box-shadow:var(--shadow);
+  backdrop-filter:saturate(140%) blur(16px); -webkit-backdrop-filter:saturate(140%) blur(16px);
+  /* responsive */
+  max-width: min(92vw, 720px);
+  overflow-x:auto; -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.segmented::-webkit-scrollbar{ display:none; }
+
+.seg-item{
+  position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center;
+  min-width: clamp(88px, 24vw, 140px);
+  padding:.55rem clamp(.8rem, 2.6vw, 1.1rem);
+  border-radius:999px; color:#EDEEF3; font-weight:600; letter-spacing:.2px;
+  background:transparent; border:0; cursor:pointer; white-space:nowrap;
+}
+.seg-item:hover{ color:#fff; }
+.seg-item.active{ color:#fff; }
+
+/* slider suit les largeurs fluides */
+.seg-slider{
+  position:absolute; left:0; top:4px; bottom:4px;
+  width:120px; background:rgb(144,129,229); border-radius:999px;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+  transform:translateX(0);
+  transition:transform .42s cubic-bezier(.22,.61,.36,1), width .28s ease, opacity .2s ease;
+  opacity:0;
+}
+.segmented:hover .seg-slider{ opacity:1; }
+
+/* iPhone “notch” : garde la nav respirante */
+@supports(padding:max(0px)){
+  .topbar{ padding-top: max(0px, env(safe-area-inset-top)); }
+}
+
+/* Container & titres fluides */
+.container{ width:clamp(296px, 92vw, 1160px); margin-inline:auto; }
+
+h1{ font-size: clamp(1.6rem, 6.4vw, 2.4rem); line-height:1.15; margin:.5rem 0; }
+h2{ font-size: clamp(1.2rem, 4.6vw, 1.6rem); line-height:1.25; margin:.5rem 0 .4rem; }
+h3{ font-size: clamp(1rem, 3.6vw, 1.2rem);  line-height:1.3;  margin:.4rem 0 .3rem; }
+
+/* section spacing */
+.section{ padding: clamp(.5rem, 2.6vw, 1rem) 0 clamp(2rem, 6vw, 3rem); }
+.grid{ display:grid; grid-template-columns:repeat(12,1fr); gap: clamp(.6rem, 2.6vw, 1rem); }
+@media(min-width:720px){ .card{ grid-column:span 6; } }
+@media(min-width:1024px){ .card{ grid-column:span 4; } }
+.modal{ width:min(980px, 92vw); max-height: min(86vh, 100svh - 24px); }
+.modal-body{ display:grid; grid-template-columns:1fr; gap: clamp(.75rem, 2.8vw, 1rem); }
+@media(min-width:900px){
+  .modal-body{ grid-template-columns: 3fr 2fr; }
+}
+.modal.glass-window .modal-body{ padding: clamp(.9rem, 2.8vw, 1.4rem); }
+/* Le carrousel occupe tout l'espace de .media */
+.modal .media > .carousel{ position:absolute; inset:0; }
+.carousel{ position:relative; overflow:hidden; border-radius:14px; height:100%; }
+.carousel-track{ display:flex; height:100%; transition:transform .45s cubic-bezier(.22,.61,.36,1); }
+.carousel-slide{ min-width:100%; height:100%; background:#000; display:grid; place-items:center; }
+/* montre 100% du visuel (pas recadré) */
+.carousel-slide img{ width:100%; height:100%; object-fit:contain; }
+
+/* Boutons plus compacts en mobile */
+.carousel .nav{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:clamp(36px, 7vw, 44px); height:clamp(36px, 7vw, 44px);
+  border-radius:999px;
+  background:color-mix(in srgb, var(--surface) 80%, transparent);
+  border:1px solid #FFFFFF22; display:grid; place-items:center;
+  cursor:pointer; color:#fff; font-weight:700;
+}
+.carousel .prev{ left:10px; } .carousel .next{ right:10px; }
+/* Tel uniquement : cacher complètement le toggle */
+@media (max-width: 640px){
+  .toggle{ display: none !important; }
+  /* Nettoyage éventuel des espacements liés au toggle */
+  .topbar{ gap: 0 !important; }
+  .topbar .wrap{ padding-right: 0 !important; }
+}
+/* Tel uniquement : cacher complètement le logo */
+@media (max-width: 640px){
+  .logo{ display: none !important; }
+  /* petit nettoyage si tu avais prévu de la place à gauche */
+  .topbar .wrap{ padding-left: 0 !important; }
+}
+/* Footer: mettre tous les boutons côte à côte (toutes pages) */
+.footer .container{
+  display: flex !important;
+  justify-content: center !important;  /* au lieu de space-between */
+  align-items: center !important;
+  gap: .75rem !important;
+  flex-wrap: wrap !important;          /* évite l'overflow en très petit écran */
+}
+
+.footer .links{
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+
+.footer .foot-btn{
+  margin: 0;                            /* pas d'écart vertical parasite */
+}
+
+
+/* photo nouveau0*/
+
+/* ===== Fenêtres façon mac (verre) ===== */
+.macwin {
+  position: fixed;
+  top: 12vh; left: 10vw;
+  width: min(90vw, 1100px);
+  height: min(75vh, 720px);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  background: rgba(18,20,28,0.22); /* un peu plus sombre pour le contraste */
+  position: fixed;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+.macwin.glass::before {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 600px at -10% -20%, rgba(255,128,0,0.14), transparent 60%),
+    radial-gradient(900px 500px at 120% 120%, rgba(120,0,255,0.14), transparent 55%),
+    radial-gradient(700px 400px at 20% 120%, rgba(0,160,255,0.14), transparent 55%),
+    radial-gradient(600px 500px at 120% 0%, rgba(255,0,160,0.14), transparent 60%);
+  mix-blend-mode: screen;
+}
+.macwin.glass { background-image:
+  radial-gradient(1200px 600px at -10% -20%, rgba(255,128,0,0.12), transparent 60%),
+  radial-gradient(900px 500px at 120% 120%, rgba(120,0,255,0.12), transparent 55%),
+  radial-gradient(700px 400px at 20% 120%, rgba(0,160,255,0.12), transparent 55%),
+  radial-gradient(600px 500px at 120% 0%, rgba(255,0,160,0.12), transparent 60%);
+}
+
+.macwin-titlebar {
+  height: 38px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06));
+  border-bottom: 1px solid rgba(255,255,255,0.25);
+  cursor: grab;
+  user-select: none;
+}
+.macwin-titlebar:active { cursor: grabbing; }
+
+.macwin-dots { display:flex; gap:8px; }
+.macwin-dots .dot {
+  width: 12px; height:12px; border-radius:50%; border:none; padding:0; cursor:pointer;
+}
+.macwin-dots .close { background:#ff5f57; }
+.macwin-dots .min { background:#ffbd2e; }
+.macwin-dots .max { background:#28c840; }
+
+.macwin-title {
+  font-weight: 600; letter-spacing: .2px;
+  color: #fff; opacity:.9;
+}
+
+.finder-toolbar {
+  display:flex; align-items:center; gap:12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.04);
+}
+.finder-back {
+  padding: 6px 10px; border:1px solid rgba(255,255,255,0.25); border-radius:8px;
+  background: rgba(255,255,255,0.06); color:#fff; font-weight:600;
+}
+.finder-back:disabled { opacity:.45; cursor:not-allowed; }
+.finder-path { color:#fff; opacity:.8; font-size:.95rem; }
+
+.macwin-body {
+  display:grid; grid-template-columns: 1fr 280px;
+  height: calc(100% - 38px - 44px); /* titlebar + toolbar */
+}
+
+.finder-content {
+  overflow: auto; padding: 16px;
+}
+.finder-meta {
+  border-left:1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.03);
+  padding: 16px; overflow:auto;
+}
+.meta-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.18);
+  border-radius:12px; padding:12px; color:#fff; }
+.meta-box h4 { margin:0 0 8px 0; font-weight:700; }
+
+.folder-grid {
+  display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+.folder-item { appearance:none; background:transparent; border:0; padding:0; cursor:pointer; outline:none; }
+.folder-item.bare { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.folder-item.bare img {
+  width:84px; height:84px; object-fit:contain;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,.25));
+  transition: transform .08s ease;
+}
+.folder-item.bare .folder-label {
+  font-weight:600; font-size:.95rem; color:#fff; text-shadow: 0 2px 8px rgba(0,0,0,.35);
+}
+
+.folder-item:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.35);
+}
+.folder-item img { width:64px; height:64px; object-fit:contain; filter: drop-shadow(0 6px 16px rgba(0,0,0,0.25)); }
+.folder-item span { color:#fff; font-weight:600; }
+
+.photo-grid {
+  display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.photo-item {
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+  border-radius: 12px; overflow: hidden; padding: 0;
+  cursor: pointer; transition: transform .1s ease, box-shadow .1s ease;
+}
+.photo-item:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(0,0,0,0.25); }
+.photo-item img { width: 100%; height: 160px; object-fit: cover; display:block; }
+
+.preview-container { display:flex; flex-direction:column; height:100%; }
+.preview-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding: 12px; }
+.preview-wrap img { max-width:100%; max-height:100%; border-radius:12px; border:1px solid rgba(255,255,255,0.2); }
+.preview-actions { display:flex; gap:10px; justify-content:flex-end; padding:10px 12px; border-top:1px solid rgba(255,255,255,0.18); }
+.preview-actions button {
+  padding: 8px 12px; border-radius: 10px;
+  border:1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.06); color:#fff; font-weight:600; cursor:pointer;
+}
+.preview-actions button:hover { background: rgba(255,255,255,0.12); }
+
+.macwin.minimized { height: 52px !important; overflow:hidden; }
+.macwin.maximized { width: calc(100vw - 32px); height: calc(100vh - 32px); left:16px !important; top:16px !important; }
+
+/* Responsive */
+@media (max-width: 820px) {
+  .macwin { left: 4vw; width: 92vw; height: 72vh; }
+  .macwin-body { grid-template-columns: 1fr; }
+  .finder-meta { display:none; }
+}
+
+
+/* Empêcher le scroll de fond quand une fenêtre est ouverte */
+body.no-scroll { overflow: hidden !important; }
+
+/* Fenêtre "image only" */
+.macwin.imgwin {
+  position: fixed;
+  top: 15vh; left: 10vw;
+  width: 480px; height: 360px;
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  background: rgba(25,25,28,0.52); /* plus opaque pour une image lisible */
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+  overflow: hidden;
+}
+
+.macwin-titlebar.tiny {
+  height: 28px;
+  display:flex; align-items:center; gap:10px;
+  padding: 0 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06));
+  border-bottom: 1px solid rgba(255,255,255,0.22);
+  user-select:none; cursor: grab;
+}
+.macwin-titlebar.tiny:active { cursor: grabbing; }
+.macwin-dots { display:flex; gap:8px; }
+.macwin-dots .dot {
+  width: 12px; height: 12px; border-radius: 50%; border: none; padding: 0; cursor: pointer;
+}
+.macwin-dots .close { background:#ff5f57; }
+.macwin-dots .min   { background:#ffbd2e; }
+.macwin-dots .max   { background:#28c840; }
+
+.macwin-body.imgonly {
+  display:flex; align-items:center; justify-content:center;
+  width:100%; height: calc(100% - 28px);
+  background: transparent; padding: 0;
+}
+
+.imgwrap { width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+.imgwrap img {
+  max-width: 100%; max-height: 100%;
+  display:block; object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.macwin.imgwin.minimized { height: 36px !important; overflow: hidden; }
+.macwin.imgwin.maximized {
+  left: 12px !important; top: 12px !important;
+  width: calc(100vw - 24px) !important;
+  height: calc(100vh - 24px) !important;
+}
+/* —— Frost fort pour la première fenêtre —— */
+.macwin.frost-strong {
+  /* fond plus sombre + blur plus fort */
+  background: rgba(15, 18, 26, 0.28);
+  backdrop-filter: blur(40px) saturate(180%) contrast(1.05);
+  -webkit-backdrop-filter: blur(40px) saturate(180%) contrast(1.05);
+}
+
+/* couche d’accent pour mieux “lire” le flou, sans gêner les clics */
+.macwin.frost-strong::before {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 520px at -10% -20%, rgba(255,128,0,0.18), transparent 60%),
+    radial-gradient(800px 460px at 120% 120%, rgba(120,0,255,0.18), transparent 55%),
+    radial-gradient(650px 380px at 20% 120%,  rgba(0,160,255,0.16), transparent 55%),
+    radial-gradient(560px 420px at 120% 0%,   rgba(255,0,160,0.16), transparent 60%);
+  mix-blend-mode: screen;
+  opacity: .9;
+}
+
+/* optionnel (légère granulation pour un rendu “verre dépoli” net) */
+.macwin.frost-strong::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'>\
+<filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/></filter>\
+<rect width='120' height='120' filter='url(#n)' opacity='0.035'/></svg>");
+  opacity: .5;
+}
+/* ===== Fenêtre projet générique ===== */
+.macwin-body.proj{ display:block; padding:0; height:calc(100% - 38px); overflow:hidden; }
+.proj-body{ display:grid; grid-template-columns: 1fr 320px; gap:16px; height:100%; padding:16px; }
+/* Media : on garde le centrage, mais on garantit que rien ne bloque les clics */
+.proj-media, .proj-meta { overflow: auto; }
+.proj-media { 
+  display:flex; align-items:center; justify-content:center; 
+  position: relative; 
+}
+.proj-media * { pointer-events: auto; } /* l’iframe/la vidéo restent cliquables */
+
+.proj-media img, .proj-media video{
+  max-width:100%; max-height:100%;
+  border-radius:12px; border:1px solid rgba(255,255,255,0.18); display:block;
+}
+
+/* Iframe responsive (YouTube, Vimeo, etc.) */
+.iframe-wrap { 
+  position: relative; width: 100%; 
+  padding-top: 56.25%; /* 16:9 */
+  border-radius:12px; overflow:hidden; 
+  border:1px solid rgba(255,255,255,0.18);
+}
+.iframe-wrap iframe { 
+  position: absolute; inset: 0; 
+  width: 100%; height: 100%; border: 0; 
+}
+
+/* Création graphique : pile verticale scrollable */
+.scroll-stack{
+  width: 100%; height: 100%;
+  overflow: auto; 
+  display: flex; flex-direction: column; gap: 14px;
+  padding-right: 6px;
+}
+.stack-item{
+  margin: 0;
+  background: rgba(20,20,25,0.45);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 12px;
+  padding: 8px;
+}
+.stack-item img{
+  display:block; width:100%; height:auto; 
+  border-radius: 8px;
+}
+
+/* Scrollbar visible et propre (WebKit) */
+.scroll-stack::-webkit-scrollbar{ width: 10px; }
+.scroll-stack::-webkit-scrollbar-track{ background: rgba(255,255,255,0.06); border-radius: 8px; }
+.scroll-stack::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.28); border-radius: 8px; }
+.scroll-stack::-webkit-scrollbar-thumb:hover{ background: rgba(255,255,255,0.38); }
+
+.proj-media img, .proj-media video{
+  max-width:100%; max-height:100%;
+  border-radius:12px; border:1px solid rgba(255,255,255,0.18); display:block;
+}
+
+.proj-meta{ border-left:1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.04); padding:12px; }
+.proj-meta .meta-box{ background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.18); border-radius:12px; padding:12px; color:#fff; margin-bottom:12px; }
+.btn-ext{ display:inline-block; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color:#fff; font-weight:700; text-decoration:none; }
+.btn-ext:hover{ background: rgba(255,255,255,0.14); }
+
+@media (max-width: 900px){
+  .proj-body{ grid-template-columns:1fr; }
+  .proj-meta{ border-left:0; }
+}
+/* —— Carrousel création graphique —— */
+.gallery-carousel{
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+.gallery-carousel img{
+  max-width: 100%; max-height: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  display: block;
+  background: rgba(20,20,25,0.45);
+}
+
+/* flèches */
+.gallery-carousel .nav-btn{
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 44px; height: 44px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(0,0,0,0.35); color: #fff;
+  font-size: 28px; line-height: 0; display: grid; place-items: center;
+  cursor: pointer; user-select: none;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.gallery-carousel .nav-btn.left  { left: 12px; }
+.gallery-carousel .nav-btn.right { right: 12px; }
+.gallery-carousel .nav-btn:hover { background: rgba(0,0,0,0.5); }
+
+/* indicateurs */
+.gallery-carousel .dots{
+  position: absolute; bottom: 10px; left: 0; right: 0;
+  display: flex; gap: 8px; justify-content: center;
+}
+.gallery-carousel .dot{
+  width: 8px; height: 8px; border-radius: 999px; border: 0; cursor: pointer;
+  background: rgba(255,255,255,0.35);
+}
+.gallery-carousel .dot.active{ background: #fff; }
+/* —— Petit slide directionnel —— */
+@keyframes slideInLeft {
+  from { opacity: 0.01; transform: translateX(-22px); }
+  to   { opacity: 1;    transform: translateX(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0.01; transform: translateX(22px); }
+  to   { opacity: 1;    transform: translateX(0); }
+}
+
+.gallery-carousel img.slide-in-left  { animation: slideInLeft 0.28s cubic-bezier(.22,.61,.36,1); }
+.gallery-carousel img.slide-in-right { animation: slideInRight 0.28s cubic-bezier(.22,.61,.36,1); }
+
+/* Respecte prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce){
+  .gallery-carousel img.slide-in-left,
+  .gallery-carousel img.slide-in-right { animation: none; }
+}
+/* Empêche le scroll (et la barre) pendant l'anim du carrousel */
+.proj-media:has(.gallery-carousel){ overflow: hidden; }   /* navigateurs modernes */
+.gallery-carousel{ overflow: hidden; }                    /* fallback */
+
+/* Nettoie aussi la scrollbar WebKit côté carrousel (sans impacter la pile scrollable) */
+.gallery-carousel::-webkit-scrollbar{ display: none; }
+
+/* Boutons : éviter halos/outline moches */
+.gallery-carousel .nav-btn{ outline: none; }
+.gallery-carousel .nav-btn:focus-visible{
+  box-shadow: 0 0 0 2px rgba(255,255,255,.35) inset;
+}
