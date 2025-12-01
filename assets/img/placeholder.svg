@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1600 1000">
+  <!-- Generator: Adobe Illustrator 29.8.2, SVG Export Plug-In . SVG Version: 2.1.1 Build 3)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #ff5f57;
+      }
+
+      .st1 {
+        fill: #28c840;
+      }
+
+      .st2 {
+        fill: #ff7262;
+      }
+
+      .st3 {
+        fill: url(#Dégradé_sans_nom);
+        opacity: .39;
+      }
+
+      .st4 {
+        fill: #a259ff;
+      }
+
+      .st5 {
+        fill: #febc2e;
+      }
+
+      .st6 {
+        fill: #1abcfe;
+      }
+
+      .st7 {
+        opacity: .89;
+      }
+
+      .st8 {
+        font-family: Impact, Impact;
+        font-size: 115.6px;
+      }
+
+      .st9 {
+        fill: #f24e1e;
+      }
+
+      .st10 {
+        fill: #0acf83;
+      }
+
+      .st11 {
+        fill: #fff;
+        letter-spacing: 0em;
+      }
+    </style>
+    <linearGradient id="Dégradé_sans_nom" data-name="Dégradé sans nom" x1="501.69" y1="919.97" x2="502.69" y2="918.97" gradientTransform="translate(-802698 919967.83) scale(1600 -1000)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1c1c1e"/>
+      <stop offset="1" stop-color="#3a3a3c"/>
+    </linearGradient>
+  </defs>
+  <rect class="st3" y="0" width="1600" height="1000"/>
+  <g class="st7">
+    <circle class="st0" cx="140" cy="110" r="10"/>
+    <circle class="st5" cx="170" cy="110" r="10"/>
+    <circle class="st1" cx="200" cy="110" r="10"/>
+    <rect x="120" y="150" width="1360" height="740" rx="24" ry="24"/>
+  </g>
+  <g>
+    <path id="path0_fill" class="st10" d="M718.99,763.03c44.72,0,81.01-36.29,81.01-81.01v-81.01h-81.01c-44.72,0-81.01,36.29-81.01,81.01s36.29,81.01,81.01,81.01Z"/>
+    <path id="path1_fill" class="st4" d="M637.98,520c0-44.72,36.29-81.01,81.01-81.01h81.01v162.02h-81.01c-44.72,0-81.01-36.29-81.01-81.01Z"/>
+    <path id="path1_fill1" data-name="path1_fill" class="st9" d="M637.98,357.98c0-44.72,36.29-81.01,81.01-81.01h81.01v162.02h-81.01c-44.72,0-81.01-36.29-81.01-81.01Z"/>
+    <path id="path2_fill" class="st2" d="M800,276.97h81.01c44.72,0,81.01,36.29,81.01,81.01s-36.29,81.01-81.01,81.01h-81.01v-162.02Z"/>
+    <path id="path3_fill" class="st6" d="M962.02,520c0,44.72-36.29,81.01-81.01,81.01s-81.01-36.29-81.01-81.01,36.29-81.01,81.01-81.01,81.01,36.29,81.01,81.01Z"/>
+  </g>
+  <text class="st8" transform="translate(825.8 724.82) scale(.98 1)"><tspan class="st9" x="0" y="0">F</tspan><tspan class="st4" x="46" y="0">I</tspan><tspan class="st6" x="79.3" y="0">G</tspan><tspan class="st10" x="143.03" y="0">M</tspan><tspan class="st11" x="225.89" y="0">A</tspan></text>
+</svg>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jan Jawish</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <!-- Favicon moderne (SVG) -->
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+
+<!-- Fallback PNG (tous navigateurs) -->
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16.png">
+
+<!-- iOS / iPadOS -->
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+<!-- Safari pinned tab (monochrome) -->
+<link rel="mask-icon" href="assets/img/safari-pinned-tab.svg" color="#0A84FF">
+
+<!-- Couleur d’UI mobile (barre navigateur) -->
+<meta name="theme-color" content="#0B0B0C">
+
+</head>
+<body data-palette="home" id="top">
+  <div class="bg-blobs"></div>
+  
+  <div class="topbar">
+    <div class="container wrap">
+
+      <nav class="segmenteded segmented" id="segNav">
+        <span class="seg-slider"></span>
+        <button class="seg-item active"  data-href="accueil">Accueil</button>
+        <button class="seg-item" data-href="projets">Projets</button>
+        <button class="seg-item" data-href="a-propos">Qui suis‑je ?</button>
+
+      </nav>
+    </div>
+    
+  </div>
+  <main>
+<section class="hero-3d-clean">
+  <div class="text3d" id="jj3d" data-text="JAN JAWISH" aria-label="JAN JAWISH">
+    <!-- le JS va générer les couches 3D ici -->
+    <span class="face"></span>
+  </div>
+</section>
+
+
+</section>
+
+
+
+    <section id="quick-section" class="container section">
+      <h2>Sélection rapide</h2>
+      <div class="grid" id="quick-grid"></div>
+      <div style="margin-top:1rem;">
+        <button class="btn glass-btn" data-href="projets" onclick="window.location.href='projets'">Voir tous les projets</button>
+      </div>
+    </section>
+  </main>
+  
+  <footer class="footer">
+    <div class="container" style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+      <div class="foot-btn">© <span id="year"></span> Jan Jawish</div>
+      <div class="links">
+        <a class="foot-btn" href="mailto:contact@janjawish.fr">contact@janjawish.fr</a>
+        <a class="foot-btn" target="_blank" href="https://github.com/janjawish">GitHub</a>
+        <a class="foot-btn" target="_blank" href="https://www.linkedin.com/in/jan-jawish-344808359/">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/projects.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

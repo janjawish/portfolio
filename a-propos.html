@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>À propos</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+</head>
+<body data-palette="apropos">
+  <div class="bg-blobs"></div>
+  
+  <div class="topbar">
+    <div class="container wrap">
+     
+      <nav class="segmenteded segmented" id="segNav">
+        <span class="seg-slider"></span>
+        <button class="seg-item" data-href="accueil">Accueil</button>
+        <button class="seg-item" data-href="projets">Projets</button>
+        <button class="seg-item active" data-href="a-propos">Qui suis‑je ?</button>
+      </nav>
+    </div>
+  </div>
+  <main class="container" style="padding:2rem 0 3rem;">
+    <!-- Window: Qui suis-je -->
+    <div class="window glass-window">
+      <div class="titlebar">
+        <div class="traffic">
+          <span class="dot red" title="Fermer"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <div class="title">Qui suis‑je ?</div>
+      </div>
+      <div class="content">
+        <div style="display:grid; gap:1rem; grid-template-columns:160px 1fr;">
+          <div class="avatar-glass" style="width:160px; aspect-ratio:1/1; border-radius:14px; background:#00000030; overflow:hidden;">
+            <img src="assets/img/photo.jpg" alt="Portrait de Jan Jawish" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div>
+            <p style="color:var(--muted); margin:.3rem 0 1rem;">
+              Étudiant en <strong>Métiers du Multimédia et de l'Internet à l'IUT d’Elbeuf (2ᵉ année)</strong>, parcours <strong>Création Graphique</strong>.
+              J’aime les expériences sobres, nettes et performantes. Du tournage au déploiement.
+            </p>
+            <div id="skills-cards" class="skills chips-glass"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <button class="reopen hidden btn reopen-hidden-btn">En savoir plus</button>
+
+    <!-- Window: Passions -->
+    <div class="window glass-window">
+      <div class="titlebar">
+        <div class="traffic">
+          <span class="dot red" title="Fermer"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <div class="title">Mes passions</div>
+      </div>
+      <div class="content">
+        <h3>Livres préférés</h3>
+        <div id="books" class="skills chips-grid"></div>
+        <h3 style="margin-top:1rem;">Artistes préférés</h3>
+        <div id="artists" class="skills chips-grid"></div>
+        <h3 style="margin-top:1rem;">Films préférés</h3>
+        <div id="films" class="skills chips-grid"></div>
+        <h3 style="margin-top:1rem;">Centres d’intérêt</h3>
+        <div id="interests" class="skills chips-grid"></div>
+      </div>
+    </div>
+    <button class="reopen hidden btn reopen-hidden-btn">En savoir plus</button>
+  </main>
+  
+  <footer class="footer">
+    <div class="container" style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+      <div class="foot-btn">© <span id="year"></span> Jan Jawish</div>
+      <div class="links">
+        <a class="foot-btn" href="mailto:contact@janjawish.fr">contact@janjawish.fr</a>
+        <a class="foot-btn" target="_blank" href="https://github.com/janjawish">GitHub</a>
+        <a class="foot-btn" target="_blank" href="https://www.linkedin.com/in/jan-jawish-344808359/">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/about.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

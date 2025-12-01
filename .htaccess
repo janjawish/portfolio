@@ -1,0 +1,31 @@
+# Active la réécriture
+RewriteEngine On
+
+# Servez / comme index.html
+DirectoryIndex index.html
+
+# Ne pas réécrire les fichiers/dossiers réels (assets, .js, .css, images…)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# =========================
+# Jolies URLs -> fichiers
+# /accueil      -> /index.html
+# /projets      -> /projets.html
+# /a-propos     -> /a-propos.html
+# =========================
+RewriteRule ^accueil/?$ index.html [L,NC]
+RewriteRule ^projets/?$ projets.html [L,NC]
+RewriteRule ^a-propos/?$ a-propos.html [L,NC]
+
+# (Optionnel) Redirections canoniques HTML -> jolies URLs (SEO)
+# Ex: /index.html -> /accueil  (301)
+RewriteCond %{THE_REQUEST} \s/+index\.html(\s|\?) [NC]
+RewriteRule ^index\.html$ accueil [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+projets\.html(\s|\?) [NC]
+RewriteRule ^projets\.html$ projets [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+a-propos\.html(\s|\?) [NC]
+RewriteRule ^a-propos\.html$ a-propos [R=301,L]
