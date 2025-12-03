@@ -626,17 +626,185 @@ function initBackToTop(){
   window.addEventListener('scroll', ()=>{ if(window.scrollY > 600) btn.classList.add('show'); else btn.classList.remove('show'); });
   btn.addEventListener('click', (e)=>{ e.preventDefault(); window.scrollTo({top:0, behavior:'smooth'}); });
 }
+/* === Easter egg GTA V → faux "1 mois Spotify" === */
+
+// Code officiel qu'on attend (HOPTOIT = super saut)
+const CHEAT_CODE = 'HOPTOIT';
+
+function initCheatEasterEgg(){
+  // Évite de le créer deux fois
+  if (document.querySelector('.cheat-pill')) return;
+
+  const pill = document.createElement('button');
+  pill.type = 'button';
+  pill.className = 'cheat-pill';
+  pill.innerHTML = `
+    <span class="cheat-dot"></span>
+    <span>Cheat code GTA V</span>
+  `;
+  pill.title = 'Entrer un code de triche';
+
+  pill.addEventListener('click', openCheatWindow);
+
+  document.body.appendChild(pill);
+}
+
+function openCheatWindow(){
+  // Si la fenêtre est déjà ouverte, on ne la recrée pas
+  if (document.querySelector('.cheat-backdrop')) return;
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'modal-backdrop cheat-backdrop';
+
+  const modal = document.createElement('div');
+  modal.className = 'modal glass-window cheat-modal';
+
+  modal.innerHTML = `
+    <div class="titlebar">
+      <div class="traffic">
+        <span class="dot red" title="Fermer"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+      </div>
+      <div class="title">Code de triche GTA V</div>
+    </div>
+    <div class="modal-body cheat-body">
+      <div class="cheat-intro">
+<div class="spotify-badge">
+  <div class="spotify-logo">
+    <img src="assets/img/spotify.png" alt="Logo Spotify">
+  </div>
+  <span>Spotify Premium*</span>
+</div>
+
+
+      <form class="cheat-form">
+        <label class="cheat-label">
+          <span>Code :</span>
+          <input type="text" name="code" autocomplete="off" placeholder="SUPER SAUT" />
+        </label>
+        <button type="submit" class="btn">Valider</button>
+      </form>
+
+      <p class="cheat-hint">Indice : spawn avion sur GTA 5</p>
+      <p class="cheat-error" aria-live="polite"></p>
+    </div>
+  `;
+
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+
+  const redDot = modal.querySelector('.dot.red');
+  const form   = modal.querySelector('.cheat-form');
+  const input  = modal.querySelector('input[name="code"]');
+  const error  = modal.querySelector('.cheat-error');
+  const body   = modal.querySelector('.cheat-body');
+
+  function closeCheat(){
+    modal.classList.add('closing');
+    backdrop.style.animation = 'fade-out .2s ease forwards';
+    setTimeout(() => {
+      backdrop.remove();
+    }, 220);
+  }
+
+  redDot.addEventListener('click', closeCheat);
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) closeCheat();
+  });
+
+  document.addEventListener('keydown', function onEsc(e){
+    if (e.key === 'Escape'){
+      closeCheat();
+      document.removeEventListener('keydown', onEsc);
+    }
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    error.textContent = '';
+
+    const value = (input.value || '')
+      .toUpperCase()
+      .replace(/\s+/g, ''); // enlève les espaces
+
+    if (value !== CHEAT_CODE){
+      error.textContent = 'Code incorrect… (indice : super saut 😉)';
+      return;
+    }
+
+    launchSpotifyFake(body);
+  });
+
+  input.focus();
+}
+
+function launchSpotifyFake(container){
+container.innerHTML = `
+  <div class="cheat-stage">
+    <div class="cheat-intro" style="text-align:center">
+      <div class="spotify-hero">
+        <img src="assets/img/spotify.png" alt="Logo Spotify">
+      </div>
+      <h2>🎉 Bravo !</h2>
+      <p>Vous venez de débloquer <strong>1 mois de Spotify gratuit</strong>.</p>
+    </div>
+
+    <div class="cheat-loader">
+      <div class="cheat-loader-bar"></div>
+    </div>
+    <p class="cheat-status">Patientez, on génère votre code…</p>
+  </div>
+`;
+  spawnConfettiBurst();
+
+
+  const bar    = container.querySelector('.cheat-loader-bar');
+  const steps  = [18, 35, 52, 69, 84, 100];
+  let i        = 0;
+
+  const timer = setInterval(() => {
+    bar.style.width = steps[i] + '%';
+    i++;
+    if (i >= steps.length){
+      clearInterval(timer);
+      setTimeout(() => showMonkey(container), 600);
+    }
+  }, 380);
+}
+
+function showMonkey(container){
+  container.innerHTML = `
+    <div class="cheat-stage monkey">
+      <figure class="cheat-monkey-figure">
+        <img src="assets/img/easter/gorilla-finger.png"
+             alt="Un singe très poli qui vous fait un doigt">
+      </figure>
+      <h2>😈 Oups…</h2>
+      <p>Désolé, pas de Spotify gratuit ici.</p>
+      <p class="cheat-small">
+        Mais tu as trouvé l’easter egg du site, et ça, c’est déjà stylé.
+      </p>
+    </div>
+  `;
+}
 
 document.addEventListener('DOMContentLoaded', ()=>{
   initSegmentedNav();
   initQuickReveal();
-  renderProjects('all');        // for projets.html
+  renderProjects('all');
   bindFilters();
-  renderPhotos();               // preview section
-  renderQuickSelection();       // home
+  renderPhotos();
+  renderQuickSelection();
   initBackToTop();
-  const y = document.getElementById('year'); if(y) y.textContent = new Date().getFullYear();
+
+  const y = document.getElementById('year');
+  if (y) y.textContent = new Date().getFullYear();
+
+  // 👇 nouveau
+  initCheatEasterEgg();
 });
+
 /* === Theme toggle — simple, mobile-safe, persistant === */
 (function(){
   const KEY = 'theme';
@@ -1241,4 +1409,20 @@ function centerWindow(win, w=980, h=640){
   win.style.width = w + 'px'; win.style.height = h + 'px';
   win.style.left = Math.floor((vw - w)/2) + 'px';
   win.style.top  = Math.floor((vh - h)/2) + 'px';
+}
+function spawnConfettiBurst(){
+  const colors = ['#FFD93B','#FF6B6B','#6BCB77','#4D96FF','#FFFFFF'];
+  const pieces = 80;
+
+  for (let i = 0; i < pieces; i++){
+    const el = document.createElement('span');
+    el.className = 'confetti-piece';
+    el.style.left = (Math.random() * 100) + 'vw';
+    el.style.backgroundColor = colors[i % colors.length];
+    el.style.animationDelay = (Math.random() * 0.35) + 's';
+    el.style.transform = `rotate(${Math.random() * 360}deg)`;
+    document.body.appendChild(el);
+
+    setTimeout(() => el.remove(), 1800);
+  }
 }
