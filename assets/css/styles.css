@@ -1887,3 +1887,232 @@ img, svg { -webkit-user-drag: none; user-drag: none; }
 *::-webkit-scrollbar {
   display: none; /* Chrome, Edge, Safari */
 }
+
+
+/* === Easter egg GTA V / Spotify === */
+
+.cheat-pill{
+  position:fixed;
+  left:16px;
+  bottom:16px;
+  z-index:80;
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  padding:.55rem .9rem;
+  font-size:.85rem;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.24);
+  background:linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.45));
+  color:var(--text);
+  backdrop-filter:blur(10px) saturate(130%);
+  -webkit-backdrop-filter:blur(10px) saturate(130%);
+  box-shadow:0 10px 24px rgba(0,0,0,.35);
+}
+
+.cheat-pill .cheat-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#0A84FF;
+}
+
+.cheat-pill span:last-child{
+  white-space:nowrap;
+}
+
+/* Mobile : on remonte un peu le bouton */
+@media (max-width:640px){
+  .cheat-pill{
+    left:10px;
+    bottom:10px;
+  }
+}
+
+/* --- Contenu de la fenêtre de cheat --- */
+
+.cheat-modal .modal-body{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+
+.cheat-intro p{
+  margin:.4rem 0 0;
+  color:var(--muted);
+}
+
+.cheat-form{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.6rem;
+  align-items:flex-end;
+}
+
+.cheat-label{
+  display:flex;
+  flex-direction:column;
+  gap:.3rem;
+  flex:1 1 180px;
+  font-size:.9rem;
+}
+
+.cheat-label input{
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.25);
+  padding:.55rem .75rem;
+  background:rgba(0,0,0,.35);
+  color:var(--text);
+  font:inherit;
+}
+
+.cheat-label input::placeholder{
+  color:rgba(255,255,255,.45);
+}
+
+:root[data-theme="light"] .cheat-label input{
+  background:rgba(255,255,255,.9);
+  border-color:rgba(0,0,0,.12);
+  color:#111;
+}
+
+.cheat-hint{
+  margin:0;
+  font-size:.8rem;
+  color:var(--muted);
+  opacity:.85;
+}
+
+.cheat-error{
+  margin:0;
+  font-size:.85rem;
+  color:#ff6b81;
+}
+
+/* Badge Spotify (version très simplifiée) */
+.spotify-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+  padding:.35rem .8rem;
+  border-radius:999px;
+  background:rgba(25,230,96,.14);
+  border:1px solid rgba(25,230,96,.75);
+  font-size:.8rem;
+  font-weight:600;
+}
+
+.spotify-logo{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  overflow:hidden;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.55);
+}
+
+.spotify-logo img{
+  width:90%;
+  height:90%;
+  object-fit:contain;
+}
+
+/* gros logo central lors du “Bravo !” */
+
+.spotify-hero{
+  margin:0 auto .9rem;
+  width:80px;
+  height:80px;
+  border-radius:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 30% 0%, rgba(255,255,255,.25), transparent 55%),
+    #000;
+  box-shadow:0 18px 40px rgba(0,0,0,.6);
+}
+
+.spotify-hero img{
+  width:64px;
+  height:64px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 16px rgba(0,0,0,.6));
+}
+
+
+/* Barre de "génération du code" */
+.cheat-loader{
+  margin-top:.6rem;
+  width:100%;
+  height:7px;
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
+  overflow:hidden;
+}
+
+.cheat-loader-bar{
+  width:0;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#1DB954,#0A84FF);
+  transition:width .4s ease;
+}
+
+.cheat-status{
+  margin-top:.35rem;
+  font-size:.9rem;
+  color:var(--muted);
+}
+
+/* Écran final avec le singe */
+
+.cheat-stage.monkey{
+  text-align:center;
+}
+
+.cheat-monkey-figure{
+  margin:0 0 1rem;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.28);
+  background:#000;
+}
+
+.cheat-monkey-figure img{
+  width:100%;
+  height:auto;
+  max-height:420px;        /* tu peux augmenter / réduire */
+  object-fit:contain;      /* affiche toute l’image, pas coupée */
+  display:block;
+}
+
+
+.cheat-small{
+  font-size:.9rem;
+  color:var(--muted);
+}
+.confetti-piece{
+  position:fixed;
+  top:-10vh;
+  width:8px;
+  height:14px;
+  border-radius:2px;
+  opacity:.95;
+  pointer-events:none;
+  z-index:130;             /* au-dessus de la modale */
+  animation:confetti-fall 1.5s linear forwards;
+}
+
+@keyframes confetti-fall{
+  0%{
+    transform:translate3d(0,0,0) rotateZ(0deg);
+  }
+  100%{
+    transform:translate3d(0,110vh,0) rotateZ(360deg);
+    opacity:0;
+  }
+}
