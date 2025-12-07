@@ -15,7 +15,7 @@ RewriteRule ^ - [L]
 # /projets      -> /projets.html
 # /a-propos     -> /a-propos.html
 # =========================
-RewriteRule ^accueil/?$ index.html [L,NC]
+RewriteRule ^index/?$ index.html [L,NC]
 RewriteRule ^projets/?$ projets.html [L,NC]
 RewriteRule ^a-propos/?$ a-propos.html [L,NC]
 
