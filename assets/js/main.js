@@ -232,12 +232,222 @@ const Perf = (() => {
 
 
 
+// Badge pseudo en bas à droite (desktop)
+function createUserTag(name){
+  if (!name) return;
+  if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) return;
 
+  let tag = document.getElementById('userTag');
+  if (!tag){
+    tag = document.createElement('div');
+    tag.id = 'userTag';
+    tag.className = 'user-tag';
+    tag.innerHTML = `
+      <span class="user-circle" aria-hidden="true"></span>
+      <span class="user-tag-name" id="userTagName"></span>
+    `;
+    document.body.appendChild(tag);
+  }
+
+  const label = document.getElementById('userTagName');
+  if (label) label.textContent = name;
+
+  requestAnimationFrame(() => {
+    tag.classList.add('user-tag-visible');
+  });
+}
+
+// Lockscreen iOS pour téléphone, sans toucher à la version desktop
+// ===== Lockscreen iOS (mobile) : swipe pour déverrouiller =====
+(function iosPhoneLockscreen(){
+  try{
+    const mq = window.matchMedia ? window.matchMedia('(max-width: 768px)') : null;
+    const isPhone = mq ? mq.matches : (window.innerWidth <= 768);
+
+    // On ne fait ça que sur téléphone
+    if (!isPhone) return;
+
+    // Si déjà déverrouillé dans cette session => on ne bloque plus
+    if (sessionStorage.getItem('bootPlayed') === '1') return;
+
+    document.body.classList.add('no-scroll');
+    document.body.classList.add('ios-lock-active');
+
+    const root = document.createElement('div');
+    root.className = 'ios-lock';
+    root.innerHTML = `
+      <div class="ios-lock-wallpaper"></div>
+      <div class="ios-lock-scrim"></div>
+
+      <div class="ios-lock-top">
+        <div class="ios-lock-time" id="iosLockTime"></div>
+        <div class="ios-lock-date" id="iosLockDate"></div>
+      </div>
+
+      <div class="ios-lock-bottom">
+        <button class="ios-lock-hint" type="button">
+          <span class="ios-lock-arrow">↑</span>
+          <span class="ios-lock-text">Glissez vers le haut pour déverrouiller</span>
+        </button>
+        <div class="ios-home-indicator"></div>
+      </div>
+    `;
+    document.body.appendChild(root);
+
+    const timeEl = root.querySelector('#iosLockTime');
+    const dateEl = root.querySelector('#iosLockDate');
+
+    // --- Horloge
+    function updateClock(){
+      const now = new Date();
+      if (timeEl){
+        timeEl.textContent = now.toLocaleTimeString('fr-FR', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+      if (dateEl){
+        dateEl.textContent = now.toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          day: '2-digit',
+          month: 'long'
+        });
+      }
+    }
+    updateClock();
+    const timer = setInterval(updateClock, 30 * 1000);
+
+    let startY = null;
+    let dragDelta = 0;
+    let unlocked = false;
+
+    function cleanupTouch(){
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
+    }
+
+    function unlock(){
+      if (unlocked) return;
+      unlocked = true;
+      clearInterval(timer);
+      cleanupTouch();
+
+      // Marque la session comme "déjà bootée"
+      sessionStorage.setItem('bootPlayed','1');
+
+      document.body.classList.remove('no-scroll');
+      document.body.classList.remove('ios-lock-active');
+
+      // Laisse la transition CSS faire glisser l'écran vers le haut
+      root.style.transition = ''; // revient au CSS
+      root.classList.add('ios-lock-unlock');
+
+      setTimeout(() => {
+        root.remove();
+      }, 400);
+    }
+
+    function onTouchStart(e){
+      if (unlocked) return;
+      if (!e.touches || !e.touches.length) return;
+      startY = e.touches[0].clientY;
+      dragDelta = 0;
+      // Pas d’animation pendant qu’on suit le doigt
+      root.style.transition = 'none';
+    }
+
+    function onTouchMove(e){
+      if (startY === null || unlocked) return;
+      if (!e.touches || !e.touches.length) return;
+      const currentY = e.touches[0].clientY;
+      dragDelta = Math.max(0, startY - currentY); // swipe vers le haut => positif
+
+      const maxPull = window.innerHeight;      // limite de tirage
+      const translate = -Math.min(dragDelta, maxPull);
+      root.style.transform = `translateY(${translate}px)`;
+    }
+
+    function onTouchEnd(){
+      if (startY === null || unlocked) return;
+
+      const threshold = window.innerHeight * 0.5; // ~50% de l'écran pour déverrouiller
+      root.style.transition = ''; // réactive la transition CSS
+
+      if (dragDelta > threshold){
+        // Assez tiré : on déverrouille
+        unlock();
+      } else {
+        // Pas assez haut : on remet l’écran en place
+        root.style.transform = 'translateY(0)';
+      }
+
+      startY = null;
+      dragDelta = 0;
+    }
+
+    window.addEventListener('touchstart', onTouchStart, { passive:true });
+    window.addEventListener('touchmove',  onTouchMove,  { passive:true });
+    window.addEventListener('touchend',   onTouchEnd,   { passive:true });
+
+    // Fallback : tap sur le texte
+    const hint = root.querySelector('.ios-lock-hint');
+    if (hint){
+      hint.addEventListener('click', unlock);
+    }
+  }catch(e){
+    // En cas de bug, on ne bloque pas le site
+    document.body.classList.remove('no-scroll');
+    document.body.classList.remove('ios-lock-active');
+  }
+})();
+
+// ===== Mini badge utilisateur (desktop, bas à droite) =====
+function createUserTag(name){
+  if (!name) return;
+
+  // Pas sur mobile
+  try{
+    const mq = window.matchMedia ? window.matchMedia('(max-width: 768px)') : null;
+    if (mq && mq.matches) return;
+  }catch{}
+
+  let tag = document.querySelector('.user-tag');
+  if (!tag){
+    tag = document.createElement('div');
+    tag.className = 'user-tag';
+    tag.innerHTML = `
+      <div class="user-tag-avatar" aria-hidden="true"></div>
+      <div class="user-tag-text"></div>
+    `;
+    document.body.appendChild(tag);
+  }
+
+  const textEl = tag.querySelector('.user-tag-text');
+  if (textEl) textEl.textContent = name;
+
+  // Petite anim d’apparition
+  requestAnimationFrame(() => {
+    tag.classList.add('user-tag-visible');
+  });
+}
 
 // ===== Lockscreen macOS + Boot (one-shot per session) =====
 (function macLockscreen(){
   try{
-    if (sessionStorage.getItem('bootPlayed') === '1') return;
+    // Ne pas lancer le lock macOS sur téléphone
+    const mq = window.matchMedia ? window.matchMedia('(max-width: 768px)') : null;
+    const isPhone = mq ? mq.matches : (window.innerWidth <= 768);
+    if (isPhone) return;
+
+    const alreadyBooted = sessionStorage.getItem('bootPlayed') === '1';
+    if (alreadyBooted){
+      // Si l'utilisateur a déjà booté dans cette session,
+      // on remet juste le petit carré avec son pseudo.
+      const prevName = sessionStorage.getItem('visitorName');
+      if (prevName) createUserTag(prevName);
+      return;
+    }
 
     // --- Overlays
     document.body.classList.add('no-scroll');
@@ -275,55 +485,62 @@ const Perf = (() => {
           <div class="ls-name" id="ls-name">Utilisateur</div>
         </div>
 
-        <form class="ls-form" id="ls-form" autocomplete="off">
-          <input class="ls-input" id="ls-pass" type="password" placeholder="Mot de passe" required />
-          <button class="ls-go" type="submit" aria-label="Valider">→</button>
-        </form>
+        <div class="ls-actions">
+          <button class="ls-cta" id="ls-connect" type="button">Connexion</button>
+        </div>
 
-        <div class="ls-help">Saisissez votre mot de passe pour vous connecter</div>
+        <div class="ls-help">Cliquez sur Connexion</div>
       </section>
     `;
     document.body.appendChild(ls);
 
     const dateEl = ls.querySelector('#ls-date');
     const timeEl = ls.querySelector('#ls-time');
-    const form   = ls.querySelector('#ls-form');
+    const connectBtn = ls.querySelector('#ls-connect');
     const nameEl = ls.querySelector('#ls-name');
+
 
     // Si un nom a déjà été donné précédemment
     const savedName = sessionStorage.getItem('visitorName');
-    if (savedName) nameEl.textContent = savedName;
-
+    if (savedName) {
+      nameEl.textContent = savedName;
+    }
     // --- Horloge
     const fmtDate = new Intl.DateTimeFormat('fr-FR', { weekday:'long', day:'numeric', month:'long' });
     const fmtTime = new Intl.DateTimeFormat('fr-FR', { hour:'2-digit', minute:'2-digit' });
+
     function updateClock(){
       const now = new Date();
-      const d = fmtDate.format(now).replace(/^\w/, c => c.toUpperCase()); // cap 1re lettre
-      dateEl.textContent = d;
-      timeEl.textContent = fmtTime.format(now);
+      const d = fmtDate.format(now).replace(/^\w/, c => c.toUpperCase()); // majuscule 1re lettre
+      if (dateEl) dateEl.textContent = d;
+      if (timeEl) timeEl.textContent = fmtTime.format(now);
     }
     updateClock();
     const timer = setInterval(updateClock, 1000);
 
-    // --- Audio (lu au submit → autorisé partout)
+    // --- Audio (joué au submit → autorisé partout)
     const BOOT_SOUND_URL = 'assets/sound/apple.mp3';
     const chime = new Audio(BOOT_SOUND_URL);
-    chime.preload = 'auto'; chime.volume = 0.9;
+    chime.preload = 'auto';
+    chime.volume = 0.9;
 
     // --- Submit => Boot (écran noir + son + barre), one-shot
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+connectBtn?.addEventListener('click', async () => {
       clearInterval(timer);
 
-      // Sauve un "nom" si l’utilisateur a modifié la carte (optionnel)
-      sessionStorage.setItem('visitorName', nameEl.textContent || 'Utilisateur');
+      // Plus de champ : on prend le nom déjà connu (session) ou un fallback
+      const pseudo = sessionStorage.getItem('visitorName') || nameEl.textContent || 'Utilisateur';
+      nameEl.textContent = pseudo;
+
+      // Sauvegarde pour les autres pages / reloads
+      sessionStorage.setItem('visitorName', pseudo);
 
       // Phase 2
-      await startBoot();
+      await startBoot(pseudo);
     });
 
-    async function startBoot(){
+
+    async function startBoot(displayName){
       // remplace l'overlay lockscreen par l'écran noir boot
       ls.remove();
 
@@ -337,17 +554,24 @@ const Perf = (() => {
       `;
       document.body.appendChild(boot);
 
-    try { if (!window.Sound?.isMuted || !window.Sound.isMuted()) await chime.play(); } catch {}
-
+      // Respecte le mute global
+      try {
+        if (!window.Sound?.isMuted || !window.Sound.isMuted()) {
+          await chime.play();
+        }
+      } catch {}
 
       const bar = boot.querySelector('.boot-bar > span');
       const steps = [8,16,28,42,60,72,86,96,100];
+      const delays = [260,380,420,520,640,520,420,320];
       let i = 0;
+
       (function tick(){
+        if (!bar) return;
         bar.style.width = steps[i] + '%';
         i++;
         if (i < steps.length){
-          setTimeout(tick, [260,380,420,520,640,520,420,320][Math.min(i-1,7)]);
+          setTimeout(tick, delays[Math.min(i-1, delays.length-1)]);
         } else {
           sessionStorage.setItem('bootPlayed','1');
           boot.style.transition = 'opacity .38s ease';
@@ -355,12 +579,21 @@ const Perf = (() => {
           setTimeout(() => {
             boot.remove();
             document.body.classList.remove('no-scroll');
+
+            // Petit carré en bas à droite avec le pseudo
+            const name = displayName || sessionStorage.getItem('visitorName') || 'Utilisateur';
+            createUserTag(name);
           }, 420);
+
         }
       })();
     }
-  }catch(e){ /* no-op */ }
+  }catch(e){
+    // En cas de bug, surtout on ne bloque pas le site
+    document.body.classList.remove('no-scroll');
+  }
 })();
+
 
 
 
@@ -368,6 +601,55 @@ const Perf = (() => {
 const $ = (sel, ctx=document) => ctx.querySelector(sel);
 
 const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+// ----- Navigation avec transition entre pages -----
+
+const pageWindow = document.querySelector('.page-window');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+document.querySelectorAll('[data-href]').forEach(btn => {
+  const href = btn.dataset.href;
+  if (!href) return;
+
+  btn.addEventListener('click', (e) => {
+    // On veut contrôler la navigation nous-mêmes
+    e.preventDefault();
+
+    // Marqueur pour dire à la prochaine page :
+    // "je viens d'une nav interne, joue l'animation d'entrée"
+    sessionStorage.setItem('internalNav', '1');
+
+    // Si l'utilisateur ne veut pas trop de mouvement, on skip l'anim
+    if (!pageWindow || prefersReducedMotion) {
+      window.location.href = href;
+      return;
+    }
+
+    // Ajout de la classe de sortie
+    pageWindow.classList.add('page-transition-exit');
+
+    const handleAnimationEnd = () => {
+      pageWindow.removeEventListener('animationend', handleAnimationEnd);
+      window.location.href = href;
+    };
+
+    pageWindow.addEventListener('animationend', handleAnimationEnd);
+  });
+});
+// ----- Animation d'entrée de page -----
+
+(function(){
+  const pw = document.querySelector('.page-window');
+  if (!pw) return;
+
+  const fromInternal = sessionStorage.getItem('internalNav') === '1';
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (fromInternal && !prefersReducedMotion) {
+    // on remet le flag à 0 directement
+    sessionStorage.setItem('internalNav', '0');
+    pw.classList.add('page-transition-enter');
+  }
+})();
 
 /* Centered segmented nav — use <button data-href> to avoid URL preview */
 function initSegmentedNav(){
@@ -869,10 +1151,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
     layer.style.transform = `translateZ(${i}px) translateZ(calc(${i} * (${step})) )`;
 
     // ombrage (plus sombre au fond, plus saturé)
-    const k = i / (depth-1);          // 0 → fond, 1 → proche face
-    const light = Math.round(12 + k*35);     // 12% → 47%
-    const sat   = Math.round(18 + k*32);     // 18% → 50%
-    layer.style.color = `hsl(${hue} ${sat}% ${light}%)`;
+  const k = i / (depth - 1);               // 0 = fond, 1 = proche de la face
+  const light = Math.round(65 + k * 10);   // 65% → 75% (plus clair)
+  const alpha = 0.04 + (1 - k) * 0.22;     // plus on va au fond, plus c'est transparent
+
+  layer.style.color = `hsla(${hue} 70% ${light}% / ${alpha})`;
+
 
     root.appendChild(layer);
   }
