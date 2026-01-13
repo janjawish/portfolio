@@ -516,19 +516,6 @@ body{
   --chip-alpha: .42; /* intensité du liseré (0–1) */
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 .filters{
   display:flex; flex-wrap:wrap; gap:.6rem;
 }
@@ -604,23 +591,6 @@ body{
   --win-hue: 215;   /* teinte du liseré de la fenêtre (215=bleu, 165=vert, 280=violet) */
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .window.glass-window{
   background:
     /* centre quasi transparent pour laisser voir le fond */
@@ -641,22 +611,6 @@ body{
 .window.glass-window .titlebar{
   border-bottom:1px solid color-mix(in srgb, #fff 14%, transparent);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -710,15 +664,6 @@ body{
 }
 
 
-
-
-
-
-
-
-
-
-
 /* Thème clair : fenêtre et chips adoucies + texte sombre */
 :root[data-theme="light"] .window.glass-window{
   background:
@@ -763,16 +708,6 @@ body{
 /* ===== Fenêtre "Mes passions" — panneau glass ===== */
 :root{ --passions-hue: 215; } /* liseré de la fenêtre (bleu doux) */
 
-
-
-
-
-
-
-
-
-
-
 .window.glass-window{
   background:
     linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)) padding-box,
@@ -792,25 +727,6 @@ body{
 .window.glass-window .button{
   border-bottom:1px solid color-mix(in srgb, #fff 14%, transparent);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* ==== PASSIONS: chips clean (sans halo au centre) ===================== */
 /* Teinte par section inchangée (via --chip-hue déjà posée sur #books/#artists/#films/#interests) */
@@ -862,31 +778,6 @@ body{
     background: rgba(255,255,255,.06);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* ===== Overlay (fond de modale) ======================================= */
@@ -1104,7 +995,19 @@ img { -webkit-user-drag: none; user-select: none; }
   padding: clamp(48px, 10vw, 120px) 0;
   display: grid;
   place-items: center;
+  /* Mobile-friendly: l'accueil remplit l'écran (sans être "coupé" par la topbar) */
+  min-height: calc(100svh - 72px);
+  min-height: calc(100dvh - 72px);
 }
+
+@media (max-width: 768px){
+  .hero-3d-clean{
+    padding: clamp(56px, 14vh, 110px) 0;
+    min-height: calc(100svh - 72px);
+    min-height: calc(100dvh - 72px);
+  }
+}
+
 
 /* réglages généraux */
 .text3d{
@@ -1240,19 +1143,7 @@ h3{ font-size: clamp(1rem, 3.6vw, 1.2rem);  line-height:1.3;  margin:.4rem 0 .3r
   cursor:pointer; color:#fff; font-weight:700;
 }
 .carousel .prev{ left:10px; } .carousel .next{ right:10px; }
-/* Tel uniquement : cacher complètement le toggle */
-@media (max-width: 640px){
-  .toggle{ display: none !important; }
-  /* Nettoyage éventuel des espacements liés au toggle */
-  .topbar{ gap: 0 !important; }
-  .topbar .wrap{ padding-right: 0 !important; }
-}
-/* Tel uniquement : cacher complètement le logo */
-@media (max-width: 640px){
-  .logo{ display: none !important; }
-  /* petit nettoyage si tu avais prévu de la place à gauche */
-  .topbar .wrap{ padding-left: 0 !important; }
-}
+
 /* Footer: mettre tous les boutons côte à côte (toutes pages) */
 .footer .container{
   display: flex !important;
@@ -1755,6 +1646,34 @@ body.no-scroll{ overflow:hidden!important; }
 .ls-avatar{ width:68px; height:68px; border-radius:50%; object-fit:cover; box-shadow: 0 10px 26px rgba(0,0,0,.45); border:2px solid rgba(255,255,255,.8); }
 .ls-name{ font-weight:800; }
 
+
+/* === Bouton Connexion (glassmorphism Apple) === */
+.ls-actions{ display:flex; justify-content:center; margin-top: 10px; }
+.ls-cta{
+  width: min(280px, 100%);
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.32);
+  background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.07));
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .02em;
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  box-shadow: 0 18px 44px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35);
+  transition: transform .22s cubic-bezier(.22,.61,.36,1), background .22s ease, box-shadow .22s ease;
+}
+.ls-cta:hover{
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.09));
+  box-shadow: 0 22px 52px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.38);
+}
+.ls-cta:active{ transform: translateY(0) scale(.985); }
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
+  .ls-cta{ background: rgba(255,255,255,.14); }
+}
+
 .ls-form{ display:flex; align-items:center; gap:10px; }
 .ls-input{
   flex:1; padding:13px 16px; border-radius:12px;
@@ -2114,5 +2033,218 @@ img, svg { -webkit-user-drag: none; user-drag: none; }
   100%{
     transform:translate3d(0,110vh,0) rotateZ(360deg);
     opacity:0;
+  }
+}
+
+.hero-subtitle{
+  padding:0.6rem 1.4rem;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+
+  backdrop-filter:saturate(150%) blur(18px);
+  -webkit-backdrop-filter:saturate(150%) blur(18px);
+  font-size:clamp(.8rem, 1.1vw, 1rem);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  max-width:min(640px, 90vw);
+}
+
+
+
+/* ===== Lockscreen iOS (mobile) ===== */
+.ios-lock{
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100svh;
+  overscroll-behavior: none;
+  z-index: 99999;
+  overflow: hidden;
+  touch-action: none;
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+               "SF Pro Display", system-ui, sans-serif;
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform .35s ease, opacity .35s ease;
+}
+
+
+
+.ios-lock-wallpaper{
+  position:absolute;
+  inset:-14%;
+  background:
+    radial-gradient(120% 120% at 0% 0%, #4f46e5 0, transparent 55%),
+    radial-gradient(120% 120% at 100% 0%, #ec4899 0, transparent 55%),
+    radial-gradient(140% 130% at 50% 100%, #22c55e 0, transparent 55%),
+    #020617;
+  filter:blur(14px) saturate(135%) brightness(.98);
+  transform:scale(1.08);
+}
+
+.ios-lock-scrim{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(80% 60% at 50% 18%, rgba(0,0,0,.18), transparent 55%),
+    linear-gradient(to bottom, rgba(0,0,0,.45), rgba(0,0,0,.85));
+}
+
+.ios-lock-top{
+  position:absolute;
+  top:18%;
+  left:50%;
+  transform:translateX(-50%);
+  text-align:center;
+  color:#fff;
+  text-shadow:0 10px 32px rgba(0,0,0,.9);
+}
+
+.ios-lock-time{
+  font-size:clamp(44px, 14vw, 80px);
+  font-weight:600;
+  letter-spacing:.03em;
+}
+
+.ios-lock-date{
+  margin-top:4px;
+  font-size:15px;
+  font-weight:500;
+  text-transform:capitalize;
+  opacity:.95;
+}
+
+.ios-lock-bottom{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:24px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  color:#fff;
+  z-index:2;
+}
+
+.ios-lock-hint{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:.3rem .9rem;
+  border-radius:999px;
+  background:rgba(0,0,0,.40);
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  font-size:14px;
+  font-weight:500;
+  letter-spacing:.02em;
+  animation:ios-hint-bounce 1.5s infinite;
+}
+
+.ios-lock-arrow{
+  font-size:16px;
+}
+
+.ios-lock-text{
+  white-space:nowrap;
+}
+
+.ios-home-indicator{
+  width:112px;
+  height:4px;
+  border-radius:999px;
+  background:rgba(255,255,255,.9);
+  opacity:.92;
+}
+
+@keyframes ios-hint-bounce{
+  0%,100%{
+    transform:translateY(0);
+    opacity:.9;
+  }
+  50%{
+    transform:translateY(-4px);
+    opacity:1;
+  }
+}
+
+.ios-lock-unlock{
+  pointer-events: none;
+  transform: translateY(-110%);
+  opacity: 0;
+}
+
+/* Par sécurité, jamais visible sur grand écran */
+@media (min-width:769px){
+  .ios-lock{ display:none !important; }
+}
+
+
+/* Par sécurité, jamais visible sur grand écran */
+@media (min-width:769px){
+  .ios-lock{ display:none !important; }
+}
+/* Cacher la barre de nav pendant le lock iOS sur mobile */
+@media (max-width: 768px){
+  body.ios-lock-active .topbar{
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+/* ===== Badge utilisateur bas droite (desktop) ===== */
+.user-tag{
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: calc(max(14px, env(safe-area-inset-bottom)) + 56px); /* au-dessus du bouton son */
+  z-index: 999998;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .45rem .9rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(17,17,22,.88);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  box-shadow: 0 12px 28px rgba(0,0,0,.5);
+  color: #f5f5f7;
+  font-size: .85rem;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+}
+
+.user-tag-visible{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.user-tag-avatar{
+  width: 22px;
+  height: 22px;
+  border-radius: 8px;
+  background: linear-gradient(135deg,#4f46e5,#ec4899);
+  box-shadow: 0 6px 14px rgba(0,0,0,.45);
+}
+
+.user-tag-text{
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+
+/* On le masque sur mobile */
+@media (max-width: 768px){
+  .user-tag{
+    display: none;
   }
 }
