@@ -1648,27 +1648,36 @@ body.no-scroll{ overflow:hidden!important; }
 
 
 /* === Bouton Connexion (glassmorphism Apple) === */
+/* === Bouton Connexion version TouchID (rond) === */
 .ls-actions{ display:flex; justify-content:center; margin-top: 10px; }
+
 .ls-cta{
-  width: min(280px, 100%);
-  padding: 14px 18px;
+  width: 76px;
+  height: 76px;
+  padding: 0;
   border-radius: 999px;
+
+  display: grid;
+  place-items: center;
+
+  min-width: 0;         /* IMPORTANT: empêche le “pill” */
+  overflow: hidden;     /* IMPORTANT: l’empreinte reste dans le rond */
+
   border: 1px solid rgba(255,255,255,.32);
   background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.07));
-  color: #fff;
-  font-weight: 700;
-  letter-spacing: .02em;
   backdrop-filter: blur(18px) saturate(170%);
   -webkit-backdrop-filter: blur(18px) saturate(170%);
   box-shadow: 0 18px 44px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35);
-  transition: transform .22s cubic-bezier(.22,.61,.36,1), background .22s ease, box-shadow .22s ease;
+  transition: transform .22s cubic-bezier(.22,61,36,1), background .22s ease, box-shadow .22s ease;
 }
+
 .ls-cta:hover{
   transform: translateY(-1px);
   background: linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.09));
   box-shadow: 0 22px 52px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.38);
 }
 .ls-cta:active{ transform: translateY(0) scale(.985); }
+
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
   .ls-cta{ background: rgba(255,255,255,.14); }
@@ -2248,3 +2257,239 @@ img, svg { -webkit-user-drag: none; user-drag: none; }
     display: none;
   }
 }
+
+
+
+/* =========================================================
+   Connexion (style original) -> rond -> check -> retour
+   Déclenché par #ls-connect.scanning (ton JS)
+========================================================= */
+
+/* 1) Base : bouton large “login” mais TRANSPARENT (glass) */
+#ls-connect.ls-cta{
+  width: 220px;
+  height: 80px;
+  min-width: 220px;
+  padding: 0;
+  border-radius: 999px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  overflow: hidden;
+
+  /* transparent / glass */
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.22);
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+
+  box-shadow: 0 18px 44px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25);
+
+  color: #fff;
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: .5px;
+
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* petit highlight style mac */
+#ls-connect.ls-cta::before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.25), rgba(255,255,255,0) 60%);
+  transform: rotate(-12deg);
+  opacity: .8;
+  pointer-events:none;
+}
+
+/* 2) Texte (Connexion) */
+#ls-connect .fingerprint-text{
+  position: absolute;
+  z-index: 2;
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* 3) Empreinte + check : taille “icône” (comme tes images) */
+#ls-connect .fingerprint,
+#ls-connect .ok-check{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+
+  /* ✅ taille identique pour empreinte et rond */
+  width: 64px;
+  height: 64px;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* stroke styles */
+#ls-connect .fingerprint-base{ stroke: rgba(255,255,255,.55); }
+#ls-connect .fingerprint-active{ stroke: #fff; }
+#ls-connect .fingerprint-out{ opacity: 1; }
+
+/* dash animation setup */
+#ls-connect .odd{
+  stroke-dasharray: 0 50;
+  stroke-dashoffset: 1;
+  transition: stroke-dasharray 1ms;
+}
+#ls-connect .even{
+  stroke-dasharray: 50 50;
+  stroke-dashoffset: -41;
+  transition: stroke-dashoffset 1ms;
+}
+
+/* check “mac” : petit rond noir + check blanc */
+#ls-connect .ok-check{
+  opacity: 0;
+  background: rgba(0,0,0,.65);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 999px;
+  padding: 12px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.10);
+  stroke: #fff;
+}
+
+/* =========================================================
+   4) SCANNING : on reproduit le script original
+   large -> rond -> check -> retour large
+========================================================= */
+
+#ls-connect.scanning{
+  animation: 6s Container;
+}
+
+/* texte disparaît */
+#ls-connect.scanning .fingerprint-text{
+  opacity: 0;
+  transform: scale(.6);
+  animation: 6s Text forwards;
+}
+
+/* empreinte apparaît */
+#ls-connect.scanning .fingerprint{
+  opacity: 1;
+  transition: opacity 300ms 200ms;
+}
+
+/* trace “base” */
+#ls-connect.scanning .fingerprint-base .odd{
+  stroke-dasharray: 50 50;
+  transition: stroke-dasharray 800ms 100ms;
+}
+#ls-connect.scanning .fingerprint-base .even{
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 800ms;
+}
+
+/* trace “active” */
+#ls-connect.scanning .fingerprint-active .odd{
+  stroke-dasharray: 50 50;
+  transition: stroke-dasharray 2000ms 1500ms;
+}
+#ls-connect.scanning .fingerprint-active .even{
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 2000ms 1300ms;
+}
+
+/* hide empreinte à la fin */
+#ls-connect.scanning .fingerprint-out{
+  opacity: 0;
+  transition: opacity 300ms 4100ms;
+}
+
+/* check apparaît */
+#ls-connect.scanning .ok-check{
+  opacity: 1;
+  animation: 6s Ok forwards;
+}
+
+/* =========================================================
+   Keyframes = quasiment identiques au script original
+   (mais on garde le look glass)
+========================================================= */
+
+@keyframes Container{
+  0%   { width: 220px; border-radius: 999px; }
+  6%   { width: 80px;  border-radius: 999px; }
+  71%  { transform: scale(1); }
+  75%  { transform: scale(1.12); }
+  77%  { transform: scale(1); }
+  94%  { width: 80px; }
+  100% { width: 220px; border-radius: 999px; }
+}
+
+@keyframes Text{
+  0%   { opacity: 1; transform: scale(1); }
+  6%   { opacity: 0; transform: scale(.5); }
+  94%  { opacity: 0; transform: scale(.5); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes Ok{
+  0%   { opacity: 0; }
+  70%  { opacity: 0; transform: translate(-50%,-50%) scale(0); }
+  75%  { opacity: 1; transform: translate(-50%,-50%) scale(1.08); }
+  77%  { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  92%  { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  96%  { opacity: 0; transform: translate(-50%,-50%) scale(.6); }
+  100% { opacity: 0; }
+}
+
+/* mobile */
+@media (max-width: 640px){
+  #ls-connect.ls-cta{
+    width: 200px;
+    min-width: 200px;
+    height: 76px;
+    font-size: 24px;
+  }
+  @keyframes Container{
+    0%   { width: 200px; }
+    6%   { width: 76px; }
+    94%  { width: 76px; }
+    100% { width: 200px; }
+  }
+}
+:root{
+  --scan-size: 80px; /* taille du rond final */
+}
+#ls-connect.ls-cta{
+  width: 220px;
+  height: var(--scan-size);         /* ✅ même hauteur que le rond final */
+  min-width: 220px;
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ✅ empreinte = même taille que le rond */
+#ls-connect .fingerprint,
+#ls-connect .ok-check{
+  width: var(--scan-size);
+  height: var(--scan-size);
+}
+@keyframes Container{
+  0%   { width: 220px; height: var(--scan-size); border-radius: 999px; }
+  6%   { width: var(--scan-size); height: var(--scan-size); border-radius: 999px; }
+  71%  { transform: scale(1); }
+  75%  { transform: scale(1.12); }
+  77%  { transform: scale(1); }
+  94%  { width: var(--scan-size); height: var(--scan-size); }
+  100% { width: 220px; height: var(--scan-size); border-radius: 999px; }
+}
+#ls-connect.scanning .fingerprint-text{
+  opacity: 0;
+  transform: scale(.6);
+}
+
