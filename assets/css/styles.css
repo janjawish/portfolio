@@ -77,7 +77,8 @@ body{
   background:transparent; border:0; cursor:pointer; }
 .seg-item:hover{ color:white; }
 .seg-item.active{ color:#fff; }
-.seg-slider{ position:absolute; left:0; top:4px; bottom:4px; width:120px; background:rgb(144, 129, 229); border: blue; border-radius:999px;
+.seg-item:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
+.seg-slider{ position:absolute; left:0; top:4px; bottom:4px; width:120px; background:#6B5CF0; border: blue; border-radius:999px;
   box-shadow:0 10px 25px rgba(0,0,0,.25);
   transform:translateX(0);
   transition:transform .42s cubic-bezier(.22,.61,.36,1), width .28s ease, opacity .2s ease;
@@ -218,8 +219,9 @@ body{
 
 /* Ajustements doux en clair (aucun override agressif) */
 :root[data-theme="light"] .seg-item{ color:#111; }
-:root[data-theme="light"] .seg-item.active,
 :root[data-theme="light"] .seg-item:hover{ color:#111; }
+:root[data-theme="light"] .seg-item.active{ color:#fff; }
+.seg-item:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
 :root[data-theme="light"] .seg-slider{ background:#111; }
 :root[data-theme="light"] .card,
 :root[data-theme="light"] .window,
@@ -1090,6 +1092,7 @@ img { -webkit-user-drag: none; user-select: none; }
 }
 .seg-item:hover{ color:#fff; }
 .seg-item.active{ color:#fff; }
+.seg-item:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
 
 /* slider suit les largeurs fluides */
 .seg-slider{
