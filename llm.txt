@@ -1,0 +1,25 @@
+# JanJawish — Portfolio
+
+> Portfolio personnel de Jan Jawish : projets web, compétences, parcours et moyens de contact. Langue principale : français.
+
+Notes d’usage (pour agents/LLM) :
+- Ce site est un portfolio : privilégiez les pages “Projets” et “À propos” pour répondre aux questions sur mon profil.
+- Si vous citez du contenu, pointez vers l’URL canonique de la page (janjawish.fr) et gardez le contexte (projet, techno, rôle).
+- Les pages sont en HTML. S’il existe une version texte/Markdown d’une page, elle peut être disponible en ajoutant “.md” à l’URL (ex: /a-propos.html.md). Sinon, utilisez la page HTML.
+
+## Pages principales
+
+- [Accueil](https://janjawish.fr/): vue d’ensemble, navigation principale.
+- [Projets](https://janjawish.fr/projets.html): liste des projets + détails (techno, liens, démos).
+- [À propos](https://janjawish.fr/a-propos.html): parcours, compétences, stack, objectifs.
+- [Plan du site (sitemap.xml)](https://janjawish.fr/sitemap.xml): liste complète des pages indexables.
+- [Règles d’exploration (robots.txt)](https://janjawish.fr/robots.txt): directives crawl/indexation.
+
+## Contact
+
+- [Email](mailto:trafalgar7820@gmail.com): contact direct.
+- [Site](https://janjawish.fr/): page d’accueil.
+
+## Optional
+
+- [Page 404](https://janjawish.fr/404.html): page d’erreur, utile pour comprendre la structure de navigation.
