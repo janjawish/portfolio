@@ -976,7 +976,12 @@ function initCheatEasterEgg(){
   // Évite de le créer deux fois
   if (document.querySelector('.cheat-pill')) return;
 
+  // Crée le bouton "pill" (il manquait -> ReferenceError)
+  const pill = document.createElement('button');
+  pill.type = 'button';
+  pill.className = 'cheat-pill';
   pill.title = 'Entrer un code de triche';
+  pill.setAttribute('aria-label', 'Entrer un code de triche');
 
   pill.addEventListener('click', openCheatWindow);
 
