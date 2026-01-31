@@ -1,0 +1,27 @@
+# Jan Jawish — Portfolio
+
+> Jan Jawish est un développeur web et créatif (graphisme, vidéo, photo). Il conçoit des sites modernes et des projets utiles autour de la vie étudiante. Réseaux officiels : LinkedIn, GitHub, YouTube.
+
+## Profil (source de vérité)
+
+- [Accueil](https://janjawish.fr/)
+- [À propos](https://janjawish.fr/a-propos)
+- [Projets](https://janjawish.fr/projets)
+
+## Projets clés (résumé)
+
+- **MMI Hub** — alternative à Pronote pour l’enseignement supérieur : suivi de scolarité (notes, absences, infos).
+- **EtuKit** — boîte à outils complète pour étudiants : aides, tips, ressources, conseils.
+- **Fidal** — vidéo promotionnelle réalisée pour le plus grand cabinet d’avocats en Europe.
+- **CVEC** — proposition “salle étudiante” (jeux, détente, espace social) pour améliorer la vie sur le campus.
+
+## Réseaux officiels
+
+- [LinkedIn](https://www.linkedin.com/in/jan-jawish-%F0%9F%91%A8%F0%9F%8F%BD%E2%80%8D%F0%9F%92%BB-344808359/)
+- [GitHub](https://github.com/janjawish)
+- [YouTube](https://www.youtube.com/@trafalgar7330)
+
+## Optional
+
+- [Sitemap](https://janjawish.fr/sitemap.xml)
+- [robots.txt](https://janjawish.fr/robots.txt)
