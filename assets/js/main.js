@@ -15,7 +15,10 @@
 
   // 2.bis) S’assure que toutes les <img> existantes ou futures ne sont pas draggables
   const markUndraggable = (root=document) => {
-    root.querySelectorAll('img, svg, picture').forEach(el => el.setAttribute('draggable', 'false'));
+    root.querySelectorAll('img, svg, picture').forEach(el => {
+      el.setAttribute('draggable', 'false');
+      if (el.tagName === 'IMG' && !el.hasAttribute('alt')) el.setAttribute('alt', '');
+    });
   };
   markUndraggable();
   new MutationObserver((mut) => {
@@ -976,17 +979,17 @@ function initCheatEasterEgg(){
   // Évite de le créer deux fois
   if (document.querySelector('.cheat-pill')) return;
 
-  // Crée le bouton "pill" (il manquait -> ReferenceError)
   const pill = document.createElement('button');
   pill.type = 'button';
   pill.className = 'cheat-pill';
   pill.title = 'Entrer un code de triche';
-  pill.setAttribute('aria-label', 'Entrer un code de triche');
+  pill.setAttribute('aria-label', 'Ouvrir la fenêtre de code de triche');
 
   pill.addEventListener('click', openCheatWindow);
 
   document.body.appendChild(pill);
 }
+
 
 function openCheatWindow(){
   // Si la fenêtre est déjà ouverte, on ne la recrée pas
