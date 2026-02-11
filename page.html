@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jan Jawish — Contact</title>
+  <meta name="theme-color" content="#0b0f1a" />
+  <style>
+    :root{
+      --bg:#070a12;
+      --card:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.14);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.62);
+      --accent:#7c5cff;
+      --accent2:#22d3ee;
+      --shadow: 0 24px 70px rgba(0,0,0,.55);
+      --r:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 15% 10%, rgba(124,92,255,.25), transparent 55%),
+                  radial-gradient(900px 700px at 85% 80%, rgba(34,211,238,.20), transparent 55%),
+                  linear-gradient(180deg, var(--bg), #05060b);
+      overflow-x:hidden;
+    }
+    .wrap{
+      min-height:100%;
+      display:grid;
+      place-items:center;
+      padding:28px 16px;
+    }
+    .card{
+      width:min(520px, 100%);
+      border-radius: var(--r);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      padding:22px;
+      position:relative;
+      overflow:hidden;
+    }
+    .glow{
+      position:absolute;
+      inset:-120px -120px auto auto;
+      width:320px;height:320px;
+      background: radial-gradient(circle at 30% 30%, rgba(124,92,255,.45), transparent 55%);
+      filter: blur(18px);
+      opacity:.9;
+      pointer-events:none;
+      transform: translate3d(0,0,0);
+    }
+    .glow2{
+      position:absolute;
+      inset:auto auto -130px -120px;
+      width:340px;height:340px;
+      background: radial-gradient(circle at 40% 40%, rgba(34,211,238,.35), transparent 60%);
+      filter: blur(18px);
+      opacity:.85;
+      pointer-events:none;
+      transform: translate3d(0,0,0);
+    }
+
+    header{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      margin-bottom:16px;
+    }
+    .avatar{
+      width:52px;height:52px;
+      border-radius:16px;
+      background: linear-gradient(135deg, rgba(124,92,255,.9), rgba(34,211,238,.7));
+      border: 1px solid rgba(255,255,255,.22);
+      box-shadow: 0 18px 50px rgba(124,92,255,.18);
+      flex:0 0 auto;
+      position:relative;
+      overflow:hidden;
+    }
+    .avatar::after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.35), rgba(255,255,255,.0));
+      animation: spin 7s linear infinite;
+      opacity:.55;
+    }
+    @keyframes spin { to { transform: rotate(360deg);} }
+
+    .title{
+      line-height:1.1;
+    }
+    .title h1{
+      font-size:18px;
+      margin:0 0 4px;
+      letter-spacing:.2px;
+    }
+    .title p{
+      margin:0;
+      color:var(--muted);
+      font-size:13.5px;
+    }
+
+    .divider{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent);
+      margin:14px 0 18px;
+    }
+
+    .stack{
+      display:grid;
+      gap:12px;
+      margin-top:2px;
+    }
+
+    .btn{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      text-decoration:none;
+      cursor:pointer;
+      transform: translateZ(0);
+      user-select:none;
+      position:relative;
+      overflow:hidden;
+    }
+    .btn strong{
+      font-size:14.5px;
+      letter-spacing:.2px;
+    }
+    .btn span{
+      color: var(--muted);
+      font-size:12.5px;
+    }
+    .left{
+      display:flex;
+      flex-direction:column;
+      gap:3px;
+    }
+    .icon{
+      width:34px;height:34px;
+      border-radius: 12px;
+      display:grid;
+      place-items:center;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.20);
+      flex:0 0 auto;
+    }
+    .btn .arrow{
+      opacity:.8;
+      transition: transform .25s ease, opacity .25s ease;
+    }
+    .btn:hover .arrow{ transform: translateX(3px); opacity:1; }
+    .btn::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(500px 200px at var(--mx, 50%) var(--my, 50%),
+        rgba(124,92,255,.24), transparent 55%);
+      opacity:0;
+      transition: opacity .25s ease;
+      pointer-events:none;
+    }
+    .btn:hover::before{ opacity:1; }
+
+    .btn.primary{
+      border-color: rgba(124,92,255,.45);
+      background: linear-gradient(180deg, rgba(124,92,255,.22), rgba(255,255,255,.06));
+    }
+    .btn.primary::before{
+      background: radial-gradient(500px 200px at var(--mx, 50%) var(--my, 50%),
+        rgba(34,211,238,.22), transparent 55%);
+    }
+
+    footer{
+      margin-top:16px;
+      color: rgba(255,255,255,.5);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: rgba(34,211,238,.9);
+      box-shadow: 0 0 0 6px rgba(34,211,238,.12);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .avatar::after{ animation:none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="card" id="card">
+      <div class="glow"></div>
+      <div class="glow2"></div>
+
+      <header class="reveal">
+        <div class="avatar" aria-hidden="true"></div>
+        <div class="title">
+          <h1>Jan Jawish</h1>
+          <p>Salut ! Bienvenue sur l'espace privé de Jan Jawish</p>
+        </div>
+      </header>
+
+      <div class="divider reveal"></div>
+
+      <section class="stack">
+        <!-- 1) Télécharger CV -->
+        <a class="btn primary reveal" id="cvBtn" href="https://raw.githubusercontent.com/janjawish/portfolio/refs/heads/main/assets/pdfs/cv.pdf" rel="noopener">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="icon" aria-hidden="true">📄</div>
+            <div class="left">
+              <strong>Télécharger mon CV</strong>
+              <span>PDF — en un clic</span>
+            </div>
+          </div>
+          <div class="arrow" aria-hidden="true">➜</div>
+        </a>
+
+        <!-- 2) Portfolio -->
+        <a class="btn reveal" id="portfolioBtn" href="#" rel="noopener">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="icon" aria-hidden="true">🧩</div>
+            <div class="left">
+              <strong>Voir mon portfolio</strong>
+              <span>Projets, cas, réalisations</span>
+            </div>
+          </div>
+          <div class="arrow" aria-hidden="true">➜</div>
+        </a>
+
+        <!-- 3) LinkedIn -->
+        <a class="btn reveal" id="linkedinBtn" href="#" rel="noopener">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="icon" aria-hidden="true">💼</div>
+            <div class="left">
+              <strong>Mon LinkedIn</strong>
+              <span>Réseau & contact</span>
+            </div>
+          </div>
+          <div class="arrow" aria-hidden="true">➜</div>
+        </a>
+      </section>
+
+      <footer class="reveal">
+
+      </footer>
+    </main>
+  </div>
+
+  <!-- GSAP (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+  <script>
+    // ====== REMPLACE ICI TES LIENS ======
+    const CV_URL = "https://raw.githubusercontent.com/janjawish/portfolio/refs/heads/main/assets/pdfs/cv.pdf";           // lien direct vers le PDF
+    const PORTFOLIO_URL = "https://janjawish.fr";                     // ton portfolio
+    const LINKEDIN_URL = "https://www.linkedin.com/in/jan-jawish-%F0%9F%91%A8%F0%9F%8F%BD%E2%80%8D%F0%9F%92%BB-344808359/";   // ton profil linkedin
+    // ===================================
+
+    // Applique les URLs + download hint (marchera surtout si même domaine / config serveur)
+    const cvBtn = document.getElementById("cvBtn");
+    const portfolioBtn = document.getElementById("portfolioBtn");
+    const linkedinBtn = document.getElementById("linkedinBtn");
+
+    cvBtn.href = CV_URL;
+    // "download" n'est pas toujours respecté (surtout cross-domain / iOS), mais ça aide parfois.
+    cvBtn.setAttribute("download", "");
+
+    portfolioBtn.href = PORTFOLIO_URL;
+    linkedinBtn.href = LINKEDIN_URL;
+
+    document.getElementById("y").textContent = new Date().getFullYear();
+
+    // Effet "spotlight" sur les boutons
+    document.querySelectorAll(".btn").forEach(btn => {
+      btn.addEventListener("mousemove", (e) => {
+        const r = btn.getBoundingClientRect();
+        const mx = ((e.clientX - r.left) / r.width) * 100;
+        const my = ((e.clientY - r.top) / r.height) * 100;
+        btn.style.setProperty("--mx", mx + "%");
+        btn.style.setProperty("--my", my + "%");
+      });
+    });
+
+    // Animations GSAP
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!prefersReduced) {
+      gsap.set("#card", { opacity: 0, y: 18, scale: 0.98 });
+      gsap.set(".reveal", { opacity: 0, y: 14 });
+
+      gsap.to("#card", { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power3.out" });
+      gsap.to(".reveal", {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "power3.out",
+        stagger: 0.08,
+        delay: 0.1
+      });
+
+      // Petit "float" des halos
+      gsap.to(".glow", { x: 12, y: -10, duration: 5.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
+      gsap.to(".glow2", { x: -10, y: 14, duration: 6.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
+
+      // Micro interaction au tap/click
+      document.querySelectorAll(".btn").forEach(btn => {
+        btn.addEventListener("pointerdown", () => {
+          gsap.to(btn, { scale: 0.985, duration: 0.12, ease: "power2.out" });
+        });
+        btn.addEventListener("pointerup", () => {
+          gsap.to(btn, { scale: 1, duration: 0.18, ease: "power2.out" });
+        });
+        btn.addEventListener("pointerleave", () => {
+          gsap.to(btn, { scale: 1, duration: 0.18, ease: "power2.out" });
+        });
+      });
+    }
+
+    // Option : si tu veux "Tap → ouvre la page → auto-redirige vers portfolio après download"
+    // (pas recommandé car iOS peut bloquer le téléchargement auto)
+    // setTimeout(() => window.location.href = PORTFOLIO_URL, 1800);
+  </script>
+</body>
+</html>
