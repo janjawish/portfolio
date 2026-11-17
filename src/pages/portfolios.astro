@@ -1,0 +1,46 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import SpecializedCards from '@/components/SpecializedCards.astro';
+import { SITE } from '@/data/site';
+---
+
+<BaseLayout
+  title="Portfolios spécialisés"
+  description="Le portfolio général de Jan Jawish donne la vue d’ensemble ; un portfolio développeur et un portfolio créatif approfondissent bientôt chaque versant."
+  jsonLd={[{ '@type': 'WebPage', '@id': `${SITE.url}/portfolios#page`, url: `${SITE.url}/portfolios`, name: 'Portfolios spécialisés | Jan Jawish', inLanguage: 'fr-FR', isPartOf: { '@id': `${SITE.url}/#website` } }]}
+>
+  <PageHero
+    eyebrow="Portfolios spécialisés"
+    title="Trois portes d’entrée."
+    lead="Ce portfolio général montre comment les expertises se combinent. Deux portfolios spécialisés, en préparation, iront en profondeur sur chaque versant."
+    crumbs={[{ label: 'Portfolios' }]}
+  />
+  <section class="section section--tight" aria-label="Portfolios en préparation">
+    <div class="container">
+      <h2 class="visually-hidden">Les portfolios en préparation</h2>
+      <SpecializedCards />
+      <div class="note" data-reveal>
+        <p>
+          En attendant leur mise en ligne, vous pouvez filtrer les projets
+          <a class="link-underline" href="/projets?discipline=web">développement web</a>,
+          <a class="link-underline" href="/projets?discipline=graphisme">graphisme</a>,
+          <a class="link-underline" href="/projets?discipline=audiovisuel">audiovisuel</a> ou
+          <a class="link-underline" href="/projets?discipline=photo">photographie</a>, ou lire
+          <a class="link-underline" href="/blog/un-portfolio-trois-portes">pourquoi cette organisation</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .note {
+    margin-top: 48px;
+    max-width: 62ch;
+    color: var(--mist);
+  }
+  .note a {
+    color: var(--paper);
+  }
+</style>

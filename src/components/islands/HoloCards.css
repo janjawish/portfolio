@@ -1,0 +1,33 @@
+.holo-cards {
+  display: grid;
+  gap: clamp(16px, 2.4vw, 28px);
+}
+@media (min-width: 860px) {
+  .holo-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.holo-cards__link {
+  display: block;
+  border-radius: 22px;
+  color: inherit;
+}
+.holo-cards__link:focus-visible {
+  outline: 2px solid var(--iris-2);
+  outline-offset: 6px;
+}
+.holo-cards__card {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.holo-cards__card .holo-card {
+  display: block;
+  width: 100%;
+}
+.holo-cards__still {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 22px;
+}

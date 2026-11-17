@@ -1,0 +1,87 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import ContactForm from '@/components/islands/ContactForm';
+import { SITE, SOCIALS, PERSON } from '@/data/site';
+---
+
+<BaseLayout
+  title="Contacter Jan Jawish, développeur web et designer"
+  description="Contacter Jan Jawish : un besoin numérique à cadrer, concevoir, produire ou faire connaître, une question ou une opportunité. Réponse par e-mail."
+  jsonLd={[{ '@type': 'ContactPage', '@id': `${SITE.url}/contact#page`, url: `${SITE.url}/contact`, name: 'Contact | Jan Jawish', inLanguage: 'fr-FR', isPartOf: { '@id': `${SITE.url}/#website` }, about: { '@id': `${SITE.url}/#jan-jawish` } }]}
+>
+  <PageHero
+    eyebrow="Contact"
+    title="Parlons de votre besoin."
+    low
+    crumbs={[{ label: 'Contact' }]}
+  />
+
+  <section class="section section--tight" aria-label="Formulaire et coordonnées">
+    <div class="container contact">
+      <div class="contact__form">
+        <h2 class="visually-hidden">Formulaire de contact</h2>
+        <ContactForm client:visible email={SITE.email} />
+      </div>
+      <div class="contact__aside">
+        <h2 class="visually-hidden">Coordonnées</h2>
+        <div class="contact__block">
+          <p class="contact__label">E-mail</p>
+          <a class="contact__mail link-underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        </div>
+        <div class="contact__block">
+          <p class="contact__label">Localisation</p>
+          <p>{PERSON.location}</p>
+        </div>
+        <div class="contact__block">
+          <p class="contact__label">Réseaux</p>
+          <ul role="list" class="contact__links">
+            {SOCIALS.map((s) => <li><a class="link-underline" href={s.href} target="_blank" rel="noopener me">{s.label} ↗</a></li>)}
+            <li><a class="link-underline" href={SITE.cv} target="_blank" rel="noopener">CV (PDF) ↗</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    display: grid;
+    gap: clamp(48px, 6vw, 96px);
+  }
+  @media (min-width: 1000px) {
+    .contact {
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.7fr);
+    }
+  }
+  .contact__aside {
+    display: grid;
+    gap: 32px;
+    align-content: start;
+    font-size: var(--fs-sm);
+  }
+  .contact__block {
+    display: grid;
+    gap: 6px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  .contact__label {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mist-2);
+    margin-bottom: 4px;
+  }
+  .contact__mail {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
+    justify-self: start;
+  }
+  .contact__links {
+    display: grid;
+    gap: 8px;
+  }
+</style>

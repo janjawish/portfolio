@@ -1,0 +1,29 @@
+---
+import { getImage } from 'astro:assets';
+import { SPECIALIZED } from '@/data/site';
+import HoloCards from '@/components/islands/HoloCards';
+import devCard from '@/assets/portfolios/dev.png';
+import creatifCard from '@/assets/portfolios/creatif.png';
+
+// Visuels des cartes (générés depuis le design du site) utilisés par Holo Card.
+const visuals: Record<string, ImageMetadata> = { dev: devCard, creatif: creatifCard };
+const cards = await Promise.all(
+  SPECIALIZED.map(async (p) => {
+    const img = await getImage({ src: visuals[p.id], width: 1280, format: 'webp', quality: 86 });
+    return {
+      href: p.href,
+      image: img.src,
+      width: 640,
+      height: 400,
+      title: p.title,
+      description: p.description,
+      tags: p.focus,
+      status: p.status,
+    };
+  }),
+);
+---
+
+<div class="spec" data-reveal>
+  <HoloCards client:visible cards={cards} />
+</div>

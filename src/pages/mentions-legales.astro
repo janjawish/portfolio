@@ -1,0 +1,46 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import { SITE } from '@/data/site';
+---
+
+<BaseLayout title="Mentions légales" description="Mentions légales, hébergement, données personnelles et crédits du portfolio de Jan Jawish.">
+  <PageHero eyebrow="Informations" title="Mentions légales." crumbs={[{ label: 'Mentions légales' }]} />
+  <section class="section section--tight">
+    <div class="container">
+      <div class="prose">
+        <h2>Éditeur</h2>
+        <p>Ce site est le portfolio personnel de <strong>Jan Jawish</strong>. Contact : <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+
+        <h2>Hébergement</h2>
+        <p>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis - vercel.com.</p>
+
+        <h2>Données personnelles</h2>
+        <p>
+          Les informations saisies dans le formulaire de contact servent uniquement à répondre à votre message. Elles ne sont pas stockées par ce
+          site. Lorsque l’envoi direct est activé, elles transitent par le service d’envoi de formulaires configuré, uniquement pour être
+          transmises par e-mail. Vous pouvez demander la suppression de vos échanges à tout moment par e-mail.
+        </p>
+        <p>
+          Ce site n’utilise pas de cookie publicitaire. Les vidéos YouTube ne sont chargées qu’après un clic, depuis le domaine
+          youtube-nocookie.com. L’assistant du site répond localement, sans service d’intelligence artificielle externe : vos questions ne
+          quittent pas votre navigateur.
+        </p>
+
+        <h2>Propriété intellectuelle</h2>
+        <p>
+          Les textes, visuels, vidéos et photographies présentés sont la propriété de Jan Jawish ou de leurs ayants droit (clients et
+          partenaires de projet). Les photographies sont soumises au droit d’auteur : leur republication, modification ou appropriation n’est
+          pas autorisée sans accord préalable.
+        </p>
+
+        <h2>Crédits</h2>
+        <ul>
+          <li>Composants d’interface : React Bits (licence MIT + Commons Clause) et ReactDrops (ReactDrops Component License 1.0), intégrés au site.</li>
+          <li>Typographies : Bricolage Grotesque et Geist (SIL Open Font License), Librestile (SIL Open Font License, via ReactDrops).</li>
+          <li>Conception, développement et contenus : Jan Jawish.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

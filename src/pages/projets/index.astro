@@ -1,0 +1,172 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import { getProjects, projectUrl, DISCIPLINES } from '@/lib/projects';
+import { SITE } from '@/data/site';
+import type { Discipline } from '@/content.config';
+
+const projects = await getProjects();
+const counts = Object.fromEntries(
+  (Object.keys(DISCIPLINES) as Discipline[]).map((d) => [d, projects.filter((p) => p.data.disciplines.includes(d)).length]),
+) as Record<Discipline, number>;
+
+const jsonLd = [
+  {
+    '@type': 'CollectionPage',
+    '@id': `${SITE.url}/projets#page`,
+    url: `${SITE.url}/projets`,
+    name: 'Projets | Jan Jawish',
+    inLanguage: 'fr-FR',
+    isPartOf: { '@id': `${SITE.url}/#website` },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: projects.length,
+      itemListElement: projects.map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${SITE.url}${projectUrl(p)}`,
+        name: p.data.title,
+      })),
+    },
+  },
+];
+---
+
+<BaseLayout
+  title="Projets web, design et audiovisuel"
+  description={`${projects.length} projets de Jan Jawish en web, UI/UX, graphisme, audiovisuel, photo et communication, filtrables par discipline, chacun avec sa fiche détaillée.`}
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow={`Projets · ${projects.length} fiches`}
+    title="Des projets réels, du code à l’image."
+    lead="Stage, clients, projets d’équipe et projets personnels. Filtrez par discipline ; chaque fiche détaille le contexte, mon rôle et les choix faits."
+    crumbs={[{ label: 'Projets' }]}
+  />
+
+  <section class="section section--tight" aria-label="Liste des projets">
+    <div class="container">
+      <div class="filters" role="group" aria-label="Filtrer les projets par discipline" data-filters>
+        <button type="button" class="filter" data-filter="all" aria-pressed="true">
+          Tous <span class="filter__n">{projects.length}</span>
+        </button>
+        {
+          (Object.keys(DISCIPLINES) as Discipline[]).map((d) => (
+            <button type="button" class="filter" data-filter={d} aria-pressed="false">
+              {DISCIPLINES[d]} <span class="filter__n">{counts[d]}</span>
+            </button>
+          ))
+        }
+      </div>
+      <p class="filters__status" role="status" aria-live="polite" data-filter-status>{projects.length} projets affichés</p>
+
+      <div class="grid" data-grid>
+        {projects.map((p, i) => <ProjectCard project={p} eager={i < 3} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Filtres par discipline (initialisés à chaque arrivée sur la page).
+  document.addEventListener('astro:page-load', () => {
+    const root = document.querySelector<HTMLElement>('[data-filters]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '1';
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-grid] .pcard'));
+    const status = document.querySelector<HTMLElement>('[data-filter-status]');
+    const labels: Record<string, string> = {};
+    root.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) => {
+      labels[b.dataset.filter!] = b.childNodes[0].textContent!.trim();
+    });
+
+    const apply = (wanted: string, push = true) => {
+      const filter = labels[wanted] ? wanted : 'all';
+      let shown = 0;
+      for (const card of cards) {
+        const match = filter === 'all' || (card.dataset.disciplines ?? '').split(' ').includes(filter);
+        card.hidden = !match;
+        if (match) {
+          shown++;
+          card.classList.add('is-visible');
+        }
+      }
+      root.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === filter)));
+      if (status) status.textContent = `${shown} projet${shown > 1 ? 's' : ''} affiché${shown > 1 ? 's' : ''}${filter === 'all' ? '' : ` · ${labels[filter]}`}`;
+      if (push) {
+        const url = new URL(location.href);
+        if (filter === 'all') url.searchParams.delete('discipline');
+        else url.searchParams.set('discipline', filter);
+        history.replaceState(history.state, '', url);
+      }
+    };
+
+    root.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-filter]');
+      if (btn) apply(btn.dataset.filter!);
+    });
+    const initial = new URLSearchParams(location.search).get('discipline');
+    if (initial) apply(initial, false);
+  });
+</script>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--mist);
+    font-size: var(--fs-sm);
+    cursor: pointer;
+    transition:
+      background 0.3s var(--ease-out),
+      color 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out);
+  }
+  .filter:hover {
+    color: var(--paper);
+    border-color: var(--line-strong);
+  }
+  .filter[aria-pressed='true'] {
+    background: var(--paper);
+    border-color: var(--paper);
+    color: var(--ink);
+  }
+  .filter__n {
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .filters__status {
+    margin: 20px 0 40px;
+    font-size: var(--fs-xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mist-2);
+  }
+  .grid {
+    display: grid;
+    gap: clamp(40px, 4vw, 56px) clamp(20px, 2vw, 28px);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1200px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

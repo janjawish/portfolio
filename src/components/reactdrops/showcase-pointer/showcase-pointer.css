@@ -1,0 +1,198 @@
+.showcase-pointer {
+  position: relative;
+  isolation: isolate;
+}
+
+.showcase-pointer-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.showcase-pointer-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate3d(var(--cursor-x, 0), var(--cursor-y, 0), 0);
+  will-change: transform;
+}
+
+.showcase-pointer-cursor-body {
+  opacity: 0;
+  transform: scale(calc(var(--showcase-pointer-cursor-scale, 1) * 0.6));
+  transform-origin: 0 0;
+  transition:
+    opacity 220ms ease-out,
+    transform 260ms ease-out;
+}
+
+.showcase-pointer-cursor[data-visible] .showcase-pointer-cursor-body {
+  opacity: 1;
+  transform: scale(var(--showcase-pointer-cursor-scale, 1));
+  transition: none;
+  animation: showcase-pointer-cursor-enter 460ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes showcase-pointer-cursor-enter {
+  from {
+    opacity: 0;
+    transform: scale(calc(var(--showcase-pointer-cursor-scale, 1) * 0.4));
+  }
+}
+
+.showcase-pointer-cursor-arrow {
+  position: absolute;
+  /* The arrow tip sits on the cursor position. */
+  top: -4px;
+  left: -5px;
+  display: block;
+  overflow: visible;
+  transform-origin: 5px 4px;
+  filter: drop-shadow(0 1px 1.5px rgb(0 0 0 / 22%)) drop-shadow(0 3px 6px rgb(0 0 0 / 14%));
+  transition: transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.showcase-pointer-cursor[data-pressed] .showcase-pointer-cursor-arrow {
+  transform: scale(0.86);
+}
+
+.showcase-pointer-cursor-arrow-edge {
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 5;
+  stroke-linejoin: round;
+}
+
+.showcase-pointer-cursor-arrow-fill {
+  fill: var(--showcase-pointer-cursor-color);
+  stroke: var(--showcase-pointer-cursor-color);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+
+.showcase-pointer-cursor-label-anchor {
+  position: absolute;
+  top: 27px;
+  left: 19px;
+  transform: translate3d(var(--label-dx, 0), var(--label-dy, 0), 0);
+  will-change: transform;
+}
+
+.showcase-pointer-cursor-label {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 0.32em 0.66em 0.36em;
+  border-radius: 0.6em;
+  background: var(--showcase-pointer-cursor-color);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 14%),
+    0 4px 12px -2px color-mix(in srgb, var(--showcase-pointer-cursor-color) 45%, transparent);
+  color: var(--showcase-pointer-cursor-text, #fff);
+  font:
+    600 14px/1.25 ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  transform-origin: 0 0;
+  animation: showcase-pointer-cursor-label-enter 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes showcase-pointer-cursor-label-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+.showcase-pointer-cursor-label-text {
+  display: inline-block;
+  perspective: 12em;
+}
+
+.showcase-pointer-cursor-label-text[data-layer='out'] {
+  position: absolute;
+  top: 0.32em;
+  left: 0.66em;
+}
+
+.showcase-pointer-cursor-char {
+  display: inline-block;
+  white-space: pre;
+  transform-origin: 50% 50% -0.55em;
+  backface-visibility: hidden;
+}
+
+.showcase-pointer-cursor-label-mask {
+  display: inline-block;
+  overflow: hidden;
+  margin: -0.12em;
+  padding: 0.12em;
+  vertical-align: bottom;
+}
+.showcase-pointer-cursor-label-mask > span {
+  display: inline-block;
+}
+
+.showcase-pointer-cursor-ripple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 46px;
+  height: 46px;
+  border: 2px solid var(--showcase-pointer-cursor-color);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--showcase-pointer-cursor-color) 18%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.showcase-pointer-cursor-selection {
+  position: absolute;
+  inset: 0;
+}
+
+.showcase-pointer-cursor-highlight {
+  position: absolute;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--showcase-pointer-cursor-color) 26%, transparent);
+  box-shadow: inset 0 -1.5px 0 color-mix(in srgb, var(--showcase-pointer-cursor-color) 70%, transparent);
+}
+
+.showcase-pointer-cursor-marquee {
+  position: absolute;
+  border: 1px solid var(--showcase-pointer-cursor-color);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--showcase-pointer-cursor-color) 10%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-pointer-cursor-body,
+  .showcase-pointer-cursor[data-visible] .showcase-pointer-cursor-body,
+  .showcase-pointer-cursor-label {
+    animation: none;
+  }
+  .showcase-pointer-cursor-arrow {
+    transition: none;
+  }
+}
+
+.showcase-pointer-cursor-trail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

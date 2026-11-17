@@ -1,0 +1,269 @@
+/* Bouton d'ouverture : l'orbe Strands seul, sans pastille ni libellé (le nom accessible est porté par aria-label). */
+.asst-launcher {
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: max(14px, env(safe-area-inset-bottom));
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.5s var(--ease-out),
+    opacity 1s var(--ease-out) 0.5s;
+}
+.asst-launcher:hover {
+  transform: scale(1.06);
+}
+.asst-launcher:focus-visible {
+  outline: 2px solid var(--iris-2);
+  outline-offset: 2px;
+}
+.asst-launcher__orb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.asst-launcher__orb .strands-container {
+  pointer-events: auto;
+}
+/* Orbe statique (avant le démarrage de Strands, ou si les animations sont réduites) */
+.asst-launcher__orb > .asst__orb-fallback {
+  width: 82%;
+  height: 82%;
+  margin: 9%;
+  background:
+    radial-gradient(ellipse 46% 12% at 50% 54%, rgba(245, 243, 238, 0.7), rgba(169, 174, 214, 0.35) 55%, transparent 100%),
+    radial-gradient(circle at 50% 50%, rgba(18, 19, 24, 0.92) 64%, rgba(245, 243, 238, 0.22) 70%, transparent 71%);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
+}
+@media (max-width: 520px) {
+  .asst-launcher {
+    width: 68px;
+    height: 68px;
+    right: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+  }
+}
+
+.asst {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(max(14px, env(safe-area-inset-bottom)) + 92px);
+  z-index: 71;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  width: min(410px, calc(100vw - 32px));
+  height: min(640px, calc(100dvh - 120px));
+  border-radius: 24px;
+  border: 1px solid var(--line-strong);
+  background: rgba(17, 18, 21, 0.96);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  animation: asst-in 0.45s var(--ease-out);
+}
+@keyframes asst-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}
+@media (max-width: 520px) {
+  .asst {
+    right: 8px;
+    left: 8px;
+    width: auto;
+    bottom: calc(max(8px, env(safe-area-inset-bottom)) + 74px);
+    height: min(620px, calc(100dvh - 100px));
+  }
+}
+.asst__head {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 14px 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.asst__orb-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #a9aed6, #3d4170 70%);
+}
+.asst__title {
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.asst__sub {
+  margin-top: 4px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--mist-2);
+}
+.asst__close {
+  align-self: start;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--mist);
+  cursor: pointer;
+}
+.asst__close:hover {
+  color: var(--paper);
+  border-color: var(--line-strong);
+}
+.asst__log {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.asst__msg {
+  max-width: 88%;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+}
+.asst__msg p + p {
+  margin-top: 8px;
+}
+.asst__msg--bot {
+  align-self: flex-start;
+  padding: 12px 14px;
+  border-radius: 16px 16px 16px 6px;
+  background: var(--ink-3);
+  color: rgba(245, 243, 238, 0.92);
+}
+.asst__msg--user {
+  align-self: flex-end;
+  padding: 10px 14px;
+  border-radius: 16px 16px 6px 16px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.asst__links {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.asst__links a {
+  display: inline-flex;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  font-size: 12px;
+  color: var(--iris-2);
+}
+.asst__links a:hover {
+  color: var(--paper);
+  border-color: var(--iris);
+}
+.asst__typing {
+  align-self: flex-start;
+  display: inline-flex;
+  gap: 5px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--ink-3);
+}
+.asst__typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mist);
+  animation: asst-dot 1s var(--ease-in-out) infinite;
+}
+.asst__typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.asst__typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes asst-dot {
+  50% {
+    transform: translateY(-4px);
+    opacity: 0.5;
+  }
+}
+.asst__suggest {
+  display: flex;
+  gap: 6px;
+  padding: 10px 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-top: 1px solid var(--line);
+}
+.asst__chip {
+  flex: none;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--mist);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.asst__chip:hover:not(:disabled) {
+  color: var(--paper);
+  border-color: var(--line-strong);
+}
+.asst__chip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.asst__form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 10px 12px 12px;
+}
+.asst__form input {
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--ink-2);
+  color: var(--paper);
+  font: inherit;
+  font-size: 16px;
+}
+.asst__form input:focus-visible {
+  outline: none;
+  border-color: var(--iris-2);
+}
+.asst__send {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 18px;
+  cursor: pointer;
+}
+.asst__send:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

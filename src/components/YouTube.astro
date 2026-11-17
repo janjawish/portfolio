@@ -1,0 +1,127 @@
+---
+/**
+ * Lecteur YouTube « léger » : miniature locale + bouton. L'iframe (domaine youtube-nocookie.com)
+ * n'est chargée qu'après un clic : aucun cookie ni script tiers avant l'action du visiteur.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+export interface Props {
+  id: string;
+  title: string;
+  vertical?: boolean;
+}
+const { id, title, vertical = false } = Astro.props;
+const thumbs = import.meta.glob<{ default: ImageMetadata }>('/src/assets/projects/yt/*.jpg', { eager: true });
+const thumb = thumbs[`/src/assets/projects/yt/${id}.jpg`]?.default;
+---
+
+<div class:list={['yt', { 'yt--vertical': vertical }]} data-yt={id} data-title={title}>
+  {thumb && <Image src={thumb} alt="" widths={[480, 960, 1280]} sizes="(min-width: 980px) 60vw, 100vw" class="yt__thumb" />}
+  <button type="button" class="yt__play">
+    <span class="yt__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg>
+    </span>
+    <span class="yt__label">Lire la vidéo<span class="visually-hidden"> : {title}</span></span>
+  </button>
+  <a class="yt__ext" href={`https://www.youtube.com/watch?v=${id}`} target="_blank" rel="noopener">Ouvrir sur YouTube ↗</a>
+</div>
+
+<script>
+  // Lecteur YouTube chargé au clic seulement (initialisé à chaque page).
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-yt]:not([data-ready])').forEach((box) => {
+      box.dataset.ready = '1';
+      box.querySelector('.yt__play')?.addEventListener('click', () => {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${box.dataset.yt}?autoplay=1&rel=0`;
+        iframe.title = box.dataset.title ?? 'Vidéo YouTube';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.allowFullscreen = true;
+        iframe.className = 'yt__frame';
+        box.classList.add('is-playing');
+        box.append(iframe);
+        iframe.focus();
+      });
+    });
+  });
+</script>
+
+<style>
+  .yt {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #000;
+    border: 1px solid var(--line);
+  }
+  .yt--vertical {
+    aspect-ratio: 9 / 16;
+    max-width: 360px;
+  }
+  .yt__thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+    transition:
+      opacity 0.5s var(--ease-out),
+      transform 1s var(--ease-out);
+  }
+  .yt:hover .yt__thumb {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  .yt__play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 12px;
+    background: linear-gradient(to top, rgba(11, 11, 12, 0.65), transparent 55%);
+    border: 0;
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .yt__icon {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(245, 243, 238, 0.92);
+    color: var(--ink);
+    transition: transform 0.4s var(--ease-out);
+  }
+  .yt__play:hover .yt__icon,
+  .yt__play:focus-visible .yt__icon {
+    transform: scale(1.08);
+  }
+  .yt__label {
+    font-size: var(--fs-sm);
+    font-weight: 500;
+  }
+  .yt__ext {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    font-size: 12px;
+    color: var(--mist);
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(11, 11, 12, 0.6);
+  }
+  .yt.is-playing .yt__play,
+  .yt.is-playing .yt__thumb,
+  .yt.is-playing .yt__ext {
+    display: none;
+  }
+  .yt :global(.yt__frame) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+</style>

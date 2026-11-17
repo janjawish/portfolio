@@ -1,0 +1,558 @@
+/* ==========================================================================
+   Jan Jawish | système de design
+   Palette : encre, graphite, papier, brume, iris.
+   Titres : Bricolage Grotesque Variable (wght 200-800, wdth 75-100, opsz 12-96).
+   Texte : Geist Variable.
+   ========================================================================== */
+
+:root {
+  --ink: #0b0b0c;
+  --ink-2: #17181c;
+  --ink-3: #202128;
+  --paper: #f5f3ee;
+  --paper-2: #e9e6de;
+  --mist: #a8aab5;
+  --mist-2: #8e909b;
+  --iris: #858bb9;
+  --iris-2: #a9aed6;
+  --line: rgba(245, 243, 238, 0.1);
+  --line-strong: rgba(245, 243, 238, 0.18);
+  --iris-soft: rgba(133, 139, 185, 0.14);
+
+  --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Geist Variable', 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --gutter: clamp(16px, 4.2vw, 56px);
+  --maxw: 1440px;
+  --section: clamp(96px, 14vw, 200px);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --fs-lead: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+  --fs-h4: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-h3: clamp(1.5rem, 1.2rem + 1.2vw, 2.125rem);
+  --fs-h2: clamp(2.25rem, 1.4rem + 3.6vw, 4.75rem);
+  --fs-h1: clamp(2.75rem, 1.5rem + 6vw, 8rem);
+  --fs-mega: clamp(4.25rem, 0.5rem + 15.5vw, 16.5rem);
+
+  color-scheme: dark;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  /* Barre de défilement masquée (le défilement reste possible : molette, clavier, tactile). */
+  scrollbar-width: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 96px;
+  overflow-x: clip;
+  background: var(--ink);
+}
+/* Intro de l'accueil (classe .intro sur <html>, voir BaseLayout et HeroScene) :
+   l'en-tête, le texte du hero et l'assistant apparaissent les uns après les autres à la fin. */
+.site-header,
+.hero__bottom,
+.asst-launcher {
+  --intro-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero__bottom {
+  transition:
+    opacity 1s var(--intro-ease) var(--intro-delay, 0s),
+    translate 1s var(--intro-ease) var(--intro-delay, 0s);
+}
+.hero__bottom {
+  --intro-delay: 0.15s;
+}
+.site-header {
+  transition: opacity 1s var(--intro-ease) 0.35s;
+}
+html.intro .site-header,
+html.intro .asst-launcher {
+  opacity: 0;
+  pointer-events: none;
+}
+/* 1 % plutôt que 0 : invisible à l'œil, mais le texte reste « peint » pour le navigateur
+   (sinon la mesure Largest Contentful Paint ne trouve aucun élément pendant l'intro). */
+html.intro .hero__bottom {
+  opacity: 0.01;
+  pointer-events: none;
+}
+html.intro .hero__bottom {
+  translate: 0 16px;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+/* Les canvas WebGL (prisme, verre, carrousel…) ne se surlignent jamais lors d'une sélection de texte. */
+canvas {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Défilement amorti (Lenis, src/lib/smoothScroll.ts) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+/* Avec Lenis, le décalage de l'en-tête (96 px) est appliqué une seule fois, par defilerVers() :
+   Lenis ajouterait sinon scroll-padding / scroll-margin à ce décalage. */
+html.lenis {
+  scroll-padding-top: 0;
+}
+html.lenis [id] {
+  scroll-margin-top: 0;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped,
+html.scroll-lock {
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+}
+img,
+svg,
+video,
+picture {
+  display: block;
+  max-width: 100%;
+}
+/* Flèches des curseurs Showcase Pointer : positionnées dans un conteneur sans largeur,
+   elles ne doivent pas être réduites par la règle max-width ci-dessus (sinon elles disparaissent). */
+.showcase-pointer svg {
+  max-width: none;
+}
+/* Les canvas des composants WebGL gèrent eux-mêmes leur taille (certains débordent volontairement). */
+canvas {
+  display: block;
+}
+img {
+  height: auto;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font: inherit;
+  color: inherit;
+}
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+ul,
+ol,
+dl,
+dd {
+  margin: 0;
+}
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding: 0;
+}
+::selection {
+  background: var(--iris);
+  color: var(--ink);
+}
+:focus-visible {
+  outline: 2px solid var(--iris-2);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* View transitions natives entre pages (sans JavaScript). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.35s;
+  animation-timing-function: var(--ease-out);
+}
+
+/* ---------- Typographie ---------- */
+.display,
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+  text-wrap: balance;
+}
+h1 {
+  font-size: var(--fs-h1);
+}
+h2 {
+  font-size: var(--fs-h2);
+}
+h3 {
+  font-size: var(--fs-h3);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+h4 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+p {
+  text-wrap: pretty;
+}
+.lead {
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+  color: var(--paper);
+  max-width: 44ch;
+}
+.muted {
+  color: var(--mist);
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mist);
+}
+.eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--iris);
+  box-shadow: 0 0 12px var(--iris);
+}
+.italic-accent {
+  font-style: normal;
+  font-weight: 300;
+  font-stretch: 80%;
+  color: var(--iris-2);
+}
+
+/* ---------- Layout ---------- */
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.section {
+  padding-block: var(--section);
+  position: relative;
+}
+.section--tight {
+  padding-block: clamp(64px, 9vw, 120px);
+}
+.section-head {
+  display: grid;
+  gap: clamp(20px, 2.4vw, 32px);
+  margin-bottom: clamp(48px, 7vw, 96px);
+}
+.section-head--split {
+  grid-template-columns: 1fr;
+  align-items: end;
+}
+@media (min-width: 900px) {
+  .section-head--split {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 48px;
+  }
+}
+.rule {
+  height: 1px;
+  border: 0;
+  background: var(--line);
+  margin: 0;
+}
+.paper {
+  background: var(--paper);
+  color: var(--ink);
+  color-scheme: light;
+}
+.paper .muted,
+.paper .eyebrow {
+  color: #5d5f6a;
+}
+.paper ::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1000;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+  transform: translateY(-160%);
+  transition: transform 0.25s var(--ease-out);
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ---------- Liens & boutons texte ---------- */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.45s var(--ease-out);
+}
+.link-underline:hover,
+.link-underline:focus-visible {
+  background-size: 100% 1px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--paper);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition:
+    background 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out),
+    color 0.3s var(--ease-out),
+    transform 0.3s var(--ease-out);
+}
+.btn:hover {
+  border-color: var(--paper);
+  background: rgba(245, 243, 238, 0.06);
+}
+.btn--solid {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+}
+.btn--solid:hover {
+  background: var(--iris-2);
+  border-color: var(--iris-2);
+}
+/* Bouton « verre » léger : remplace le Specular Button en mode allégé. */
+.btn--glass {
+  background: linear-gradient(180deg, rgba(133, 139, 185, 0.22), rgba(58, 61, 85, 0.35));
+  border-color: rgba(245, 243, 238, 0.24);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(245, 243, 238, 0.18);
+}
+.btn--lg {
+  min-height: 56px;
+  padding: 0 30px;
+  font-size: var(--fs-base);
+}
+.paper .btn {
+  color: var(--ink);
+  border-color: rgba(11, 11, 12, 0.2);
+}
+.paper .btn:hover {
+  border-color: var(--ink);
+  background: rgba(11, 11, 12, 0.05);
+}
+.btn .arrow {
+  transition: transform 0.4s var(--ease-out);
+}
+.btn:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* ---------- Tags ---------- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--mist);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.paper .tag {
+  border-color: rgba(11, 11, 12, 0.14);
+  color: #4a4c56;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Apparition progressive (CSS seulement, activée par JS) ---------- */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.9s var(--ease-out),
+    transform 0.9s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0s);
+}
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Prose (fiches et blog) ---------- */
+.prose {
+  max-width: 68ch;
+  color: rgba(245, 243, 238, 0.86);
+  font-size: var(--fs-base);
+  line-height: 1.75;
+}
+.prose > * + * {
+  margin-top: 1.15em;
+}
+.prose h2 {
+  font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem);
+  margin-top: 2.4em;
+  color: var(--paper);
+  line-height: 1.05;
+}
+.prose h3 {
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  margin-top: 2em;
+  color: var(--paper);
+}
+.prose h2 + *,
+.prose h3 + * {
+  margin-top: 0.8em;
+}
+.prose strong {
+  color: var(--paper);
+  font-weight: 600;
+}
+.prose a {
+  color: var(--iris-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.2em;
+}
+.prose li + li {
+  margin-top: 0.45em;
+}
+.prose li::marker {
+  color: var(--iris);
+}
+.prose blockquote {
+  margin: 2em 0;
+  padding: 0 0 0 1.2em;
+  border-left: 2px solid var(--iris);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.85rem);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+}
+.prose code {
+  font-size: 0.9em;
+  padding: 0.15em 0.4em;
+  border-radius: 6px;
+  background: var(--ink-3);
+}
+.prose pre {
+  padding: 20px;
+  border-radius: var(--radius-sm);
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  overflow-x: auto;
+}
+.prose pre code {
+  padding: 0;
+  background: none;
+}
+.prose img {
+  border-radius: var(--radius-sm);
+}
+.prose hr {
+  border: 0;
+  height: 1px;
+  background: var(--line);
+  margin: 3em 0;
+}
+
+/* Menu plein écran ouvert : l'orbe de l'assistant s'efface (elle recouvrait les liens du bas du menu). */
+html:has(.staggered-menu-wrapper[data-open]) .asst-launcher {
+  opacity: 0;
+  pointer-events: none;
+}

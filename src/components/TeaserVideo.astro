@@ -1,0 +1,81 @@
+---
+import { SITE } from '@/data/site';
+// Fichiers à placer dans public/motion/ : jan-jawish-teaser.webm, jan-jawish-teaser.mp4, jan-jawish-teaser-poster.jpg
+const base = '/motion/jan-jawish-teaser';
+const videoLd = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: 'Jan Jawish | Teaser du portfolio',
+  description: 'Teaser animé de 22 secondes du portfolio de Jan Jawish : le prisme et le nom en verre du site, puis trois curseurs (design, développement, communication) qui mènent un projet jusqu’à sa mise en ligne.',
+  thumbnailUrl: `${SITE.url}${base}-poster.jpg`,
+  contentUrl: `${SITE.url}${base}.mp4`,
+  uploadDate: '2026-11-12',
+  duration: 'PT22S',
+  inLanguage: 'fr-FR',
+  creator: { '@id': `${SITE.url}/#jan-jawish` },
+};
+---
+
+<figure class="teaser" data-reveal>
+  <video
+    class="teaser__video"
+    width="1080"
+    height="1080"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster={`${base}-poster.jpg`}
+    aria-label="Teaser animé : le nom Jan Jawish en verre sur un prisme, puis trois curseurs design, développement et communication qui mettent un projet en ligne, janjawish.fr"
+    data-teaser
+  >
+    <source src={`${base}.webm`} type="video/webm" />
+    <source src={`${base}.mp4`} type="video/mp4" />
+  </video>
+</figure>
+<script type="application/ld+json" set:html={JSON.stringify(videoLd)} />
+
+<script>
+  // Lecture seulement quand la vidéo est visible, jamais si « réduire les animations » est actif.
+  function initTeasers() {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll<HTMLVideoElement>('[data-teaser]').forEach((v) => {
+      if (v.dataset.ready) return;
+      v.dataset.ready = '1';
+      if (reduce) {
+        v.controls = true;
+        return;
+      }
+      const io = new IntersectionObserver(
+        ([e]) => {
+          if (e.isIntersecting) {
+            if (v.preload === 'none') v.preload = 'auto';
+            v.play().catch(() => {});
+          } else v.pause();
+        },
+        { threshold: 0.35 },
+      );
+      io.observe(v);
+    });
+  }
+  initTeasers();
+  document.addEventListener('astro:page-load', initTeasers);
+</script>
+
+<style>
+  .teaser {
+    margin: 0 auto;
+    width: min(100%, 640px);
+    aspect-ratio: 1 / 1;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #0b0b0c;
+    border: 1px solid rgba(245, 243, 238, 0.08);
+  }
+  .teaser__video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>

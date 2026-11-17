@@ -1,0 +1,14 @@
+{
+  "name": "Jan Jawish | Portfolio",
+  "short_name": "Jan Jawish",
+  "lang": "fr",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0B0B0C",
+  "theme_color": "#0B0B0C",
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" },
+    { "src": "/apple-touch-icon.png", "type": "image/png", "sizes": "180x180" }
+  ]
+}

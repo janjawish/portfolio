@@ -1,0 +1,296 @@
+---
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import SectionHead from '@/components/SectionHead.astro';
+import Timeline from '@/components/Timeline.astro';
+import { OrbitBadge } from '@/components/islands/OrbitBadge';
+import { PERSON, SITE, SOCIALS, SKILLS } from '@/data/site';
+import { BOOKS, ARTISTS, FILMS, INTERESTS } from '@/data/passions';
+import portrait from '@/assets/about/jan-jawish-portrait-studio.jpg';
+import PortraitReveal from '@/components/islands/PortraitReveal';
+const portraitImg = await getImage({ src: portrait, width: portrait.width, format: 'webp', quality: 82 });
+const portraitFull = await getImage({ src: portrait, width: portrait.width, format: 'webp', quality: 86 });
+
+const passions = [
+  { id: 'livres', title: 'Livres', items: BOOKS.map((b) => ({ name: b.title, meta: b.author, text: b.opinion })) },
+  { id: 'musique', title: 'Musique', items: ARTISTS.map((a) => ({ name: a.name, meta: 'Artiste', text: a.opinion })) },
+  { id: 'cinema', title: 'Cinéma', items: FILMS.map((f) => ({ name: f.title, meta: `${f.director} · ${f.year}`, text: f.opinion })) },
+  { id: 'interets', title: 'Centres d’intérêt', items: INTERESTS.map((i) => ({ name: i.name, meta: '', text: i.opinion })) },
+];
+
+const jsonLd = [
+  {
+    '@type': 'AboutPage',
+    '@id': `${SITE.url}/a-propos#page`,
+    url: `${SITE.url}/a-propos`,
+    name: 'À propos | Jan Jawish',
+    inLanguage: 'fr-FR',
+    isPartOf: { '@id': `${SITE.url}/#website` },
+    about: { '@id': `${SITE.url}/#jan-jawish` },
+    mainEntity: { '@id': `${SITE.url}/#jan-jawish` },
+  },
+];
+---
+
+<BaseLayout
+  title="À propos : parcours de Jan Jawish, étudiant MMI"
+  description="Parcours, méthode et passions de Jan Jawish : étudiant en 3e année de BUT MMI à l’IUT de Vélizy (parcours développement web) et alternant chez Alphalives."
+  type="profile"
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow="À propos"
+    title="Le code, l’image<br/>et les mots."
+    lead="Développeur web junior, en alternance chez Alphalives et en dernière année de BUT MMI à l’IUT de Vélizy."
+    crumbs={[{ label: 'À propos' }]}
+  />
+
+  <section class="section" aria-labelledby="bio-title">
+    <div class="container bio">
+      <figure class="bio__figure" data-reveal>
+        <PortraitReveal client:visible src={portraitImg.src} full={portraitFull.src} width={portrait.width} height={portrait.height} alt="Portrait studio de Jan Jawish, face caméra" />
+        <div class="bio__badge"><OrbitBadge client:visible text="WEB • DESIGN • IMAGE • COM • " /></div>
+      </figure>
+      <div class="bio__text">
+        <h2 id="bio-title" class="bio__title" data-reveal>Bonjour, je suis Jan.</h2>
+        <div class="prose bio__prose" data-reveal>
+          <p>
+            Je suis étudiant en troisième année de BUT Métiers du Multimédia et de l’Internet à l’<strong>{PERSON.school}</strong>, parcours
+            développement web, et alternant chez <strong>{PERSON.company}</strong>. Mes deux premières années de BUT, à l’IUT de Rouen sur le site
+            d’Elbeuf, se sont faites en parcours Création numérique.
+          </p>
+          <p>
+            Profil digital polyvalent, je relie marketing digital, communication, développement web, UI/UX et audiovisuel pour passer d’une idée à une
+            réalisation cohérente.
+          </p>
+          <p>
+            Mes expériences m’ont appris à échanger directement avec des professionnels, à poser les bonnes questions et à cadrer une demande avant de
+            produire. Quand le besoin est encore flou, je cherche ce qui sera réellement utile à l’entreprise et à ses utilisateurs.
+          </p>
+          <p>
+            Mon stage chez The Exit, escape game à Poissy et Saint-Germain-en-Laye, résume bien cette façon de travailler : une charte graphique, six
+            vidéos, un site WordPress optimisé et deux outils internes - reliés par la même stratégie.
+          </p>
+        </div>
+        <div class="bio__actions" data-reveal>
+          <a class="btn btn--solid" href="/contact">Me contacter <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="btn" href={SITE.cv} target="_blank" rel="noopener">Télécharger le CV (PDF)</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="parcours" class="section section--tight" aria-labelledby="parcours-title">
+    <div class="container">
+      <SectionHead id="parcours-title" eyebrow="Parcours" title="Formation & expériences." />
+      <Timeline />
+    </div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="facts-title">
+    <div class="container facts">
+      <h2 id="facts-title" class="visually-hidden">En bref</h2>
+      <div class="fact" data-reveal>
+        <p class="fact__label">Langues</p>
+        <ul role="list" class="fact__list">
+          {PERSON.languages.map((l) => <li><strong>{l.name}</strong> <span class="muted">- {l.level}</span></li>)}
+        </ul>
+      </div>
+      <div class="fact" data-reveal style="--reveal-delay:.06s">
+        <p class="fact__label">Domaines</p>
+        <ul role="list" class="fact__list">
+          {SKILLS.map((s) => <li><a class="link-underline" href={`/competences#${s.id}`}>{s.title}</a></li>)}
+        </ul>
+      </div>
+      <div class="fact" data-reveal style="--reveal-delay:.12s">
+        <p class="fact__label">Mobilité</p>
+        <p>{PERSON.location}</p>
+        <p class="fact__label" style="margin-top:28px">Me retrouver</p>
+        <ul role="list" class="fact__list">
+          {SOCIALS.map((s) => <li><a class="link-underline" href={s.href} target="_blank" rel="noopener me">{s.label}</a></li>)}
+          <li><a class="link-underline" href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="passions-title">
+    <div class="container">
+      <SectionHead
+        id="passions-title"
+        eyebrow="Ce qui me nourrit"
+        title="Livres, musique, cinéma."
+        lead="La communication, les relations humaines et les récits forts : ce que je lis, écoute et regarde dit beaucoup de ma façon de travailler."
+      />
+      <div class="passions">
+        {
+          passions.map((group) => (
+            <div class="passions__group" data-reveal>
+              <h3 class="passions__title">{group.title}</h3>
+              {group.items.map((item) => (
+                <details class="passion">
+                  <summary>
+                    <span class="passion__name">{item.name}</span>
+                    {item.meta && <span class="passion__meta">{item.meta}</span>}
+                    <span class="passion__icon" aria-hidden="true" />
+                  </summary>
+                  <p>{item.text}</p>
+                </details>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .bio {
+    display: grid;
+    gap: clamp(48px, 6vw, 96px);
+    align-items: start;
+  }
+  @media (min-width: 980px) {
+    .bio {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    }
+    .bio__figure {
+      position: sticky;
+      top: 120px;
+    }
+  }
+  .bio__figure {
+    position: relative;
+    max-width: 520px;
+  }
+  .bio__badge {
+    position: absolute;
+    right: -32px;
+    bottom: -44px;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background: var(--ink);
+    display: grid;
+    place-items: center;
+  }
+  @media (max-width: 600px) {
+    .bio__badge {
+      right: -4px;
+      transform: scale(0.8);
+    }
+  }
+  .bio__text {
+    display: grid;
+    gap: 32px;
+  }
+  .bio__title {
+    font-size: var(--fs-h2);
+  }
+  .bio__prose {
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+  }
+  .bio__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .facts {
+    display: grid;
+    gap: 48px;
+  }
+  @media (min-width: 860px) {
+    .facts {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .fact__label {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mist-2);
+    margin-bottom: 16px;
+  }
+  .fact__list {
+    display: grid;
+    gap: 8px;
+    font-size: var(--fs-sm);
+  }
+  .passions {
+    display: grid;
+    gap: 40px 32px;
+  }
+  @media (min-width: 900px) {
+    .passions {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .passions__title {
+    font-size: var(--fs-h4);
+    margin-bottom: 12px;
+  }
+  .passion {
+    border-top: 1px solid var(--line);
+  }
+  .passions__group .passion:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .passion summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2px 16px;
+    align-items: center;
+    padding: 16px 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .passion summary::-webkit-details-marker {
+    display: none;
+  }
+  .passion__name {
+    font-weight: 500;
+  }
+  .passion__meta {
+    grid-column: 1;
+    font-size: var(--fs-xs);
+    color: var(--mist-2);
+  }
+  .passion__icon {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: 14px;
+    height: 14px;
+    position: relative;
+  }
+  .passion__icon::before,
+  .passion__icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 14px;
+    height: 1.5px;
+    background: var(--mist);
+    transition: transform 0.4s var(--ease-out);
+  }
+  .passion__icon::after {
+    transform: rotate(90deg);
+  }
+  .passion[open] .passion__icon::after {
+    transform: rotate(0deg);
+  }
+  .passion p {
+    padding: 0 0 20px;
+    color: var(--mist);
+    font-size: var(--fs-sm);
+    line-height: 1.7;
+    max-width: 64ch;
+  }
+  .passion summary:hover .passion__name {
+    color: var(--iris-2);
+  }
+</style>

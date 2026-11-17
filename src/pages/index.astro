@@ -1,0 +1,328 @@
+---
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/home/Hero.astro';
+import SectionHead from '@/components/SectionHead.astro';
+import Timeline from '@/components/Timeline.astro';
+import ApproachSteps from '@/components/ApproachSteps.astro';
+import SpecializedCards from '@/components/SpecializedCards.astro';
+import PostCard from '@/components/PostCard.astro';
+import { RevealText } from '@/components/islands/RevealText';
+import { OrbitBadge } from '@/components/islands/OrbitBadge';
+import PortraitReveal from '@/components/islands/PortraitReveal';
+import SkillCards from '@/components/islands/SkillCards';
+import ShowcaseStory from '@/components/islands/ShowcaseStory';
+import ProjectsCarousel from '@/components/islands/ProjectsCarousel';
+import { TopoBackdrop } from '@/components/islands/Decor';
+import { SKILLS } from '@/data/site';
+import { getFeatured, projectUrl, disciplineLabel } from '@/lib/projects';
+import { getPosts } from '@/lib/blog';
+import portrait from '@/assets/about/jan-jawish-portrait-studio.jpg';
+
+const portraitImg = await getImage({ src: portrait, width: 760, format: 'webp', quality: 82 });
+const portraitFull = await getImage({ src: portrait, width: portrait.width, format: 'webp', quality: 86 });
+const featured = await getFeatured(7);
+const carouselItems = await Promise.all(
+  featured.map(async (p) => {
+    const img = await getImage({ src: p.data.cover, width: 1280, format: 'webp', quality: 78 });
+    return {
+      src: img.src,
+      alt: p.data.coverAlt,
+      title: p.data.title,
+      subtitle: `${p.data.year} · ${p.data.disciplines.map(disciplineLabel).slice(0, 2).join(' · ')}`,
+      href: projectUrl(p),
+    };
+  }),
+);
+const posts = (await getPosts()).slice(0, 3);
+const skillCards = SKILLS.map((s) => ({ id: s.id, index: s.index, title: s.title, short: s.short, tools: s.tools, href: `/competences#${s.id}` }));
+
+const jsonLd = [
+  {
+    '@type': 'ProfilePage',
+    '@id': 'https://www.janjawish.fr/#profile',
+    url: 'https://www.janjawish.fr/',
+    name: 'Jan Jawish | Portfolio',
+    inLanguage: 'fr-FR',
+    mainEntity: { '@id': 'https://www.janjawish.fr/#jan-jawish' },
+  },
+];
+---
+
+<BaseLayout jsonLd={jsonLd}>
+  <Hero />
+
+  <!-- Présentation -->
+  <section id="decouvrir" class="intro section" aria-labelledby="intro-title">
+    <div class="container intro__grid">
+      <div class="intro__text">
+        <h2 id="intro-title" class="visually-hidden" tabindex="-1">Qui est Jan Jawish ?</h2>
+        <RevealText
+          client:visible
+          text="Je relie le développement web, le design, l’image et la communication pour passer d’une idée à une réalisation cohérente."
+        />
+        <a class="btn" href="/a-propos" data-reveal>Mon parcours en détail <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <figure class="intro__figure" data-reveal>
+        <PortraitReveal
+          client:visible
+          src={portraitImg.src}
+          full={portraitFull.src}
+          width={portrait.width}
+          height={portrait.height}
+          alt="Portrait studio de Jan Jawish, face caméra"
+        />
+        <div class="intro__badge">
+          <OrbitBadge client:visible text="WEB • DESIGN • IMAGE • COM • " />
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Showcase Pointer -->
+  <section class="section showcase" aria-labelledby="showcase-title">
+    <div class="container">
+      <SectionHead
+        id="showcase-title"
+        eyebrow="Polyvalence"
+        title="Une idée. Plusieurs expertises. Un seul interlocuteur."
+      />
+      <ShowcaseStory client:visible />
+    </div>
+  </section>
+
+  <!-- Projets -->
+  <section class="section section--tight" aria-labelledby="work-title">
+    <div class="container">
+      <h2 id="work-title" class="visually-hidden">Projets</h2>
+      <ProjectsCarousel client:visible items={carouselItems} />
+      <ul class="work-list" role="list">
+        {
+          featured.map((p) => (
+            <li data-reveal>
+              <a href={projectUrl(p)} class="work-row">
+                <span class="work-row__year">{p.data.year}</span>
+                <span class="work-row__title">{p.data.title}</span>
+                <span class="work-row__desc muted">{p.data.headline}</span>
+                <span class="work-row__tags">{p.data.disciplines.map(disciplineLabel).slice(0, 3).join(' · ')}</span>
+                <span class="work-row__arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="more"><a class="btn btn--solid" href="/projets">Tous les projets <span class="arrow" aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <!-- Parcours -->
+  <section class="section section--tight" aria-labelledby="journey-title">
+    <div class="container">
+      <SectionHead id="journey-title" eyebrow="Parcours" title="Formation & expériences." />
+      <Timeline />
+    </div>
+  </section>
+
+  <!-- Compétences -->
+  <section class="section section--tight" aria-labelledby="skills-title">
+    <div class="container">
+      <SectionHead
+        id="skills-title"
+        eyebrow="Compétences"
+        title="Dix domaines,<br/>une même méthode."
+      />
+      <SkillCards client:visible skills={skillCards} compact />
+      <div class="more"><a class="btn" href="/competences">Toutes les compétences <span class="arrow" aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+
+  <!-- Approche -->
+  <section class="section approach-section" aria-labelledby="approach-title">
+    <TopoBackdrop client:visible />
+    <div class="container approach-section__inner">
+      <SectionHead
+        id="approach-title"
+        eyebrow="Mon approche"
+        title="Comprendre d’abord. Concevoir juste. Produire concrètement."
+      />
+      <ApproachSteps />
+      <div class="more"><a class="btn" href="/approche">Ma façon de travailler <span class="arrow" aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <!-- Portfolios spécialisés -->
+  <section class="section section--tight" aria-labelledby="spec-title">
+    <div class="container">
+      <SectionHead
+        id="spec-title"
+        title="Deux portfolios pour aller plus loin."
+      />
+      <SpecializedCards />
+    </div>
+  </section>
+
+  <!-- Blog -->
+  {
+    posts.length > 0 && (
+      <section class="section section--tight" aria-labelledby="blog-title">
+        <div class="container">
+          <SectionHead id="blog-title" eyebrow="Blog" title="Notes & retours d’expérience." />
+          <div class="posts">
+            {posts.map((post) => (
+              <PostCard post={post} />
+            ))}
+          </div>
+          <div class="more">
+            <a class="btn" href="/blog">
+              Tous les articles <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .intro {
+    background: var(--ink);
+  }
+  .intro__grid {
+    display: grid;
+    gap: clamp(48px, 6vw, 96px);
+    align-items: center;
+  }
+  @media (min-width: 980px) {
+    .intro__grid {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.8fr);
+    }
+  }
+  .intro__text {
+    display: grid;
+    gap: clamp(28px, 3vw, 44px);
+    justify-items: start;
+  }
+  .intro__figure {
+    position: relative;
+    justify-self: center;
+    width: min(100%, 460px);
+  }
+  .intro__badge {
+    position: absolute;
+    left: -48px;
+    bottom: -48px;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background: var(--ink);
+    display: grid;
+    place-items: center;
+  }
+  @media (max-width: 600px) {
+    .intro__badge {
+      left: 18px;
+      bottom: -40px;
+      transform: scale(0.72);
+      transform-origin: bottom left;
+    }
+  }
+  .more {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: clamp(32px, 4vw, 56px);
+  }
+  .showcase {
+    background:
+      radial-gradient(60% 40% at 80% 20%, rgba(133, 139, 185, 0.08), transparent 70%),
+      var(--ink);
+  }
+  .work-list {
+    list-style: none;
+    margin: clamp(40px, 5vw, 72px) 0 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .work-row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 6px 20px;
+    align-items: baseline;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+    transition: padding 0.5s var(--ease-out);
+  }
+  .work-row__year {
+    font-size: var(--fs-xs);
+    color: var(--mist-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .work-row__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2.2rem);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+  .work-row__desc,
+  .work-row__tags {
+    grid-column: 2;
+    font-size: var(--fs-sm);
+  }
+  .work-row__tags {
+    color: var(--mist-2);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .work-row__arrow {
+    grid-column: 3;
+    grid-row: 1;
+    color: var(--mist);
+    transition:
+      transform 0.5s var(--ease-out),
+      color 0.5s var(--ease-out);
+  }
+  @media (min-width: 900px) {
+    .work-row {
+      grid-template-columns: 70px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.8fr) 30px;
+      align-items: center;
+    }
+    .work-row__desc,
+    .work-row__tags {
+      grid-column: auto;
+    }
+    .work-row__arrow {
+      grid-column: auto;
+      grid-row: auto;
+    }
+  }
+  .work-row:hover {
+    padding-left: 12px;
+  }
+  .work-row:hover .work-row__arrow {
+    transform: translateX(4px);
+    color: var(--paper);
+  }
+  .approach-section {
+    position: relative;
+    overflow: hidden;
+  }
+  .approach-section__inner {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .approach-section__inner :global(a) {
+    pointer-events: auto;
+  }
+  .posts {
+    display: grid;
+    gap: 32px;
+  }
+  @media (min-width: 900px) {
+    .posts {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

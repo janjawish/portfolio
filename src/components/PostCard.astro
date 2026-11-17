@@ -1,0 +1,97 @@
+---
+import { Image } from 'astro:assets';
+import type { Post } from '@/lib/blog';
+import { formatDate, readingTime } from '@/lib/blog';
+export interface Props {
+  post: Post;
+  headingLevel?: 'h2' | 'h3';
+}
+const { post, headingLevel = 'h3' } = Astro.props;
+const H = headingLevel;
+---
+
+<article class="post-card" data-reveal>
+  <a href={`/blog/${post.id}`} class="post-card__link">
+    <div class="post-card__media">
+      {
+        post.data.cover ? (
+          <Image src={post.data.cover} alt="" widths={[480, 800]} sizes="(min-width: 900px) 33vw, 100vw" class="post-card__img" />
+        ) : (
+          <span class="post-card__placeholder" aria-hidden="true">
+            {post.data.tags[0] ?? 'Blog'}
+          </span>
+        )
+      }
+    </div>
+    <div class="post-card__body">
+      <p class="post-card__meta">
+        <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+        <span aria-hidden="true">·</span>
+        <span>{readingTime(post.body)} min de lecture</span>
+      </p>
+      <H class="post-card__title">{post.data.title}</H>
+      <p class="post-card__desc muted">{post.data.description}</p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .post-card__link {
+    display: grid;
+    gap: 20px;
+    height: 100%;
+  }
+  .post-card__media {
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--ink-2);
+    border: 1px solid var(--line);
+  }
+  .post-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s var(--ease-out);
+  }
+  .post-card__link:hover .post-card__img {
+    transform: scale(1.04);
+  }
+  .post-card__placeholder {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    color: var(--iris-2);
+    background: radial-gradient(70% 70% at 30% 20%, rgba(133, 139, 185, 0.22), transparent 70%), var(--ink-2);
+  }
+  .post-card__body {
+    display: grid;
+    gap: 10px;
+  }
+  .post-card__meta {
+    display: flex;
+    gap: 8px;
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
+    color: var(--mist-2);
+  }
+  .post-card__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.65rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+    transition: color 0.4s var(--ease-out);
+  }
+  .post-card__link:hover .post-card__title {
+    color: var(--iris-2);
+  }
+  .post-card__desc {
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+  }
+</style>

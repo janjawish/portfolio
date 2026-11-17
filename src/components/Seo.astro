@@ -1,0 +1,123 @@
+---
+import { SITE, PERSON, SOCIALS } from '@/data/site';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  /** Chemin absolu de l'image Open Graph (1200×630) ou URL complète. */
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article' | 'profile';
+  noindex?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+  /** Données structurées propres à la page (fusionnées dans le @graph). */
+  jsonLd?: Record<string, unknown>[];
+  /** Mots-clés de l'article (article:tag). */
+  tags?: string[];
+}
+
+const {
+  title,
+  description = SITE.description,
+  image = SITE.ogImage,
+  imageAlt = 'Jan Jawish | portfolio',
+  type = 'website',
+  noindex = false,
+  publishedTime,
+  modifiedTime,
+  jsonLd = [],
+  tags = [],
+} = Astro.props;
+
+// Google tronque vers 60 caractères : le suffixe « | Jan Jawish » n'est ajouté que s'il tient
+// et si le nom n'est pas déjà dans le titre.
+const BRAND = ' | Jan Jawish';
+const fullTitle = !title
+  ? SITE.title
+  : title.includes('Jan Jawish') || title.length + BRAND.length > 60
+    ? title
+    : `${title}${BRAND}`;
+
+// Codes de vérification (Search Console, Bing Webmaster Tools), facultatifs, via variables d'environnement.
+const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+const bingVerification = import.meta.env.PUBLIC_BING_SITE_VERIFICATION;
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const canonical = pathname === '/' ? `${SITE.url}/` : `${SITE.url}${pathname}`;
+const imageUrl = image.startsWith('http') ? image : new URL(image, SITE.url).href;
+
+const personId = `${SITE.url}/#jan-jawish`;
+const websiteId = `${SITE.url}/#website`;
+
+const graph = [
+  {
+    '@type': 'Person',
+    '@id': personId,
+    name: PERSON.name,
+    url: `${SITE.url}/`,
+    image: `${SITE.url}/og/jan-jawish-portrait.jpg`,
+    jobTitle: PERSON.role,
+    email: `mailto:${SITE.email}`,
+    alumniOf: { '@type': 'CollegeOrUniversity', name: PERSON.school },
+    worksFor: { '@type': 'Organization', name: PERSON.company },
+    knowsLanguage: PERSON.languages.map((l) => l.name),
+    knowsAbout: [
+      'Développement web',
+      'UI/UX design',
+      'Graphisme',
+      'Audiovisuel',
+      'Photographie',
+      'Communication',
+      'Marketing digital',
+      'SEO',
+      'Modélisation 3D',
+      'Gestion de projet',
+    ],
+    sameAs: SOCIALS.map((s) => s.href),
+  },
+  {
+    '@type': 'WebSite',
+    '@id': websiteId,
+    url: `${SITE.url}/`,
+    name: 'Jan Jawish | Portfolio',
+    inLanguage: 'fr-FR',
+    publisher: { '@id': personId },
+  },
+  ...jsonLd,
+];
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta
+  name="robots"
+  content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+/>
+{!noindex && <link rel="alternate" hreflang="fr" href={canonical} />}
+{!noindex && <link rel="alternate" hreflang="x-default" href={canonical} />}
+{googleVerification && <meta name="google-site-verification" content={googleVerification} />}
+{bingVerification && <meta name="msvalidate.01" content={bingVerification} />}
+<meta name="author" content="Jan Jawish" />
+
+<meta property="og:site_name" content="Jan Jawish" />
+<meta property="og:locale" content="fr_FR" />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:alt" content={imageAlt} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+{type === 'article' && <meta property="article:author" content={`${SITE.url}/a-propos`} />}
+{type === 'article' && tags.map((t) => <meta property="article:tag" content={t} />)}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+
+<script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })} />

@@ -1,0 +1,159 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "astro",
+  "buildCommand": "npm run build:fast",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "janjawish.fr"
+        }
+      ],
+      "destination": "https://www.janjawish.fr/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/projects/fidal-normandie",
+      "destination": "/projets/fidal",
+      "permanent": true
+    },
+    {
+      "source": "/projets/fidal-normandie",
+      "destination": "/projets/fidal",
+      "permanent": true
+    },
+    {
+      "source": "/projets/folio-cours",
+      "destination": "/projets/folio",
+      "permanent": true
+    },
+    {
+      "source": "/projets/mmihub",
+      "destination": "/projets/mmi-hub",
+      "permanent": true
+    },
+    {
+      "source": "/projets/cadran",
+      "destination": "/projets",
+      "permanent": true
+    },
+    {
+      "source": "/projets/interview-copilot",
+      "destination": "/projets",
+      "permanent": true
+    },
+    {
+      "source": "/projets/raspberry-bedroom-dashboard",
+      "destination": "/projets",
+      "permanent": true
+    },
+    {
+      "source": "/projects/folio-cours",
+      "destination": "/projets/folio",
+      "permanent": true
+    },
+    {
+      "source": "/projects/mmihub",
+      "destination": "/projets/mmi-hub",
+      "permanent": true
+    },
+    {
+      "source": "/projets/oopticien-pro",
+      "destination": "/projets/opticalpro",
+      "permanent": true
+    },
+    {
+      "source": "/projects/oopticien-pro",
+      "destination": "/projets/opticalpro",
+      "permanent": true
+    },
+    {
+      "source": "/projets/oopticien",
+      "destination": "/projets/boutique-optique",
+      "permanent": true
+    },
+    {
+      "source": "/blog/application-metier-oopticien-pro",
+      "destination": "/blog/application-metier-opticalpro",
+      "permanent": true
+    },
+    {
+      "source": "/projects/:slug",
+      "destination": "/projets/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/accueil",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/projets.html",
+      "destination": "/projets",
+      "permanent": true
+    },
+    {
+      "source": "/a-propos.html",
+      "destination": "/a-propos",
+      "permanent": true
+    },
+    {
+      "source": "/assets/pdfs/cv.pdf",
+      "destination": "/documents/cv-jan-jawish.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/assets/pdfs/:file",
+      "destination": "/documents/archives/:file",
+      "permanent": true
+    },
+    {
+      "source": "/page.html",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/page",
+      "destination": "/contact",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/_astro/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ]
+}

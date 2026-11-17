@@ -1,0 +1,91 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import SectionHead from '@/components/SectionHead.astro';
+import ApproachSteps from '@/components/ApproachSteps.astro';
+import ApproachStepper from '@/components/islands/ApproachStepper';
+import { TopoBackdrop } from '@/components/islands/Decor';
+import { APPROACH, SITE } from '@/data/site';
+
+/** Exemples tirés exclusivement des études de cas publiées. */
+const details = [
+  {
+    actions: ['Échanger avec les personnes concernées', 'Observer l’existant : site, réseaux, parcours client, tâches internes', 'Reformuler le besoin et les priorités'],
+    example: { label: 'The Exit', href: '/projets/the-exit', text: 'Le stage a commencé par un audit du site, des réseaux, du parcours client et des tâches internes avant toute production.' },
+  },
+  {
+    actions: ['Parcours utilisateur et architecture de l’information', 'Wireframes et maquettes Figma', 'Identité visuelle et charte graphique'],
+    example: { label: 'HOP', href: '/projets/hop', text: 'Deux parcours - collaborateur et entreprise - pensés dans Figma avec une navigation persistante et des actions lisibles.' },
+  },
+  {
+    actions: ['Développement web et applications métier', 'Écriture, tournage, montage et motion design', 'Rédaction web et contenus pour les réseaux sociaux'],
+    example: { label: 'OpticalPro', href: '/projets/opticalpro', text: 'Une application PHP/MariaDB déployée sur le réseau local, avec import CSV, OCR des PDF Cosium et relances préparées.' },
+  },
+  {
+    actions: ['Google Search Console et PageSpeed Insights', 'Statistiques des réseaux sociaux', 'Comparaison avant / après'],
+    example: { label: 'The Exit', href: '/projets/the-exit', text: 'Clics issus de Google passés de 789 à 1,4 k et score SEO mobile de 45 à 100 sur la période suivie.' },
+  },
+  {
+    actions: ['Tutoriels intégrés aux outils', 'Vidéos explicatives avec voix off', 'Centre d’aide et procédures métier'],
+    example: { label: 'OpticalPro', href: '/projets/opticalpro', text: 'Un centre d’aide intégré guide l’équipe dans les opérations courantes de l’application.' },
+  },
+];
+const phases = APPROACH.map((a, i) => ({ title: a.title, text: a.text, ...details[i] }));
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    '@id': `${SITE.url}/approche#page`,
+    url: `${SITE.url}/approche`,
+    name: 'Mon approche | Jan Jawish',
+    inLanguage: 'fr-FR',
+    isPartOf: { '@id': `${SITE.url}/#website` },
+    about: { '@id': `${SITE.url}/#jan-jawish` },
+  },
+];
+---
+
+<BaseLayout
+  title="Mon approche : une méthode en cinq étapes"
+  description="Comprendre, concevoir, produire, mesurer, transmettre : la méthode de travail de Jan Jawish, illustrée par des exemples réels issus de ses projets."
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow="Mon approche"
+    title="Comprendre d’abord. Produire concrètement."
+    lead="Quand le besoin est encore flou, je cherche ce qui sera réellement utile à l’entreprise et à ses utilisateurs. Voici comment."
+    crumbs={[{ label: 'Approche' }]}
+  />
+
+  <section class="section approach-hero" aria-labelledby="steps-title">
+    <TopoBackdrop client:visible />
+    <div class="container approach-hero__inner">
+      <SectionHead id="steps-title" eyebrow="Cinq temps" title="Du premier échange à la passation." />
+      <ApproachSteps showSources />
+    </div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="walk-title">
+    <div class="container">
+      <SectionHead
+        id="walk-title"
+        eyebrow="Pas à pas"
+        title="La méthode, appliquée."
+        lead="Parcourez chaque étape : ce que je fais concrètement, et un exemple tiré d’un projet réel."
+      />
+      <ApproachStepper client:visible phases={phases} />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .approach-hero {
+    position: relative;
+    overflow: hidden;
+  }
+  .approach-hero__inner {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+  }
+</style>

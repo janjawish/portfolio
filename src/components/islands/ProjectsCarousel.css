@@ -1,0 +1,124 @@
+/*
+ * Piste de défilement : la scène (carrousel + barre) reste fixée au milieu de l'écran
+ * pendant (n - 1) pas de défilement, un pas par projet.
+ */
+.projects-carousel {
+  --pc-stage: clamp(380px, 52vw, 640px);
+  --pc-sticky: calc(var(--pc-stage) + 76px);
+  --pc-step: 48svh;
+  position: relative;
+  height: calc(var(--pc-sticky) + (var(--pc-count, 7) - 1) * var(--pc-step));
+}
+.projects-carousel__sticky {
+  position: sticky;
+  top: max(84px, calc((100svh - var(--pc-sticky)) / 2));
+  display: grid;
+  gap: 20px;
+}
+@media (max-width: 760px) {
+  .projects-carousel {
+    --pc-step: 40svh;
+  }
+}
+/* La scène déborde du conteneur : les cartes vont jusqu'aux bords de l'écran. */
+.projects-carousel__stage.flex-carousel {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  height: var(--pc-stage);
+  border-radius: 0;
+}
+.projects-carousel .flex-carousel__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+.projects-carousel__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 56px;
+}
+.projects-carousel__bar {
+  flex: 1;
+  max-width: 320px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+.projects-carousel__bar span {
+  display: block;
+  height: 100%;
+  background: var(--iris-2);
+  transform-origin: left center;
+  transition: transform 0.2s linear;
+}
+@media (max-width: 520px) {
+  .projects-carousel__bar {
+    display: none;
+  }
+  .projects-carousel__meta {
+    justify-content: flex-end;
+  }
+}
+/* Légende (titre, année, disciplines, n° / total) toujours au-dessus des cartes courbées, et lisible. */
+.projects-carousel .flex-carousel__caption {
+  z-index: 3;
+  text-shadow:
+    0 1px 2px rgba(11, 11, 12, 0.95),
+    0 0 16px rgba(11, 11, 12, 0.9),
+    0 0 32px rgba(11, 11, 12, 0.8);
+}
+.projects-carousel .flex-carousel__title {
+  font-size: 17px;
+  color: var(--paper);
+}
+.projects-carousel .flex-carousel__subtitle,
+.projects-carousel .flex-carousel__count {
+  color: rgba(245, 243, 238, 0.82);
+}
+
+/* ----- Mode allégé : rangée de cartes ----- */
+.projects-lite {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(78vw, 420px);
+  gap: 16px;
+  margin: 0 calc(var(--gutter) * -1);
+  padding: 4px var(--gutter) 20px;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.projects-lite::-webkit-scrollbar {
+  display: none;
+}
+.projects-lite li {
+  scroll-snap-align: start;
+}
+.projects-lite__card {
+  display: grid;
+  gap: 6px;
+  color: var(--paper);
+}
+.projects-lite__card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  margin-bottom: 8px;
+}
+.projects-lite__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+.projects-lite__sub {
+  font-size: var(--fs-sm);
+  color: var(--mist);
+}

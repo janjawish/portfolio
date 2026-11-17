@@ -1,0 +1,39 @@
+---
+export interface Props {
+  eyebrow?: string;
+  title: string;
+  id?: string;
+  lead?: string;
+  level?: 'h1' | 'h2';
+  split?: boolean;
+}
+// `eyebrow` est conservé pour compatibilité mais n'est plus affiché (choix de Jan, 15/11/2026).
+const { title, id, lead, level = 'h2', split = true } = Astro.props;
+const Tag = level;
+---
+
+<header class:list={['section-head', { 'section-head--split': split && lead }]}>
+  <div class="sh-left">
+    <Tag id={id} class="sh-title" data-reveal style="--reveal-delay:.06s" tabindex={level === 'h2' ? -1 : undefined} set:html={title} />
+  </div>
+  {lead && <p class="sh-lead muted" data-reveal style="--reveal-delay:.12s">{lead}</p>}
+  <slot />
+</header>
+
+<style>
+  .sh-left {
+    display: grid;
+    gap: 22px;
+  }
+  .sh-title {
+    max-width: 16ch;
+  }
+  .sh-title:focus {
+    outline: none;
+  }
+  .sh-lead {
+    max-width: 46ch;
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+  }
+</style>

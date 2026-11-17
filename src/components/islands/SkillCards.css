@@ -1,0 +1,98 @@
+.skill-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+}
+@media (min-width: 1200px) {
+  .skill-cards {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+.skill-cards__item {
+  display: flex;
+}
+.skill-cards__glow.border-glow-card {
+  width: 100%;
+  height: 100%;
+}
+.skill-cards__glow .border-glow-inner {
+  height: 100%;
+}
+.skill-cards__link {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  height: 100%;
+  min-height: 230px;
+  padding: 26px 24px 24px;
+  color: var(--paper);
+}
+.skill-cards--compact .skill-cards__link {
+  min-height: 190px;
+}
+.skill-cards__index {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  color: var(--iris-2);
+  margin-bottom: auto;
+}
+.skill-cards__title {
+  margin-top: 36px;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 1.2rem + 0.6vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.skill-cards__short {
+  color: var(--mist);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.skill-cards__tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.skill-cards__arrow {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  font-size: 18px;
+  color: var(--mist);
+  transition:
+    transform 0.4s var(--ease-out),
+    color 0.4s var(--ease-out);
+}
+.skill-cards__link:hover .skill-cards__arrow,
+.skill-cards__link:focus-visible .skill-cards__arrow {
+  transform: translate(3px, -3px);
+  color: var(--paper);
+}
+@media (max-width: 640px) {
+  .skill-cards--compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .skill-cards--compact .skill-cards__link {
+    min-height: 150px;
+    padding: 18px 16px 16px;
+    gap: 6px;
+  }
+  .skill-cards--compact .skill-cards__title {
+    margin-top: 18px;
+    font-size: 1.1rem;
+  }
+  .skill-cards--compact .skill-cards__short {
+    font-size: 12.5px;
+  }
+  .skill-cards--compact .skill-cards__arrow {
+    top: 14px;
+    right: 14px;
+  }
+}

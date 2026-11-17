@@ -1,0 +1,206 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import SkillCards from '@/components/islands/SkillCards';
+import { SKILLS, SITE } from '@/data/site';
+import { getProjects, projectUrl } from '@/lib/projects';
+
+const projects = await getProjects();
+const bySlug = new Map(projects.map((p) => [p.id, p]));
+const skillCards = SKILLS.map((s) => ({ id: s.id, index: s.index, title: s.title, short: s.short, tools: s.tools, href: `#${s.id}` }));
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    '@id': `${SITE.url}/competences#page`,
+    url: `${SITE.url}/competences`,
+    name: 'Compétences | Jan Jawish',
+    inLanguage: 'fr-FR',
+    isPartOf: { '@id': `${SITE.url}/#website` },
+    about: { '@id': `${SITE.url}/#jan-jawish` },
+  },
+];
+---
+
+<BaseLayout
+  title="Compétences en web, design, audiovisuel et SEO"
+  description="Les dix domaines de compétences de Jan Jawish : web, UI/UX, graphisme, audiovisuel, photo, communication, marketing, SEO, 3D et gestion de projet."
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow="Compétences"
+    title="Dix domaines, une même méthode."
+    lead="Une boîte à outils mobilisée selon le contexte : développer, prototyper, produire des contenus, mesurer et améliorer."
+    crumbs={[{ label: 'Compétences' }]}
+  />
+
+  <section class="section section--tight" aria-label="Vue d’ensemble">
+    <div class="container">
+      <SkillCards client:visible skills={skillCards} />
+    </div>
+  </section>
+
+  <div class="container">
+    {
+      SKILLS.map((s) => {
+        const related = s.projects.map((slug) => bySlug.get(slug)).filter((p): p is NonNullable<typeof p> => Boolean(p));
+        return (
+          <section id={s.id} class="skill" aria-labelledby={`${s.id}-title`}>
+            <div class="skill__head" data-reveal>
+              <span class="skill__index">{s.index}</span>
+              <h2 id={`${s.id}-title`} class="skill__title">
+                {s.title}
+              </h2>
+            </div>
+            <div class="skill__body">
+              <p class="skill__desc" data-reveal>
+                {s.description}
+              </p>
+              <div data-reveal>
+                <p class="skill__label">Outils & méthodes</p>
+                <ul class="tags" role="list">
+                  {s.tools.map((t) => (
+                    <li class="tag">{t}</li>
+                  ))}
+                </ul>
+              </div>
+              {related.length > 0 && (
+                <div data-reveal>
+                  <p class="skill__label">Mis en pratique dans</p>
+                  <ul class="skill__projects" role="list">
+                    {related.map((p) => (
+                      <li>
+                        <a href={projectUrl(p)} class="mini-project">
+                          <span class="mini-project__media">
+                            <Image
+                              src={p.data.cover}
+                              alt=""
+                              width={240}
+                              height={150}
+                              fit={p.data.coverFit === 'contain' ? 'contain' : 'cover'}
+                              class:list={['mini-project__img', { 'is-contain': p.data.coverFit === 'contain' }]}
+                            />
+                          </span>
+                          <span class="mini-project__text">
+                            <span class="mini-project__title">{p.data.title}</span>
+                            <span class="mini-project__meta">
+                              {p.data.year} · {p.data.context}
+                            </span>
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </section>
+        );
+      })
+    }
+  </div>
+  <div class="section section--tight"></div>
+</BaseLayout>
+
+<style>
+  .skill {
+    display: grid;
+    gap: 28px;
+    padding: clamp(48px, 6vw, 88px) 0;
+    border-top: 1px solid var(--line);
+    scroll-margin-top: 90px;
+  }
+  @media (min-width: 980px) {
+    .skill {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 64px;
+    }
+    .skill__head {
+      position: sticky;
+      top: 110px;
+      align-self: start;
+    }
+  }
+  .skill__head {
+    display: grid;
+    gap: 16px;
+  }
+  .skill__index {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    color: var(--iris-2);
+  }
+  .skill__title {
+    font-size: clamp(2.25rem, 1.4rem + 3vw, 4rem);
+    letter-spacing: -0.045em;
+  }
+  .skill__body {
+    display: grid;
+    gap: 32px;
+  }
+  .skill__desc {
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+    max-width: 56ch;
+  }
+  .skill__label {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mist-2);
+    margin-bottom: 14px;
+  }
+  .skill__projects {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  }
+  .mini-project {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 14px;
+    align-items: center;
+    padding: 8px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--ink-2);
+    transition:
+      border-color 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out);
+  }
+  .mini-project:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+  }
+  .mini-project__media {
+    aspect-ratio: 16 / 10;
+    border-radius: 9px;
+    overflow: hidden;
+    background: var(--ink-3);
+  }
+  .mini-project__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .mini-project__img.is-contain {
+    object-fit: contain;
+    padding: 6px;
+  }
+  .mini-project__text {
+    display: grid;
+    gap: 2px;
+  }
+  .mini-project__title {
+    font-weight: 500;
+    font-size: var(--fs-sm);
+  }
+  .mini-project__meta {
+    font-size: var(--fs-xs);
+    color: var(--mist-2);
+  }
+</style>

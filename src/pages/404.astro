@@ -1,0 +1,59 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import NotFoundArt from '@/components/islands/NotFoundArt';
+import { NAV } from '@/data/site';
+---
+
+<BaseLayout title="Page introuvable" description="Cette page n’existe pas ou a été déplacée." noindex bare>
+  <section class="nf">
+    <div class="container nf__inner">
+      <h1 class="visually-hidden">Page introuvable (erreur 404)</h1>
+      <NotFoundArt client:load />
+      <p class="nf__text">Cette page s’est dispersée. Elle n’existe pas, ou elle a changé d’adresse avec la nouvelle version du site.</p>
+      <div class="nf__actions">
+        <a class="btn btn--solid" href="/">Retour à l’accueil <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn" href="/projets">Voir les projets</a>
+      </div>
+      <nav aria-label="Pages principales" class="nf__nav">
+        <ul role="list">
+          {NAV.map((n) => <li><a class="link-underline" href={n.href}>{n.label}</a></li>)}
+        </ul>
+      </nav>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    min-height: 100svh;
+    display: grid;
+    align-items: center;
+    padding: 120px 0 64px;
+    background: radial-gradient(60% 50% at 50% 40%, rgba(133, 139, 185, 0.12), transparent 70%), var(--ink);
+  }
+  .nf__inner {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 28px;
+  }
+  .nf__text {
+    max-width: 46ch;
+    font-size: var(--fs-lead);
+    color: rgba(245, 243, 238, 0.82);
+  }
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .nf__nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 22px;
+    font-size: var(--fs-sm);
+    color: var(--mist);
+  }
+</style>

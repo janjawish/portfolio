@@ -1,0 +1,285 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import { getPosts, formatDate, readingTime, type Post } from '@/lib/blog';
+import { getProjects } from '@/lib/projects';
+import { SITE } from '@/data/site';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, i) => ({ params: { slug: post.id }, props: { post, newer: posts[i - 1], older: posts[i + 1] } }));
+}
+interface Props {
+  post: Post;
+  newer?: Post;
+  older?: Post;
+}
+const { post, newer, older } = Astro.props;
+const { Content, headings } = await render(post);
+const d = post.data;
+const projects = await getProjects();
+const related = projects.filter((p) => d.related.includes(p.id));
+const og = d.cover ? await getImage({ src: d.cover, width: 1200, height: 630, fit: 'cover', format: 'jpg' }) : null;
+const url = `${SITE.url}/blog/${post.id}`;
+const toc = headings.filter((h) => h.depth === 2);
+
+const jsonLd = [
+  {
+    '@type': 'BlogPosting',
+    '@id': `${url}#article`,
+    headline: d.title,
+    description: d.description,
+    url,
+    mainEntityOfPage: url,
+    datePublished: d.pubDate.toISOString(),
+    dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
+    inLanguage: 'fr-FR',
+    keywords: d.tags.join(', '),
+    ...(og ? { image: new URL(og.src, SITE.url).href } : {}),
+    author: { '@id': `${SITE.url}/#jan-jawish` },
+    publisher: { '@id': `${SITE.url}/#jan-jawish` },
+    isPartOf: { '@id': `${SITE.url}/blog#blog` },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${SITE.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE.url}/blog` },
+      { '@type': 'ListItem', position: 3, name: d.title },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={d.title}
+  description={d.description}
+  image={og?.src}
+  imageAlt={d.coverAlt}
+  type="article"
+  publishedTime={d.pubDate.toISOString()}
+  modifiedTime={(d.updatedDate ?? d.pubDate).toISOString()}
+  tags={d.tags}
+  jsonLd={jsonLd}
+>
+  <article class="post">
+    <header class="post__head container">
+      <nav aria-label="Fil d’Ariane" class="crumbs">
+        <ol role="list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><span aria-current="page">Article</span></li>
+        </ol>
+      </nav>
+      <p class="post__meta" data-reveal>
+        <time datetime={d.pubDate.toISOString()}>{formatDate(d.pubDate)}</time>
+        <span aria-hidden="true">·</span>
+        <span>{readingTime(post.body)} min de lecture</span>
+        {d.tags.map((t) => <span class="tag">{t}</span>)}
+      </p>
+      <h1 class="post__title" data-reveal style="--reveal-delay:.05s">{d.title}</h1>
+      <p class="post__lead" data-reveal style="--reveal-delay:.1s">{d.description}</p>
+    </header>
+
+    {
+      d.cover && (
+        <figure class="post__cover container" data-reveal>
+          <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[640, 1024, 1440]} sizes="(min-width: 1200px) 1100px, 94vw" loading="eager" />
+        </figure>
+      )
+    }
+
+    <div class="container post__layout">
+      {
+        toc.length > 2 && (
+          <nav class="toc" aria-label="Sommaire">
+            <p class="toc__label">Sommaire</p>
+            <ol role="list">
+              {toc.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`} class="link-underline">
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+      <div class="prose post__body">
+        <Content />
+        <hr />
+        <p class="post__sign">- Jan Jawish</p>
+      </div>
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="container post__related" aria-labelledby="related-title">
+          <h2 id="related-title" class="post__related-title">
+            Projet lié
+          </h2>
+          <div class="post__related-grid">
+            {related.map((p) => (
+              <ProjectCard project={p} headingLevel="h3" />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <nav class="container post__nav" aria-label="Autres articles">
+      {older ? (
+        <a href={`/blog/${older.id}`} rel="prev"><span>← Article précédent</span><strong>{older.data.title}</strong></a>
+      ) : <span />}
+      {newer && (
+        <a href={`/blog/${newer.id}`} rel="next" class="post__nav-next"><span>Article suivant →</span><strong>{newer.data.title}</strong></a>
+      )}
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .post__head {
+    display: grid;
+    gap: 22px;
+    padding-top: clamp(130px, 16vw, 200px);
+    padding-bottom: clamp(32px, 4vw, 48px);
+    max-width: 1100px;
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: var(--fs-xs);
+    color: var(--mist-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 8px;
+    opacity: 0.5;
+  }
+  .crumbs a:hover {
+    color: var(--paper);
+  }
+  .post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--fs-xs);
+    color: var(--mist-2);
+  }
+  .post__title {
+    font-size: clamp(2.4rem, 1.4rem + 4.2vw, 5.5rem);
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+    max-width: 20ch;
+  }
+  .post__lead {
+    font-size: var(--fs-lead);
+    color: rgba(245, 243, 238, 0.82);
+    max-width: 60ch;
+  }
+  .post__cover {
+    max-width: 1100px;
+  }
+  .post__cover img {
+    width: 100%;
+    border-radius: 24px;
+    border: 1px solid var(--line);
+  }
+  .post__layout {
+    display: grid;
+    gap: 40px;
+    max-width: 1100px;
+    padding-top: clamp(40px, 5vw, 72px);
+  }
+  @media (min-width: 1000px) {
+    .post__layout {
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 64px;
+    }
+    .toc {
+      position: sticky;
+      top: 110px;
+      align-self: start;
+    }
+  }
+  .toc__label {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mist-2);
+    margin-bottom: 14px;
+  }
+  .toc ol {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--fs-sm);
+    color: var(--mist);
+  }
+  .post__body {
+    font-size: 1.0625rem;
+  }
+  .post__sign {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--paper);
+  }
+  .post__related {
+    max-width: 1100px;
+    padding-top: clamp(64px, 8vw, 110px);
+  }
+  .post__related-title {
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2.2rem);
+    margin-bottom: 28px;
+  }
+  .post__related-grid {
+    display: grid;
+    gap: 28px;
+    max-width: 520px;
+  }
+  .post__nav {
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding-top: 48px;
+    padding-bottom: clamp(72px, 9vw, 120px);
+    margin-top: clamp(64px, 8vw, 110px);
+    border-top: 1px solid var(--line);
+  }
+  .post__nav a {
+    display: grid;
+    gap: 8px;
+  }
+  .post__nav span {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mist-2);
+  }
+  .post__nav strong {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1rem + 0.6vw, 1.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .post__nav a:hover strong {
+    color: var(--iris-2);
+  }
+  .post__nav-next {
+    text-align: right;
+    grid-column: 2;
+  }
+</style>

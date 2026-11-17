@@ -1,0 +1,77 @@
+---
+import { APPROACH } from '@/data/site';
+export interface Props {
+  showSources?: boolean;
+}
+const { showSources = false } = Astro.props;
+---
+
+<ol class="approach" role="list">
+  {
+    APPROACH.map((s, i) => (
+      <li class="approach__item" data-reveal style={`--reveal-delay:${i * 0.07}s`}>
+        <span class="approach__n">0{i + 1}</span>
+        <h3 class="approach__title">{s.title}</h3>
+        <p class="approach__text">{s.text}</p>
+        {showSources && <p class="approach__quote">« {s.source} »</p>}
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .approach {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  @media (min-width: 720px) {
+    .approach {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1180px) {
+    .approach {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+  .approach__item {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    padding: clamp(24px, 2.4vw, 32px);
+    min-height: 260px;
+    background: rgba(11, 11, 12, 0.72);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+  .approach__n {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    color: var(--iris-2);
+    margin-bottom: 28px;
+  }
+  .approach__title {
+    font-size: clamp(1.5rem, 1.2rem + 0.9vw, 2rem);
+    letter-spacing: -0.035em;
+  }
+  .approach__text {
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+    color: var(--mist);
+  }
+  .approach__quote {
+    margin-top: auto;
+    padding-top: 12px;
+    font-size: var(--fs-sm);
+    line-height: 1.5;
+    font-style: italic;
+    color: var(--paper);
+  }
+</style>

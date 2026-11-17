@@ -1,0 +1,82 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import PostCard from '@/components/PostCard.astro';
+import { getPosts } from '@/lib/blog';
+import { SITE } from '@/data/site';
+
+const posts = await getPosts();
+
+const jsonLd = [
+  {
+    '@type': 'Blog',
+    '@id': `${SITE.url}/blog#blog`,
+    url: `${SITE.url}/blog`,
+    name: 'Blog de Jan Jawish',
+    inLanguage: 'fr-FR',
+    author: { '@id': `${SITE.url}/#jan-jawish` },
+    blogPost: posts.map((p) => ({
+      '@type': 'BlogPosting',
+      headline: p.data.title,
+      url: `${SITE.url}/blog/${p.id}`,
+      datePublished: p.data.pubDate.toISOString(),
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title="Blog : SEO, web et retours d’expérience"
+  description="Notes et retours d’expérience de Jan Jawish : SEO, développement web, applications métier, communication et méthode de travail."
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow="Blog"
+    title="Notes & retours d’expérience."
+    lead="Ce que j’apprends en projet : SEO, développement, communication et méthode. Des articles courts, concrets, adossés à des projets réels."
+    crumbs={[{ label: 'Blog' }]}
+  />
+
+  <section class="section section--tight" aria-label="Articles">
+    <div class="container">
+      {
+        posts.length === 0 ? (
+          <p class="muted">Les premiers articles arrivent bientôt.</p>
+        ) : (
+          <div class="posts">
+            {posts.map((post) => (
+              <PostCard post={post} headingLevel="h2" />
+            ))}
+          </div>
+        )
+      }
+      <p class="rss muted">
+        Suivre le blog : <a class="link-underline" href="/rss.xml">flux RSS</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .posts {
+    display: grid;
+    gap: 56px 32px;
+  }
+  @media (min-width: 760px) {
+    .posts {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1200px) {
+    .posts {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .rss {
+    margin-top: 64px;
+    font-size: var(--fs-sm);
+  }
+  .rss a {
+    color: var(--paper);
+  }
+</style>

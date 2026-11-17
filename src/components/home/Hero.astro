@@ -1,0 +1,159 @@
+---
+import { HeroBackground, HeroTitle, HeroCta } from '@/components/islands/HeroScene';
+import { PERSON } from '@/data/site';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <HeroBackground client:load />
+  <div class="hero__veil" aria-hidden="true"></div>
+
+  <div class="hero__inner container">
+    <div class="hero__top" aria-hidden="true"></div>
+
+    <div class="hero__center">
+      <h1 id="hero-title" class="hero__h1">
+        <span class="hero__name">
+          <span class="hero__h1-text">Jan Jawish</span>
+          <span class="hero__art"><HeroTitle client:load /></span>
+        </span>
+      </h1>
+    </div>
+
+    <div class="hero__bottom">
+      <p class="hero__intro">
+        Développeur web junior, en alternance chez {PERSON.company} et en dernière année de BUT MMI à l’{PERSON.school}.
+        Je comprends un besoin, je conçois la réponse et je la rends visible, du code à l’image.
+      </p>
+      <div class="hero__cta">
+        <HeroCta client:idle />
+        <a class="btn" href="/projets">Voir les projets <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script is:inline>
+  // Le verre (Refracted Text) remplace le nom textuel ; s'il n'est pas rendu à temps, le texte réapparaît.
+  (function () {
+    var d = document.documentElement;
+    setTimeout(function () {
+      if (!d.classList.contains('hero-art-ready') && !d.classList.contains('intro')) d.classList.add('hero-art-timeout');
+    }, 9500);
+  })();
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: max(100svh, 680px);
+    display: flex;
+    isolation: isolate;
+    overflow: hidden;
+    background: radial-gradient(120% 80% at 50% 10%, #12131a 0%, var(--ink) 60%);
+  }
+  .hero__veil {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(to bottom, rgba(11, 11, 12, 0.55) 0%, rgba(11, 11, 12, 0) 22%),
+      linear-gradient(to top, rgba(11, 11, 12, 0.95) 0%, rgba(11, 11, 12, 0.35) 38%, rgba(11, 11, 12, 0) 60%);
+  }
+  .hero__inner {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding-top: 108px;
+    padding-bottom: clamp(32px, 5vw, 56px);
+    min-height: inherit;
+    pointer-events: none;
+  }
+  .hero__inner :global(a),
+  .hero__inner :global(button) {
+    pointer-events: auto;
+  }
+  .hero__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .hero__center {
+    position: relative;
+    align-self: end;
+    padding-bottom: clamp(20px, 3vw, 40px);
+  }
+  .hero__h1 {
+    display: grid;
+    gap: 14px;
+  }
+  /* Le nom textuel n'est affiché que si le verre ne peut pas être rendu (sans JS, sans WebGL 2, ou délai dépassé). */
+  .hero__h1-text {
+    font-size: clamp(56px, 9.4vw, 172px);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.85;
+    transition: opacity 0.8s var(--ease-out);
+  }
+  .hero__name {
+    display: grid;
+    align-items: end;
+  }
+  .hero__name > * {
+    grid-area: 1 / 1;
+  }
+  /* Mode allégé : le nom s'affiche en texte (pas de verre WebGL). */
+  :global(html.lite) .hero__art {
+    display: none;
+  }
+  :global(html.lite) .hero__h1-text {
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .hero__art {
+    display: block;
+    user-select: none;
+    -webkit-user-select: none;
+    width: 100%;
+    margin-left: -0.6%;
+  }
+  :global(html.js.webgl2:not(.hero-art-timeout):not(.lite)) .hero__h1-text,
+  :global(.hero-art-ready) .hero__h1-text {
+    opacity: 0;
+  }
+  .hero__bottom {
+    display: grid;
+    gap: 28px;
+    align-items: end;
+    padding-top: clamp(24px, 3vw, 36px);
+  }
+  @media (min-width: 900px) {
+    .hero__bottom {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 48px;
+      /* place réservée à l'orbe de l'assistant, fixé en bas à droite */
+      padding-right: 84px;
+    }
+  }
+  .hero__intro {
+    max-width: 52ch;
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    color: rgba(245, 243, 238, 0.86);
+  }
+  .hero__cta .btn {
+    min-height: 56px;
+    padding: 0 26px;
+  }
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+  }
+</style>

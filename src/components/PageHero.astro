@@ -1,0 +1,104 @@
+---
+export interface Props {
+  /** Plus affiché (choix de Jan, 15/11/2026), conservé pour compatibilité. */
+  eyebrow?: string;
+  /** Plus affiché (choix de Jan, 15/11/2026), conservé pour compatibilité. */
+  rule?: boolean;
+  /** Titre placé plus bas, au plus près du contenu (page contact). */
+  low?: boolean;
+  title: string;
+  lead?: string;
+  crumbs?: { label: string; href?: string }[];
+}
+// `lead` et `rule` ne sont plus affichés : les en-têtes se limitent au fil d'Ariane et au titre.
+const { title, crumbs = [], low = false } = Astro.props;
+const breadcrumbLd = crumbs.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [{ label: 'Accueil', href: '/' }, ...crumbs].map((c, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: c.label,
+        ...(c.href ? { item: `https://www.janjawish.fr${c.href === '/' ? '/' : c.href}` } : {}),
+      })),
+    }
+  : null;
+---
+
+<header class:list={['page-hero', { 'page-hero--low': low }]}>
+  <div class="page-hero__glow" aria-hidden="true"></div>
+  <div class="container page-hero__inner">
+    {
+      crumbs.length > 0 && (
+        <nav aria-label="Fil d’Ariane" class="crumbs">
+          <ol role="list">
+            <li>
+              <a href="/">Accueil</a>
+            </li>
+            {crumbs.map((c) => (
+              <li>{c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+    <h1 class="page-hero__title" data-reveal style="--reveal-delay:.05s" set:html={title} />
+    <slot />
+  </div>
+  {breadcrumbLd && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />}
+</header>
+
+<style>
+  .page-hero {
+    position: relative;
+    padding: clamp(140px, 18vw, 220px) 0 clamp(56px, 7vw, 96px);
+    overflow: hidden;
+  }
+  .page-hero--low {
+    padding-top: clamp(200px, 26vw, 340px);
+    padding-bottom: clamp(24px, 3vw, 40px);
+  }
+  .page-hero__glow {
+    position: absolute;
+    inset: -40% -10% auto auto;
+    width: 70vw;
+    height: 70vw;
+    max-width: 900px;
+    max-height: 900px;
+    background: radial-gradient(closest-side, rgba(133, 139, 185, 0.16), transparent 70%);
+    pointer-events: none;
+  }
+  .page-hero__inner {
+    position: relative;
+    display: grid;
+    gap: 26px;
+  }
+  .page-hero__title {
+    font-size: var(--fs-h1);
+    max-width: 14ch;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: var(--fs-xs);
+    color: var(--mist-2);
+    margin: 0 0 8px;
+    padding: 0;
+    list-style: none;
+  }
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 8px;
+    opacity: 0.5;
+  }
+  .crumbs a:hover {
+    color: var(--paper);
+  }
+  .crumbs [aria-current] {
+    color: var(--mist);
+  }
+</style>

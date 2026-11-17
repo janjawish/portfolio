@@ -1,0 +1,6 @@
+legacy
+docs
+scripts
+dist
+.astro
+node_modules

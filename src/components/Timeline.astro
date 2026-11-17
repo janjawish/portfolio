@@ -1,0 +1,100 @@
+---
+import { TIMELINE } from '@/data/site';
+---
+
+<ol class="timeline" role="list">
+  {
+    TIMELINE.map((t, i) => (
+      <li class:list={['tl-item', { 'is-current': t.current }]} data-reveal style={`--reveal-delay:${i * 0.06}s`}>
+        <div class="tl-meta">
+          <span class="tl-period">{t.period}</span>
+          <span class="tl-kind">{t.kind}</span>
+        </div>
+        <div class="tl-body">
+          <h3 class="tl-title">{t.title}</h3>
+          <p class="tl-place">{t.place}</p>
+          <p class="tl-desc muted">{t.description}</p>
+          {t.link && (
+            <a class="tl-link link-underline" href={t.link.href}>
+              {t.link.label} →
+            </a>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .tl-item {
+    display: grid;
+    gap: 14px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 860px) {
+    .tl-item {
+      grid-template-columns: minmax(200px, 0.35fr) 1fr;
+      gap: 48px;
+    }
+  }
+  .tl-meta {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+  @media (min-width: 860px) {
+    .tl-meta {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+  .tl-period {
+    font-size: var(--fs-sm);
+    color: var(--paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .tl-kind {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mist-2);
+  }
+  .is-current .tl-kind {
+    color: var(--iris-2);
+  }
+  .is-current .tl-kind::before {
+    content: '● ';
+  }
+  .tl-body {
+    display: grid;
+    gap: 8px;
+    max-width: 60ch;
+  }
+  .tl-title {
+    font-size: var(--fs-h4);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .tl-place {
+    color: var(--paper);
+    font-size: var(--fs-sm);
+  }
+  .tl-desc {
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+  }
+  .tl-link {
+    justify-self: start;
+    margin-top: 6px;
+    font-size: var(--fs-sm);
+    color: var(--iris-2);
+  }
+</style>

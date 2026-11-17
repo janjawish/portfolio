@@ -1,0 +1,116 @@
+---
+import { NAV, SOCIALS, SITE, PERSON } from '@/data/site';
+---
+
+<footer class="footer" aria-labelledby="footer-title">
+  <div class="container">
+    <div class="footer__cta">
+      <h2 id="footer-title" class="footer__title">
+        <a href="/contact" class="footer__title-link">Parlons-en<span class="footer__dot">.</span></a>
+      </h2>
+      <a class="footer__mail link-underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+    </div>
+
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <p class="muted">{PERSON.status}<br />{PERSON.school} · {PERSON.track}</p>
+      </div>
+      <nav aria-label="Plan du site" class="footer__col">
+        <p class="footer__label">Plan du site</p>
+        <ul role="list">
+          <li><a class="link-underline" href="/">Accueil</a></li>
+          {NAV.map((n) => <li><a class="link-underline" href={n.href}>{n.label}</a></li>)}
+          <li><a class="link-underline" href="/portfolios">Portfolios spécialisés</a></li>
+        </ul>
+      </nav>
+      <div class="footer__col">
+        <p class="footer__label">Réseaux</p>
+        <ul role="list">
+          {SOCIALS.map((s) => (
+            <li><a class="link-underline" href={s.href} target="_blank" rel="noopener me">{s.label}</a></li>
+          ))}
+          <li><a class="link-underline" href={SITE.cv} target="_blank" rel="noopener">CV (PDF)</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <p class="footer__label">Informations</p>
+        <ul role="list">
+          <li><a class="link-underline" href="/mentions-legales">Mentions légales</a></li>
+          <li><a class="link-underline" href="/rss.xml">Flux RSS du blog</a></li>
+          <li><a class="link-underline" href="#top">Retour en haut ↑</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    padding: clamp(96px, 12vw, 180px) 0 32px;
+    border-top: 1px solid var(--line);
+    background:
+      radial-gradient(60% 50% at 50% 0%, rgba(133, 139, 185, 0.1), transparent 70%),
+      var(--ink);
+  }
+  .footer__cta {
+    display: grid;
+    gap: 20px;
+    padding-bottom: clamp(64px, 9vw, 120px);
+  }
+  .footer__title {
+    font-size: var(--fs-mega);
+    line-height: 0.82;
+    letter-spacing: -0.055em;
+    font-weight: 700;
+  }
+  .footer__title-link {
+    display: inline-block;
+    transition: color 0.5s var(--ease-out);
+  }
+  .footer__title-link:hover {
+    color: var(--iris-2);
+  }
+  .footer__dot {
+    color: var(--iris);
+  }
+  .footer__mail {
+    justify-self: start;
+    font-size: var(--fs-lead);
+    color: var(--mist);
+  }
+  .footer__mail:hover {
+    color: var(--paper);
+  }
+  .footer__grid {
+    display: grid;
+    gap: 40px;
+    grid-template-columns: 1fr;
+    padding: 48px 0;
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 720px) {
+    .footer__grid {
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    }
+  }
+  .footer__brand {
+    display: grid;
+    gap: 20px;
+    align-content: start;
+    font-size: var(--fs-sm);
+  }
+  .footer__label {
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--mist-2);
+    margin-bottom: 16px;
+  }
+  .footer__col ul {
+    display: grid;
+    gap: 10px;
+    font-size: var(--fs-sm);
+  }
+</style>

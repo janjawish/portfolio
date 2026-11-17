@@ -1,23 +1,60 @@
+# Jan Jawish — Portfolio général
 
-# Portfolio statique v4 — Jan Jawish (JJ)
+Portfolio général de Jan Jawish : développement web, UI/UX, graphisme, audiovisuel, photographie, communication, marketing, SEO, 3D et gestion de projet.
 
-## Ce qui change
-- **Logo** en haut à gauche (`assets/img/logo.png`), **navbar centrée** sur toutes les pages (sans aperçu d'URL au survol).
-- **Accueil** : “Jan Jawish” pile au milieu ; la **Sélection rapide** reste cachée tant qu’on n’a pas scrollé (révélation douce).
-- **Barre de scroll masquée** (site et fenêtres).
-- **Boutons** convertis en `<button>` → pas d’aperçu d’URL en bas à gauche.
-- **Projets** : ouverture/fermeture **animées** façon fenêtre macOS ; clic sur la carte **ou** le bouton “Ouvrir”.
-- **Création graphique** : **carousel** intégré dans la fenêtre (flèches sobres).
-- **Photographie** : **fenêtre plein écran** avec **grande galerie** scrollable (images encadrées). Scrollbar masquée.
-- **À propos** : 
-  - fenêtre “Qui suis‑je ?” : **cartes de compétences** avec pictos, bio seule en texte ; **pastille rouge** ferme la fenêtre ; bouton **En savoir plus** la **ré‑ouvre** (animations).
-  - fenêtre “Passions” : livres / artistes / films / centres d’intérêt sous forme de **cartes cliquables** → **fenêtre de détail** avec animation.
-- **Back‑to‑top** conservé sur `/projets.html`.
+**Stack** : [Astro 7](https://astro.build) (pages HTML pré-rendues) + îlots **React 19** pour les parties interactives, composants originaux **React Bits** et **ReactDrops**, contenus en **Markdown**. Défilement amorti **Lenis** synchronisé avec **GSAP ScrollTrigger**.
 
-## Contenu à éditer
-- **Images du carousel** de création graphique : dans `assets/js/projects.js`, propriétés `gallery:[...]`.
-- **Photos** : `photos:[...]` pour le projet `photographie` + `PHOTOS` pour l’aperçu sur la page Projets.
-- **Passions** (livres, artistes, films, centres d’intérêt) : `assets/js/about.js` (TABLEAUX en haut du fichier).
+## Commandes
 
-## Déploiement
-Copiez tous les fichiers sur GitHub Pages ou OVH/IONOS.
+```sh
+npm install
+npm run dev        # http://localhost:4321
+npm run build      # vérification TypeScript (astro check) + build statique → dist/
+npm run preview    # sert dist/ en local
+```
+
+Node ≥ 22.12 (Astro est épinglé en 7.3.8, voir `docs/PROGRESS.md`).
+
+## Ajouter du contenu
+
+- **Un article de blog** : créer `src/content/blog/mon-article.md` (ou `.mdx`) avec l'en-tête :
+  ```yaml
+  ---
+  title: "Titre"
+  description: "Résumé de 120 à 160 caractères (balise meta)."
+  pubDate: 2026-12-01
+  tags: ["SEO"]
+  cover: "../../assets/projects/une-image.png"   # facultatif
+  coverAlt: "Description de l’image"
+  related: ["the-exit"]                           # slugs de projets, facultatif
+  draft: false
+  ---
+  ```
+  La page, le sitemap, le flux RSS, `llms.txt` et l'assistant se mettent à jour au build.
+- **Un projet** : créer `src/content/projects/mon-projet.md` (schéma complet dans `src/content.config.ts` ; s'inspirer de `the-exit.md`). Images dans `src/assets/projects/`, PDF dans `public/documents/`.
+- **Identité, parcours, compétences, approche** : `src/data/site.ts`.
+
+## Formulaire de contact
+
+Sans configuration, le formulaire **n'envoie rien** et le dit : il prépare le message dans la messagerie du visiteur (mailto). Pour un envoi direct, créer un compte gratuit Web3Forms ou Formspree puis définir dans Vercel (ou `.env`) :
+
+```
+PUBLIC_CONTACT_ENDPOINT=https://api.web3forms.com/submit
+PUBLIC_CONTACT_ACCESS_KEY=<clé publique Web3Forms>
+```
+
+Le succès n'est affiché qu'après une réponse HTTP 2xx du service. En production, ces variables sont déjà définies dans le projet Vercel **portfolio-general** (16/11/2026). Pour tester le formulaire en local, les copier dans un fichier `.env` (ignoré par Git).
+
+## Déploiement (Vercel)
+
+Projet Vercel : **portfolio-general** (domaines `www.janjawish.fr` et `janjawish.fr` → www). Le dossier est relié au projet (`.vercel/`) : `npm run build` pour vérifier, puis `vercel deploy --prod` pour publier.
+
+
+`vercel.json` définit la commande de build, les URL propres sans barre finale, les redirections des anciennes adresses (`/projects/*`, `*.html`, anciens PDF, `/page.html`) et des en-têtes de sécurité et de cache.
+
+## Documentation
+
+- `docs/PROGRESS.md` — avancement, tests, problèmes restants, prochaine étape
+- `docs/COMPONENTS.md` — composants React Bits / ReactDrops : sources, licences, adaptations
+- `docs/CONTENT_SOURCES.md` — provenance des contenus
+- `legacy/` — ancien site statique (conservé pour référence, non publié)

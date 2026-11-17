@@ -1,0 +1,23 @@
+.reveal-text.scroll-reveal {
+  margin: 0;
+}
+.reveal-text .reveal-text__inner {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(1.9rem, 1.1rem + 3.2vw, 4.25rem);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.paper .reveal-text .reveal-text__inner {
+  color: var(--ink);
+}
+.orbit-badge {
+  display: grid;
+  place-items: center;
+}
+.orbit-badge .circular-text {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+}

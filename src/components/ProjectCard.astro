@@ -1,0 +1,131 @@
+---
+import { Image } from 'astro:assets';
+import type { Project } from '@/lib/projects';
+import { disciplineLabel, projectUrl } from '@/lib/projects';
+export interface Props {
+  project: Project;
+  eager?: boolean;
+  headingLevel?: 'h2' | 'h3';
+}
+const { project: p, eager = false, headingLevel = 'h2' } = Astro.props;
+const H = headingLevel;
+const contain = p.data.coverFit === 'contain';
+---
+
+<article class="pcard" data-disciplines={p.data.disciplines.join(' ')} data-reveal>
+  <a href={projectUrl(p)} class="pcard__link">
+    <div class:list={['pcard__media', { 'is-contain': contain }]} style={p.data.coverBackground ? `--cover-bg:${p.data.coverBackground}` : undefined}>
+      <Image
+        src={p.data.cover}
+        alt={p.data.coverAlt}
+        widths={[400, 640, 900]}
+        sizes="(min-width: 1200px) 30vw, (min-width: 720px) 45vw, 92vw"
+        class="pcard__img"
+        loading={eager ? 'eager' : 'lazy'}
+      />
+      <span class="pcard__context">{p.data.context}</span>
+    </div>
+    <div class="pcard__body">
+      <div class="pcard__top">
+        <H class="pcard__title">{p.data.title}</H>
+        <span class="pcard__year">{p.data.year}</span>
+      </div>
+      <p class="pcard__summary">{p.data.summary}</p>
+      <p class="pcard__disc">{p.data.disciplines.map(disciplineLabel).join(' · ')}</p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .pcard {
+    height: 100%;
+  }
+  .pcard[hidden] {
+    display: none;
+  }
+  .pcard__link {
+    display: grid;
+    gap: 18px;
+    height: 100%;
+    align-content: start;
+  }
+  .pcard__media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--ink-2);
+    border: 1px solid var(--line);
+  }
+  .pcard__media.is-contain {
+    background: var(--cover-bg, var(--ink-2));
+  }
+  .pcard__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1s var(--ease-out);
+  }
+  .is-contain .pcard__img {
+    object-fit: contain;
+    padding: 12% 18%;
+  }
+  .pcard__link:hover .pcard__img {
+    transform: scale(1.035);
+  }
+  .pcard__context {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    background: rgba(11, 11, 12, 0.72);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: var(--paper);
+  }
+  .pcard__body {
+    display: grid;
+    gap: 8px;
+  }
+  .pcard__top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .pcard__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1.15rem + 0.6vw, 1.7rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    transition: color 0.4s var(--ease-out);
+  }
+  .pcard__link:hover .pcard__title {
+    color: var(--iris-2);
+  }
+  .pcard__year {
+    font-size: var(--fs-xs);
+    color: var(--mist-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .pcard__summary {
+    font-size: var(--fs-sm);
+    color: var(--mist);
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pcard__disc {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mist-2);
+  }
+</style>

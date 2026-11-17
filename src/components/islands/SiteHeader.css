@@ -1,0 +1,291 @@
+/* En-tête du portfolio : surcharges de StaggeredMenu et GooeyNav (styles d'origine conservés). */
+
+.site-header {
+  position: relative;
+  z-index: 60;
+}
+
+.site-header__bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 92px;
+  z-index: 38;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(11, 11, 12, 0.9) 0%, rgba(11, 11, 12, 0.7) 55%, rgba(11, 11, 12, 0) 100%);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-out);
+}
+.site-header.is-scrolled .site-header__bar {
+  opacity: 1;
+}
+
+/* ----- Gooey Nav (desktop) ----- */
+.site-header__nav {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 41;
+  display: none;
+  transition:
+    opacity 0.35s var(--ease-out),
+    transform 0.5s var(--ease-out);
+}
+@media (min-width: 1180px) {
+  .site-header__nav {
+    display: block;
+  }
+  /* Sur grand écran, la navigation centrale suffit : le bouton Menu est réservé au mobile et à la tablette. */
+  .site-header .sm-toggle {
+    display: none;
+  }
+}
+/* La navigation garde son propre calque pendant la transition de page : la pastille n'est pas « fondue ». */
+.site-header__nav {
+  view-transition-name: site-nav;
+}
+::view-transition-old(site-nav) {
+  display: none;
+}
+::view-transition-new(site-nav),
+::view-transition-group(site-nav) {
+  animation: none;
+}
+.site-header.is-menu-open .site-header__nav {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -8px);
+}
+.site-header__nav .gooey-nav {
+  --gn-frame: rgba(23, 24, 28, 0.72) !important;
+  font-family: var(--font-body);
+  letter-spacing: 0.01em;
+}
+.site-header__nav .gooey-nav.is-idle .gooey-nav__canvas,
+.site-header__nav .gooey-nav.is-idle .gooey-nav__fallback,
+.site-header__nav .gooey-nav.is-idle .gooey-nav__list--active {
+  opacity: 0;
+}
+
+/* ----- Staggered Menu ----- */
+.site-header .staggered-menu-wrapper {
+  --sm-accent: var(--iris);
+}
+.site-header .staggered-menu-header {
+  padding: 18px var(--gutter);
+  height: 76px;
+  z-index: 42;
+}
+.site-header .sm-toggle {
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(23, 24, 28, 0.6);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  font-family: var(--font-body);
+  font-size: 14px;
+  gap: 10px;
+}
+.site-header.is-menu-open .sm-toggle {
+  background: rgba(23, 24, 28, 0.9);
+  border-color: var(--line-strong);
+}
+/* Panneau du menu : thème sombre du site (encre, lueur iris, titres Bricolage). */
+.site-header .staggered-menu-panel {
+  width: min(100vw, 520px);
+  background:
+    radial-gradient(90% 50% at 100% 0%, rgba(133, 139, 185, 0.18), transparent 70%),
+    radial-gradient(70% 40% at 0% 100%, rgba(133, 139, 185, 0.08), transparent 70%),
+    var(--ink);
+  border-left: 1px solid var(--line);
+  color: var(--paper);
+  padding: 116px var(--gutter) 32px;
+}
+.site-header .sm-prelayers {
+  width: min(100vw, 520px);
+}
+.site-header .sm-panel-item {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.3rem, 10.5vw, 3.4rem);
+  letter-spacing: -0.045em;
+  line-height: 1.04;
+  text-transform: none;
+  color: var(--paper);
+  padding-right: 1.6em;
+}
+.site-header .sm-panel-item:hover,
+.site-header .sm-panel-item:focus-visible {
+  color: var(--iris-2);
+}
+.site-header .sm-panel-list[data-numbering] .sm-panel-item::after {
+  font-family: var(--font-body);
+  font-size: 13px;
+  letter-spacing: 0;
+  color: var(--iris-2);
+  font-weight: 500;
+  top: 0.35em;
+  right: 0.3em;
+}
+.site-header .sm-socials-title {
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mist-2);
+}
+.site-header .sm-socials-link {
+  color: var(--paper) !important;
+  font-weight: 500;
+}
+.site-header .sm-socials-link:hover {
+  color: var(--iris-2) !important;
+}
+.sm-extra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding-top: 20px;
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+}
+.sm-extra a {
+  color: var(--mist);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ----- Logo ----- */
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--paper);
+  transition: color 0.4s var(--ease-out);
+}
+.site-header.is-menu-open .site-logo {
+  color: var(--paper);
+}
+.site-logo__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+.site-header__nav .gooey-nav.is-idle .gooey-nav__item[data-active] .gooey-nav__link {
+  color: var(--gn-muted);
+}
+.site-header__nav .gooey-nav.is-idle .gooey-nav__item[data-active] .gooey-nav__link:hover {
+  color: var(--gn-ink);
+}
+
+/* ----- Navigation simple (mode allégé) ----- */
+.lite-nav ul {
+  display: flex;
+  gap: 2px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(23, 24, 28, 0.72);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+.lite-nav a {
+  display: block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mist);
+  transition:
+    color 0.25s var(--ease-out),
+    background 0.25s var(--ease-out);
+}
+.lite-nav a:hover {
+  color: var(--paper);
+}
+.lite-nav a.is-active {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ----- Menu plein écran : responsive (téléphone, tablette, paysage) ----- */
+@media (max-width: 1179px) {
+  .site-header .staggered-menu-panel,
+  .site-header .sm-prelayers {
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+}
+/* Le panneau tient sur un écran : titres et marges proportionnés à la hauteur disponible.
+   Sur un très petit écran seulement, il défile avec une barre fine et sombre. */
+.site-header .staggered-menu-panel {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 243, 238, 0.14) transparent;
+  padding-top: clamp(72px, 13svh, 116px);
+  padding-bottom: clamp(16px, 3svh, 32px);
+}
+.site-header .staggered-menu-panel::-webkit-scrollbar {
+  width: 4px;
+}
+.site-header .staggered-menu-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.site-header .staggered-menu-panel::-webkit-scrollbar-thumb {
+  background: rgba(245, 243, 238, 0.14);
+  border-radius: 4px;
+}
+.site-header .sm-panel-item {
+  font-size: clamp(1.5rem, min(10.5vw, 6.2svh), 3.4rem);
+}
+.site-header .sm-panel-list {
+  gap: clamp(2px, 0.8svh, 8px);
+}
+.site-header .sm-socials-list {
+  flex-wrap: wrap;
+  row-gap: 6px;
+}
+/* Écrans peu hauts (téléphone à l'horizontale) : tout resserré pour tenir sans défilement. */
+@media (max-height: 520px) {
+  .site-header .staggered-menu-panel {
+    padding-top: 64px;
+    padding-bottom: 10px;
+  }
+  .site-header .sm-panel-item {
+    font-size: 5.4svh;
+  }
+  .site-header .sm-panel-list {
+    gap: 0;
+  }
+  .site-header .sm-socials {
+    margin-top: auto;
+    padding-top: 8px;
+    gap: 4px;
+  }
+  .site-header .sm-socials-title {
+    margin: 0;
+  }
+  .site-header .sm-socials-link {
+    font-size: 0.95rem;
+  }
+  .sm-extra {
+    padding-top: 8px;
+    margin-top: 6px;
+  }
+}
+/* Le masque d'apparition des liens rognait le bas des lettres (jambages). */
+.site-header .sm-panel-itemWrap {
+  padding-bottom: 0.1em;
+}

@@ -1,0 +1,738 @@
+---
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import YouTube from '@/components/YouTube.astro';
+import Lightbox from '@/components/Lightbox.astro';
+import { getProjects, projectUrl, disciplineLabel, type Project } from '@/lib/projects';
+import { SITE } from '@/data/site';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: {
+      project,
+      prev: projects[(i - 1 + projects.length) % projects.length],
+      next: projects[(i + 1) % projects.length],
+      related: projects
+        .filter((p) => p.id !== project.id && p.data.disciplines.some((d) => project.data.disciplines.includes(d)))
+        .slice(0, 3),
+    },
+  }));
+}
+
+interface Props {
+  project: Project;
+  prev: Project;
+  next: Project;
+  related: Project[];
+}
+const { project, prev, next, related } = Astro.props;
+const d = project.data;
+const { Content } = await render(project);
+
+// Albums photo : images d'un dossier de src/assets/img/photos.
+const photoFiles = import.meta.glob<{ default: ImageMetadata }>('/src/assets/img/photos/**/*.{JPG,jpg,jpeg,png}', { eager: true });
+const albumPhotos = (folder: string) =>
+  Object.entries(photoFiles)
+    .filter(([path]) => path.includes(`/photos/${folder}/`))
+    .sort(([a], [b]) => a.localeCompare(b, 'fr', { numeric: true }))
+    .map(([, mod]) => mod.default);
+
+const lightboxSrc = async (src: ImageMetadata) => (await getImage({ src, width: 1600, format: 'webp', quality: 74 })).src;
+const gallery = await Promise.all(d.gallery.map(async (g) => ({ ...g, full: await lightboxSrc(g.src) })));
+const albums = await Promise.all(
+  d.albums.map(async (a) => ({ ...a, photos: await Promise.all(albumPhotos(a.folder).map(async (src) => ({ src, full: await lightboxSrc(src) }))) })),
+);
+
+const og = await getImage({ src: d.cover, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 82 });
+const pageUrl = `${SITE.url}${projectUrl(project)}`;
+// Description de page : ni trop courte ni tronquée par les moteurs (≈ 90-165 caractères).
+const clip = (t: string, n = 160) => (t.length <= n ? t : `${t.slice(0, t.lastIndexOf(' ', n - 1))}…`);
+const metaDescription =
+  d.summary.length < 110
+    ? clip(`${d.summary} ${d.context} (${d.year}) - ${d.disciplines.map(disciplineLabel).join(', ')}, par Jan Jawish.`)
+    : clip(d.summary);
+
+const meta = [
+  { label: 'Contexte', value: d.context },
+  { label: 'Année', value: String(d.year) },
+  d.role && { label: 'Rôle', value: d.role },
+  d.team && { label: 'Équipe', value: d.team },
+  d.platform && { label: 'Plateforme', value: d.platform },
+].filter(Boolean) as { label: string; value: string }[];
+
+const jsonLd: Record<string, unknown>[] = [
+  {
+    '@type': 'CreativeWork',
+    '@id': `${pageUrl}#work`,
+    name: d.title,
+    headline: d.headline ?? d.title,
+    description: d.summary,
+    url: pageUrl,
+    image: new URL(og.src, SITE.url).href,
+    dateCreated: String(d.year),
+    inLanguage: 'fr-FR',
+    keywords: [...d.disciplines.map(disciplineLabel), ...d.tools].join(', '),
+    creator: { '@id': `${SITE.url}/#jan-jawish` },
+    isPartOf: { '@id': `${SITE.url}/#website` },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${SITE.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Projets', item: `${SITE.url}/projets` },
+      { '@type': 'ListItem', position: 3, name: d.title },
+    ],
+  },
+  ...d.videos.map((v) => ({
+    '@type': 'VideoObject',
+    name: v.title,
+    description: d.summary,
+    thumbnailUrl: `https://i.ytimg.com/vi/${v.youtubeId}/hqdefault.jpg`,
+    ...(v.uploadDate ? { uploadDate: v.uploadDate } : {}),
+    embedUrl: `https://www.youtube-nocookie.com/embed/${v.youtubeId}`,
+    contentUrl: `https://www.youtube.com/watch?v=${v.youtubeId}`,
+    creator: { '@id': `${SITE.url}/#jan-jawish` },
+  })),
+];
+---
+
+<BaseLayout
+  title={d.headline ? `${d.title} | ${d.headline}` : d.title}
+  description={metaDescription}
+  image={og.src}
+  imageAlt={d.coverAlt}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="project">
+    <header class="phead">
+      <div class="container phead__inner">
+        <nav aria-label="Fil d’Ariane" class="crumbs">
+          <ol role="list">
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/projets">Projets</a></li>
+            <li><span aria-current="page">{d.title}</span></li>
+          </ol>
+        </nav>
+        <h1 class="phead__title" data-reveal style="--reveal-delay:.05s">
+          {d.title}
+          {d.headline && <span class="phead__headline">{d.headline}</span>}
+        </h1>
+        <p class="phead__lead" data-reveal style="--reveal-delay:.1s">{d.summary}</p>
+        <ul class="tags phead__disc" role="list" data-reveal style="--reveal-delay:.14s">
+          {
+            d.disciplines.map((x) => (
+              <li>
+                <a class="tag tag--link" href={`/projets?discipline=${x}`}>
+                  {disciplineLabel(x)}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </header>
+
+    <div class="container">
+      <figure class:list={['pcover', { 'is-contain': d.coverFit === 'contain' }]} style={d.coverBackground ? `--cover-bg:${d.coverBackground}` : undefined} data-reveal>
+        <Image src={d.cover} alt={d.coverAlt} widths={[640, 1024, 1440, 1920]} sizes="(min-width: 1440px) 1328px, 94vw" loading="eager" fetchpriority="high" class="pcover__img" />
+      </figure>
+
+      <div class="pmeta">
+        <dl class="pmeta__list" data-reveal>
+          {
+            meta.map((m) => (
+              <div>
+                <dt>{m.label}</dt>
+                <dd>{m.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        {
+          (d.links.length > 0 || d.documents.length > 0) && (
+            <div class="pmeta__actions" data-reveal>
+              {d.links.map((l, i) => (
+                <a class:list={['btn', { 'btn--solid': i === 0 }]} href={l.href} target="_blank" rel="noopener">
+                  {l.label} <span class="arrow" aria-hidden="true">↗</span>
+                </a>
+              ))}
+              {d.documents.map((doc) => (
+                <a class="btn" href={doc.href} target="_blank" rel="noopener">
+                  {doc.label} (PDF)
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </div>
+
+      {d.notice && <p class="pnotice" data-reveal>{d.notice}</p>}
+
+      {
+        d.highlights.length > 0 && (
+          <section class="pblock" aria-labelledby="enbref">
+            <h2 id="enbref" class="pblock__title" data-reveal>
+              En bref
+            </h2>
+            <dl class="hl">
+              {d.highlights.map((h, i) => (
+                <div class="hl__item" data-reveal style={`--reveal-delay:${i * 0.05}s`}>
+                  <dt>{h.label}</dt>
+                  <dd>{h.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )
+      }
+
+      {
+        d.metrics.length > 0 && (
+          <section class="pblock" aria-labelledby="chiffres">
+            <h2 id="chiffres" class="pblock__title" data-reveal>
+              Résultats clés
+            </h2>
+            <ul class="metrics" role="list">
+              {d.metrics.map((m, i) => (
+                <li class="metric" data-reveal style={`--reveal-delay:${i * 0.06}s`}>
+                  <span class="metric__value">{m.value}</span>
+                  <span class="metric__label">{m.label}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        d.videos.length > 0 && (
+          <section class="pblock" aria-labelledby="videos">
+            <h2 id="videos" class="pblock__title" data-reveal>
+              {d.videos.length > 1 ? 'Vidéos' : 'Vidéo'}
+            </h2>
+            <div class:list={['videos', { 'videos--mixed': d.videos.some((v) => v.vertical) }]}>
+              {d.videos.map((v) => (
+                <div data-reveal>
+                  <YouTube id={v.youtubeId} title={v.title} vertical={v.vertical} />
+                  {d.videoCaptions && <p class="video__title">{v.title}</p>}
+                </div>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      {
+        d.steps.length > 0 && (
+          <section class="pblock" aria-labelledby="etapes">
+            <h2 id="etapes" class="pblock__title" data-reveal>
+              Fonctionnement du projet
+            </h2>
+            <ol class="steps" role="list">
+              {d.steps.map((s, i) => (
+                <li class="step" data-reveal style={`--reveal-delay:${i * 0.05}s`}>
+                  <span class="step__n">0{i + 1}</span>
+                  <strong class="step__title">{s.title}</strong>
+                  <span class="step__text">{s.text}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )
+      }
+
+      <section class="pbody" aria-label="Récit du projet">
+        <div class="prose" data-reveal>
+          <Content />
+        </div>
+      </section>
+
+      {
+        gallery.length > 0 && (
+          <section class="pblock" aria-labelledby="apercus">
+            <h2 id="apercus" class="pblock__title" data-reveal>
+              Aperçus
+            </h2>
+            <div class:list={['gallery', { 'gallery--few': gallery.length < 3 }]}>
+              {gallery.map((g) => (
+                <figure class="gallery__item" data-reveal>
+                  <a href={g.full} data-lightbox={`g-${project.id}`} data-alt={g.alt} data-caption={g.caption ?? g.alt} class="gallery__link">
+                    <Image src={g.src} alt={g.alt} widths={[480, 800, 1200]} sizes="(min-width: 900px) 45vw, 94vw" class="gallery__img" />
+                  </a>
+                  {g.caption && <figcaption>{g.caption}</figcaption>}
+                </figure>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      {
+        albums.map((a) => (
+          <section class="pblock album" aria-labelledby={`album-${a.id}`}>
+            <div class="album__head" data-reveal>
+              <h2 id={`album-${a.id}`} class="pblock__title">
+                {a.title} <span class="album__year">{a.year}</span>
+              </h2>
+              <p class="album__desc">{a.description}</p>
+              {a.role && <p class="album__role muted">{a.role}</p>}
+            </div>
+            <div class="masonry">
+              {a.photos.map((ph, i) => (
+                <a href={ph.full} class="masonry__item" data-lightbox={`album-${a.id}`} data-alt={`${a.title}, photo ${i + 1}`} data-caption={`${a.title} - ${i + 1}/${a.photos.length}`}>
+                  <Image src={ph.src} alt={`${a.title}, photographie ${i + 1} par Jan Jawish`} widths={[360, 600, 900]} sizes="(min-width: 1100px) 30vw, (min-width: 640px) 45vw, 92vw" class="masonry__img" />
+                </a>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+
+      {
+        d.documents.length > 0 && (
+          <section class="pblock" aria-labelledby="documents">
+            <h2 id="documents" class="pblock__title" data-reveal>
+              Documents
+            </h2>
+            <ul class="docs" role="list">
+              {d.documents.map((doc) => (
+                <li data-reveal>
+                  <a href={doc.href} target="_blank" rel="noopener" class="doc">
+                    <span class="doc__icon" aria-hidden="true">PDF</span>
+                    <span class="doc__text">
+                      <strong>{doc.label}</strong>
+                      {doc.description && <span class="muted">{doc.description}</span>}
+                    </span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        d.tools.length > 0 && (
+          <section class="pblock" aria-labelledby="outils">
+            <h2 id="outils" class="pblock__title" data-reveal>
+              Outils & technologies
+            </h2>
+            <ul class="tags" role="list" data-reveal>
+              {d.tools.map((t) => (
+                <li class="tag">{t}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <nav class="pnav" aria-label="Projets voisins">
+        <a href={projectUrl(prev)} class="pnav__link" rel="prev">
+          <span class="pnav__label">← Projet précédent</span>
+          <span class="pnav__title">{prev.data.title}</span>
+        </a>
+        <a href={projectUrl(next)} class="pnav__link pnav__link--next" rel="next">
+          <span class="pnav__label">Projet suivant →</span>
+          <span class="pnav__title">{next.data.title}</span>
+        </a>
+      </nav>
+
+      {
+        related.length > 0 && (
+          <section class="pblock related" aria-labelledby="related">
+            <h2 id="related" class="pblock__title">
+              Dans la même veine
+            </h2>
+            <div class="related__grid">
+              {related.map((p) => (
+                <ProjectCard project={p} headingLevel="h3" />
+              ))}
+            </div>
+          </section>
+        )
+      }
+    </div>
+  </article>
+  <Lightbox />
+</BaseLayout>
+
+<style>
+  .phead {
+    padding: clamp(130px, 16vw, 200px) 0 clamp(40px, 5vw, 64px);
+  }
+  .phead__inner {
+    display: grid;
+    gap: 22px;
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: var(--fs-xs);
+    color: var(--mist-2);
+    margin: 0 0 8px;
+    padding: 0;
+    list-style: none;
+  }
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 8px;
+    opacity: 0.5;
+  }
+  .crumbs a:hover {
+    color: var(--paper);
+  }
+  .phead__title {
+    font-size: var(--fs-h1);
+    letter-spacing: -0.055em;
+    line-height: 0.88;
+    display: grid;
+    gap: 14px;
+    max-width: 16ch;
+  }
+  .phead__headline {
+    font-size: clamp(1.5rem, 1rem + 2.2vw, 3rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--iris-2);
+  }
+  .phead__lead {
+    max-width: 58ch;
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    color: rgba(245, 243, 238, 0.84);
+  }
+  .tag--link:hover {
+    color: var(--paper);
+    border-color: var(--line-strong);
+  }
+  .pcover {
+    border-radius: 28px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--ink-2);
+    aspect-ratio: 16 / 9;
+  }
+  .pcover.is-contain {
+    background: var(--cover-bg, var(--ink-2));
+  }
+  .pcover__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pcover.is-contain .pcover__img {
+    object-fit: contain;
+    padding: 6% 12%;
+  }
+  .pmeta {
+    display: grid;
+    gap: 28px;
+    padding: 40px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 980px) {
+    .pmeta {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+    }
+  }
+  .pmeta__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 24px 32px;
+    margin: 0;
+  }
+  .pmeta__list dt {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mist-2);
+    margin-bottom: 6px;
+  }
+  .pmeta__list dd {
+    margin: 0;
+    font-size: var(--fs-sm);
+  }
+  .pmeta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .pnotice {
+    margin-top: 28px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px dashed var(--line-strong);
+    color: var(--mist);
+    font-size: var(--fs-sm);
+  }
+  .pblock {
+    padding: clamp(56px, 7vw, 96px) 0 0;
+  }
+  .pblock__title {
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem);
+    letter-spacing: -0.04em;
+    margin-bottom: 32px;
+  }
+  .hl {
+    display: grid;
+    gap: 1px;
+    margin: 0;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  @media (min-width: 860px) {
+    .hl {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .hl__item {
+    padding: 26px 28px;
+    background: var(--ink);
+  }
+  .hl__item dt {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--iris-2);
+    margin-bottom: 10px;
+  }
+  .hl__item dd {
+    margin: 0;
+    line-height: 1.55;
+  }
+  .metrics {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  }
+  .metric {
+    display: grid;
+    gap: 10px;
+    padding: 28px 24px;
+    border-radius: var(--radius);
+    background: var(--ink-2);
+    border: 1px solid var(--line);
+  }
+  .metric__value {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.4rem + 2vw, 3.25rem);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+  .metric__label {
+    font-size: var(--fs-sm);
+    color: var(--mist);
+  }
+  .videos {
+    display: grid;
+    gap: 28px;
+  }
+  @media (min-width: 900px) {
+    .videos--mixed {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+    }
+  }
+  .video__title {
+    margin-top: 12px;
+    font-size: var(--fs-sm);
+    color: var(--mist);
+  }
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  }
+  .step {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    padding: 22px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+  }
+  .step__n {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    color: var(--iris-2);
+    margin-bottom: 16px;
+  }
+  .step__title {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .step__text {
+    font-size: var(--fs-sm);
+    color: var(--mist);
+    line-height: 1.55;
+  }
+  .pbody {
+    padding-top: clamp(24px, 4vw, 48px);
+  }
+  .pbody .prose {
+    max-width: 72ch;
+  }
+  .gallery {
+    display: grid;
+    gap: 20px;
+  }
+  @media (min-width: 900px) {
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .gallery__item figcaption {
+    margin-top: 10px;
+    font-size: var(--fs-sm);
+    color: var(--mist);
+  }
+  .gallery__link {
+    display: block;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--ink-2);
+    cursor: zoom-in;
+  }
+  .gallery__img {
+    width: 100%;
+    transition: transform 0.9s var(--ease-out);
+  }
+  .gallery__link:hover .gallery__img {
+    transform: scale(1.02);
+  }
+  .album__head {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 28px;
+    max-width: 70ch;
+  }
+  .album__head .pblock__title {
+    margin-bottom: 0;
+  }
+  .album__year {
+    font-size: 0.5em;
+    color: var(--mist-2);
+    letter-spacing: 0;
+  }
+  .masonry {
+    columns: 3 280px;
+    column-gap: 14px;
+  }
+  .masonry__item {
+    display: block;
+    margin-bottom: 14px;
+    break-inside: avoid;
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: zoom-in;
+  }
+  .masonry__img {
+    width: 100%;
+    transition: transform 0.9s var(--ease-out);
+  }
+  .masonry__item:hover .masonry__img {
+    transform: scale(1.03);
+  }
+  .docs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .doc {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding: 18px 20px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    transition: border-color 0.3s var(--ease-out);
+  }
+  .doc:hover {
+    border-color: var(--line-strong);
+  }
+  .doc__icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--ink-3);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--iris-2);
+  }
+  .doc__text {
+    display: grid;
+    gap: 2px;
+    font-size: var(--fs-sm);
+  }
+  .pnav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: clamp(72px, 9vw, 120px);
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+  }
+  .pnav__link {
+    display: grid;
+    gap: 8px;
+  }
+  .pnav__link--next {
+    text-align: right;
+  }
+  .pnav__label {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mist-2);
+  }
+  .pnav__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 1.1rem + 1.4vw, 2.4rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    transition: color 0.4s var(--ease-out);
+  }
+  .pnav__link:hover .pnav__title {
+    color: var(--iris-2);
+  }
+  .related {
+    padding-bottom: clamp(56px, 8vw, 120px);
+  }
+  .related__grid {
+    display: grid;
+    gap: 32px;
+  }
+  @media (min-width: 900px) {
+    .related__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
