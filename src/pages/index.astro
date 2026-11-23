@@ -6,6 +6,7 @@ import SectionHead from '@/components/SectionHead.astro';
 import Timeline from '@/components/Timeline.astro';
 import ApproachSteps from '@/components/ApproachSteps.astro';
 import SpecializedCards from '@/components/SpecializedCards.astro';
+import Certifications from '@/components/islands/Certifications';
 import PostCard from '@/components/PostCard.astro';
 import { RevealText } from '@/components/islands/RevealText';
 import { OrbitBadge } from '@/components/islands/OrbitBadge';
@@ -14,7 +15,7 @@ import SkillCards from '@/components/islands/SkillCards';
 import ShowcaseStory from '@/components/islands/ShowcaseStory';
 import ProjectsCarousel from '@/components/islands/ProjectsCarousel';
 import { TopoBackdrop } from '@/components/islands/Decor';
-import { SKILLS } from '@/data/site';
+import { SKILLS, CERTIFICATIONS, CERTIFICATIONS_URL } from '@/data/site';
 import { getFeatured, projectUrl, disciplineLabel } from '@/lib/projects';
 import { getPosts } from '@/lib/blog';
 import portrait from '@/assets/about/jan-jawish-portrait-studio.jpg';
@@ -148,6 +149,14 @@ const jsonLd = [
       />
       <ApproachSteps />
       <div class="more"><a class="btn" href="/approche">Ma façon de travailler <span class="arrow" aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <!-- Certifications -->
+  <section class="section section--tight" aria-labelledby="certs-title">
+    <div class="container">
+      <SectionHead id="certs-title" title="Certifications." />
+      <Certifications client:visible items={CERTIFICATIONS} profileUrl={CERTIFICATIONS_URL} />
     </div>
   </section>
 

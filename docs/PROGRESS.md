@@ -43,6 +43,11 @@ Node de la machine : **22.20.0**. Astro est épinglé en **7.3.8** avec `@astroj
 - Transitions de page : Astro ClientRouter, en-tête et assistant persistants. La pastille Gooey Nav finit son animation pendant le changement de page. Les scripts de page (apparitions, filtres, visionneuse, YouTube) se relancent sur `astro:page-load`.
 - Fluidité : Prism rendu à une résolution plus basse ; Strands compilé hors du fil principal et démarré après le chargement.
 
+## Retours de Jan du 23/11/2026
+
+- Section **Certifications** sur l’accueil, juste avant « Deux portfolios » : 3 certifications (Anthropic, Google Analytics, Semrush) en cartes React Bits « Spotlight Card » (halo iris qui suit le curseur, CSS seul). Liens vers la page Certifications du profil LinkedIn ; ajouter `href` dans `CERTIFICATIONS` (src/data/site.ts) pour chaque certificat.
+- **Mode allégé automatique retiré** : effets complets partout ; la version sans WebGL ne sert qu’aux navigateurs sans WebGL 2. Testé : CPU ×20 → effets conservés.
+
 ## Retours de Jan du 17/11/2026 (traités, en ligne)
 
 - **OpticalPro** : « Oopticien Pro » renommé partout (fiche `/projets/opticalpro`, article, approche, assistant), présenté comme réalisé bénévolement pour une boutique d’optique dont le réseau s’agrandit (contexte « Projet bénévole »). Captures retouchées (logo « Optical PRO », `vous@opticalpro.local`, texte de l’aide). Projet vitrine renommé « Boutique d’optique » (`/projets/boutique-optique`). Dépôt GitHub renommé `janjawish/OpticalPro` (l’ancienne adresse redirige). Redirections 301 des anciennes URL. Anciens visuels archivés dans `legacy/assets-retires/`.

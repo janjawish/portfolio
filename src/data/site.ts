@@ -229,6 +229,15 @@ export const SKILLS: Skill[] = [
 ];
 
 /** Futurs portfolios spécialisés (en préparation). */
+/** Certifications (profil LinkedIn de Jan, 23/11/2026). Ajouter `href` quand l'adresse de vérification est connue. */
+export type Certification = { title: string; issuer: string; date: string; expires?: string; credentialId?: string; href?: string };
+export const CERTIFICATIONS: Certification[] = [
+  { title: 'Claude Academy : Claude Code in action', issuer: 'Anthropic', date: 'Novembre 2026', credentialId: 'a92b681e6cc00136d58bfa2b2f5d6518' },
+  { title: 'Google Analytics Certification (2026)', issuer: 'Google Analytics for Business', date: 'Octobre 2026', expires: 'Octobre 2027' },
+  { title: 'Cours de SEO axé sur le contenu avec Brian Dean', issuer: 'Semrush', date: 'Octobre 2026', expires: 'Octobre 2027' },
+];
+export const CERTIFICATIONS_URL = 'https://www.linkedin.com/in/janjawish/details/certifications/';
+
 export const SPECIALIZED = [
   {
     id: 'dev',

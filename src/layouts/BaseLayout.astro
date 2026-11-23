@@ -46,25 +46,12 @@ const { bare = false, ...seo } = Astro.props;
     <Seo {...seo} />
     <script is:inline>
       (function () {
-        // Niveau d'effets (voir src/lib/effects.ts) : mode allégé si l'appareil est modeste,
-        // si « économiser les données » est actif, sans WebGL 2, ou si une visite précédente l'a décidé.
-        var lite = false;
+        // Effets complets sur tous les appareils (choix de Jan, 23/11/2026). Seul un navigateur sans WebGL 2,
+        // incapable d'afficher les effets 3D, reçoit la version sans WebGL (voir src/lib/effects.ts).
+        var lite = !('WebGL2RenderingContext' in window);
         try {
-          var saved = JSON.parse(localStorage.getItem('jj-effects') || 'null');
-          if (saved && saved.level === 'lite' && saved.until > Date.now()) lite = true;
+          localStorage.removeItem('jj-effects');
         } catch (e) {}
-        var conn = navigator.connection;
-        var mem = navigator.deviceMemory;
-        var cores = navigator.hardwareConcurrency;
-        var coarse = matchMedia('(pointer: coarse)').matches;
-        if (
-          (conn && conn.saveData) ||
-          !('WebGL2RenderingContext' in window) ||
-          (mem && mem <= 2) ||
-          (cores && cores <= 2) ||
-          (coarse && cores && cores <= 4 && mem && mem <= 4)
-        )
-          lite = true;
         window.__jjLite = lite;
         // Classes de capacité sur <html>, réappliquées après chaque navigation (le routeur remplace les attributs de <html>).
         var mark = function () {
@@ -120,10 +107,7 @@ const { bare = false, ...seo } = Astro.props;
     <script>
       // Défilement amorti : démarré une seule fois pour tout le site (le ClientRouter conserve ce module).
       import { demarrerDefilement, getLenis, remonter, defilerVers } from '@/lib/smoothScroll';
-      import { startFpsProbe } from '@/lib/effects';
       demarrerDefilement();
-      // Mesure de fluidité au premier affichage : bascule en mode allégé si l'appareil peine.
-      startFpsProbe();
       let navType = 'push';
       document.addEventListener('astro:before-preparation', (e) => {
         navType = (e as Event & { navigationType?: string }).navigationType ?? 'push';
