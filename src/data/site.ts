@@ -232,9 +232,9 @@ export const SKILLS: Skill[] = [
 /** Certifications (profil LinkedIn de Jan, 23/11/2026). Ajouter `href` quand l'adresse de vérification est connue. */
 export type Certification = { title: string; issuer: string; date: string; expires?: string; credentialId?: string; href?: string };
 export const CERTIFICATIONS: Certification[] = [
-  { title: 'Claude Academy : Claude Code in action', issuer: 'Anthropic', date: 'Novembre 2026', credentialId: 'a92b681e6cc00136d58bfa2b2f5d6518' },
-  { title: 'Google Analytics Certification (2026)', issuer: 'Google Analytics for Business', date: 'Octobre 2026', expires: 'Octobre 2027' },
-  { title: 'Cours de SEO axé sur le contenu avec Brian Dean', issuer: 'Semrush', date: 'Octobre 2026', expires: 'Octobre 2027' },
+  { title: 'Claude Academy : Claude Code in action', issuer: 'Anthropic', date: 'Novembre 2026', credentialId: 'a92b681e6cc00136d58bfa2b2f5d6518', href: 'https://academy.claude.com/verify/a92b681e6cc00136d58bfa2b2f5d6518' },
+  { title: 'Google Analytics Certification (2026)', issuer: 'Google Analytics for Business', date: 'Octobre 2026', expires: 'Octobre 2027', href: 'https://skillshop.credential.net/833d85bc-b441-464d-bcbd-db17624e8c54#acc.wk4g2dBN' },
+  { title: 'Cours de SEO axé sur le contenu avec Brian Dean', issuer: 'Semrush', date: 'Octobre 2026', expires: 'Octobre 2027', href: 'https://static.semrush.com/academy/certificates/93db75c201/jan-jawish_2.pdf' },
 ];
 export const CERTIFICATIONS_URL = 'https://www.linkedin.com/in/janjawish/details/certifications/';
 

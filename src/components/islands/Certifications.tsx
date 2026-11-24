@@ -16,7 +16,7 @@ export default function Certifications({ items, profileUrl }: { items: Certifica
               {c.expires ? ` · valable jusqu’en ${c.expires.toLowerCase()}` : ''}
             </p>
             {c.credentialId && <p className="certs__id">Identifiant : {c.credentialId}</p>}
-            <a className="certs__link" href={c.href ?? profileUrl} target="_blank" rel="noopener">
+            <a className="certs__link" href={c.href ?? profileUrl} target="_blank" rel="noopener noreferrer">
               Voir le certificat <span aria-hidden="true">↗</span>
               <span className="visually-hidden"> {c.title} (nouvel onglet)</span>
             </a>
