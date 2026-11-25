@@ -235,6 +235,8 @@ export const CERTIFICATIONS: Certification[] = [
   { title: 'Claude Academy : Claude Code in action', issuer: 'Anthropic', date: 'Novembre 2026', credentialId: 'a92b681e6cc00136d58bfa2b2f5d6518', href: 'https://academy.claude.com/verify/a92b681e6cc00136d58bfa2b2f5d6518' },
   { title: 'Google Analytics Certification (2026)', issuer: 'Google Analytics for Business', date: 'Octobre 2026', expires: 'Octobre 2027', href: 'https://skillshop.credential.net/833d85bc-b441-464d-bcbd-db17624e8c54#acc.wk4g2dBN' },
   { title: 'Cours de SEO axé sur le contenu avec Brian Dean', issuer: 'Semrush', date: 'Octobre 2026', expires: 'Octobre 2027', href: 'https://static.semrush.com/academy/certificates/93db75c201/jan-jawish_2.pdf' },
+  { title: 'Introduction to Generative AI', issuer: 'Google Skills (Google Cloud)', date: 'Octobre 2026', href: 'https://www.skills.google/public_profiles/799c7fee-5025-45b5-8a08-12d73ac0a2d2/badges/29229886' },
+  { title: 'Introduction to Image Generation', issuer: 'Google Skills (Google Cloud)', date: 'Octobre 2026', href: 'https://www.skills.google/public_profiles/799c7fee-5025-45b5-8a08-12d73ac0a2d2/badges/29230253' },
 ];
 export const CERTIFICATIONS_URL = 'https://www.linkedin.com/in/janjawish/details/certifications/';
 
