@@ -14,6 +14,7 @@ tools: ["PHP 8.2", "MariaDB / MySQL", "PDO", "Apache", "JavaScript", "Poppler", 
 cover: "../../assets/projects/opticalpro-dashboard.png"
 coverAlt: "Tableau de bord d’OpticalPro"
 links:
+  - { label: "Site vitrine", href: "https://oopticien-pro-vitrine.vercel.app/" }
   - { label: "Code source sur GitHub", href: "https://github.com/janjawish/OpticalPro" }
 highlights:
   - { label: "Quoi", value: "Un cockpit interne qui réunit clients, dossiers lunettes et lentilles, PEC mutuelles, facturation, paiements, avoirs, commandes verriers et communications." }
@@ -37,7 +38,7 @@ gallery:
   - { src: "../../assets/projects/opticalpro-aide.png", alt: "Centre d’aide d’OpticalPro", caption: "Des procédures métier intégrées pour guider l’équipe dans les opérations courantes." }
   - { src: "../../assets/projects/opticalpro-import-csv.png", alt: "Import CSV dans OpticalPro", caption: "Un import contrôlé pour reprendre les dossiers historiques sans doublon." }
   - { src: "../../assets/projects/opticalpro-import-pdf.png", alt: "Import PDF Cosium avec OCR", caption: "Poppler et Tesseract lisent localement les PDF Cosium avant validation par l’opticien." }
-notice: "Application interne : aucune démonstration publique ne contient de données métier."
+notice: "Application interne : aucune donnée métier n’est publiée. Une démonstration avec des données fictives arrive bientôt."
 ---
 
 ## Contexte & problématique

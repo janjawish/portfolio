@@ -134,7 +134,7 @@ export const SKILLS: Skill[] = [
     description:
       'Du site vitrine à l’application métier : intégration responsive, back-end PHP/MySQL, applications React et TypeScript, sécurité (rôles, CSRF, requêtes préparées) et déploiement.',
     tools: ['HTML / CSS', 'JavaScript', 'TypeScript', 'React', 'PHP', 'MySQL / MariaDB', 'WordPress', 'Git / GitHub'],
-    projects: ['opticalpro', 'the-exit', 'folio', 'a-cours-sur', 'mmi-hub'],
+    projects: ['raja', 'opticalpro', 'folio', 'a-cours-sur', 'maison-fidele', 'the-exit'],
   },
   {
     id: 'ui-ux',
@@ -144,7 +144,7 @@ export const SKILLS: Skill[] = [
     description:
       'Architecture de l’information, wireframes, maquettes Figma et parcours utilisateurs pensés pour plusieurs rôles, du premier écran jusqu’à l’action principale.',
     tools: ['Figma', 'Wireframes', 'Prototypage', 'Architecture de l’information', 'Design system'],
-    projects: ['hop', 'chourak-consulting', 'wireframe-maquette-pet-sitting'],
+    projects: ['hop', 'maison-fidele', 'wireframe-maquette-pet-sitting'],
   },
   {
     id: 'graphisme',
@@ -194,7 +194,7 @@ export const SKILLS: Skill[] = [
     description:
       'Relier contenus, acquisition et conversion dans une même stratégie, puis piloter avec des indicateurs : KPI, ROI/ROAS, parcours utilisateur et fidélisation.',
     tools: ['GA4', 'Google Ads', 'Semrush', 'CRM', 'Analyse de KPI'],
-    projects: ['the-exit', 'chourak-consulting', 'vertuose'],
+    projects: ['the-exit', 'vertuose'],
   },
   {
     id: 'seo',
@@ -204,7 +204,7 @@ export const SKILLS: Skill[] = [
     description:
       'Audit, structure sémantique, contenus et métadonnées, référencement local, performances et suivi dans Google Search Console et PageSpeed Insights.',
     tools: ['Google Search Console', 'PageSpeed Insights', 'Yoast SEO', 'SEO local', 'Données structurées'],
-    projects: ['the-exit', 'chourak-consulting', 'boutique-optique'],
+    projects: ['the-exit', 'boutique-optique'],
   },
   {
     id: '3d',

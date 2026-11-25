@@ -13,7 +13,11 @@ tools: ["React","TypeScript","IndexedDB","PDF.js","Tesseract.js","MiniSearch"]
 cover: "../../assets/projects/folio-desktop.png"
 coverAlt: "Bibliothèque et matières de Folio"
 links:
+  - { label: "Essayer la démo", href: "https://folio.janjawish.fr/" }
+  - { label: "Site vitrine", href: "https://folio-vitrine.vercel.app/" }
   - { label: "Code source sur GitHub", href: "https://github.com/janjawish/folio-cours" }
+gallery:
+  - { src: "../../assets/projects/folio-mobile.jpg", alt: "Bibliothèque de cours de Folio sur mobile", caption: "La même bibliothèque sur téléphone, installable comme une application." }
 ---
 
 ## Le projet
