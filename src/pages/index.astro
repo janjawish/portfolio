@@ -32,6 +32,14 @@ const carouselItems = await Promise.all(
       title: p.data.title,
       subtitle: `${p.data.year} · ${p.data.disciplines.map(disciplineLabel).slice(0, 2).join(' · ')}`,
       href: projectUrl(p),
+      // Liens externes affichés sous le carrousel (démo, site vitrine, site en ligne) ; le code reste sur la fiche.
+      links: p.data.links
+        .filter((l) => /^https?:\/\//.test(l.href) && !/github\.com|figma\.com/.test(l.href))
+        .map((l) => ({
+          href: l.href,
+          label: /démo/i.test(l.label) ? 'Voir la démo' : /vitrine/i.test(l.label) ? 'Voir le site vitrine' : l.label,
+        }))
+        .sort((a, b) => Number(b.label === 'Voir la démo') - Number(a.label === 'Voir la démo')),
     };
   }),
 );

@@ -4,7 +4,24 @@ import { defilerDe } from '@/lib/smoothScroll';
 import { useEffectsLevel } from '@/lib/effects';
 import './ProjectsCarousel.css';
 
-export type CarouselProject = { src: string; alt: string; title: string; subtitle: string; href: string };
+export type CarouselLink = { href: string; label: string };
+export type CarouselProject = { src: string; alt: string; title: string; subtitle: string; href: string; links?: CarouselLink[] };
+
+function ProjectActions({ project, compact = false }: { project: CarouselProject; compact?: boolean }) {
+  return (
+    <div className={`projects-carousel__actions${compact ? ' projects-carousel__actions--compact' : ''}`}>
+      {project.links?.map((l) => (
+        <a key={l.href} className="btn" href={l.href} target="_blank" rel="noopener noreferrer">
+          {l.label} <span className="arrow" aria-hidden="true">↗</span>
+          <span className="visually-hidden"> (nouvel onglet)</span>
+        </a>
+      ))}
+      <a className="btn btn--solid" href={project.href}>
+        {compact ? 'Ouvrir le projet' : <>Ouvrir « {project.title} »</>} <span className="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  );
+}
 
 /**
  * Projets phares dans le « Flex Carousel » de React Bits, piloté par le défilement de la page :
@@ -66,6 +83,7 @@ export default function ProjectsCarousel({ items }: { items: CarouselProject[] }
               <span className="projects-lite__title">{it.title}</span>
               <span className="projects-lite__sub">{it.subtitle}</span>
             </a>
+            {it.links?.length ? <ProjectActions project={it} compact /> : null}
           </li>
         ))}
       </ul>
@@ -111,11 +129,7 @@ export default function ProjectsCarousel({ items }: { items: CarouselProject[] }
           <div className="projects-carousel__bar" aria-hidden="true">
             <span style={{ transform: `scaleX(${Math.max(0.02, progress)})` }} />
           </div>
-          {current && (
-            <a className="btn" href={current.href}>
-              Ouvrir « {current.title} » <span className="arrow" aria-hidden="true">→</span>
-            </a>
-          )}
+          {current && <ProjectActions project={current} />}
         </div>
       </div>
     </div>

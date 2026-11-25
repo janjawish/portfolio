@@ -39,6 +39,19 @@
   gap: 24px;
   min-height: 56px;
 }
+.projects-carousel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.projects-carousel__actions--compact {
+  justify-content: flex-start;
+  margin-top: 12px;
+}
+.projects-carousel__actions--compact .btn {
+  font-size: var(--fs-sm);
+}
 .projects-carousel__bar {
   flex: 1;
   max-width: 320px;
