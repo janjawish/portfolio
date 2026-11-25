@@ -169,3 +169,11 @@
 .cf-result__text {
   color: var(--mist);
 }
+
+/* Widget Cloudflare Turnstile : invisible sauf si Cloudflare demande une interaction. */
+.cf__turnstile:empty {
+  display: none;
+}
+.cf__turnstile {
+  margin-block: 0.5rem;
+}

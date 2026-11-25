@@ -1,4 +1,5 @@
-import { useId, useRef, useState, type SyntheticEvent } from 'react';
+import { useEffect, useId, useRef, useState, type SyntheticEvent } from 'react';
+import Turnstile, { turnstileEnabled, type TurnstileHandle } from './Turnstile';
 import SpecularButton from '@/components/reactbits/SpecularButton/SpecularButton';
 import './ContactForm.css';
 import { useEffectsLevel } from '@/lib/effects';
@@ -10,8 +11,14 @@ import { useEffectsLevel } from '@/lib/effects';
  * - Sinon : aucun envoi simulé. Le message est préparé et le visiteur l'ouvre dans sa messagerie.
  */
 
-const ENDPOINT = (import.meta.env.PUBLIC_CONTACT_ENDPOINT as string | undefined)?.trim() || '';
+// Intranet (intranet.janjawish.fr) : prioritaire s'il est configuré. Antispam côté intranet :
+// Turnstile vérifié, minuteur, champ piège, score de contenu, limites par IP. Clé de site publique.
+const INTRANET_KEY = (import.meta.env.PUBLIC_INTRANET_FORM_KEY as string | undefined)?.trim() || '';
+const INTRANET_URL = ((import.meta.env.PUBLIC_INTRANET_URL as string | undefined)?.trim() || 'https://intranet.janjawish.fr').replace(/\/$/, '');
+// Ancien service d'envoi (Web3Forms, Formspree…), utilisé seulement sans intranet.
+const LEGACY_ENDPOINT = (import.meta.env.PUBLIC_CONTACT_ENDPOINT as string | undefined)?.trim() || '';
 const ACCESS_KEY = (import.meta.env.PUBLIC_CONTACT_ACCESS_KEY as string | undefined)?.trim() || '';
+const ENDPOINT = INTRANET_KEY ? `${INTRANET_URL}/api/submit` : LEGACY_ENDPOINT;
 
 const SUBJECTS = ['Opportunité professionnelle', 'Projet web', 'Design ou identité visuelle', 'Vidéo ou photo', 'Communication ou SEO', 'Autre'];
 
@@ -26,6 +33,12 @@ export default function ContactForm({ email }: { email: string }) {
   const [errors, setErrors] = useState<Errors>({});
   const [draft, setDraft] = useState({ name: '', email: '', subject: SUBJECTS[0], message: '' });
   const [copied, setCopied] = useState(false);
+  const turnstile = useRef<TurnstileHandle>(null);
+  // Minuteur anti-robot : heure d'affichage du formulaire (un humain met plus de 3 s à écrire).
+  const mountedAt = useRef(0);
+  useEffect(() => {
+    mountedAt.current = Date.now();
+  }, []);
 
   const validate = (data: typeof draft): Errors => {
     const e: Errors = {};
@@ -51,38 +64,60 @@ export default function ContactForm({ email }: { email: string }) {
       (form.elements.namedItem(first) as HTMLElement | null)?.focus();
       return;
     }
-    if (honeypot) return; // robot : on ignore silencieusement, sans afficher de faux succès.
+    if (honeypot && !INTRANET_KEY) return; // robot : ignoré silencieusement (l'intranet, lui, le traite)
 
     if (!ENDPOINT) {
       setStatus({ kind: 'manual' });
       return;
     }
+    const token = turnstile.current?.getToken() ?? '';
+    if (INTRANET_KEY && turnstileEnabled && !token) {
+      setStatus({ kind: 'error', message: 'La vérification anti-robot n’est pas encore terminée. Patientez une seconde puis réessayez.' });
+      return;
+    }
     setStatus({ kind: 'sending' });
     try {
+      const body = INTRANET_KEY
+        ? {
+            key: INTRANET_KEY,
+            name: draft.name.trim(),
+            email: draft.email.trim(),
+            subject: draft.subject,
+            message: draft.message.trim(),
+            _t: String(mountedAt.current || Date.now()),
+            _gotcha: honeypot ?? '',
+            'cf-turnstile-response': token,
+          }
+        : {
+            ...(ACCESS_KEY ? { access_key: ACCESS_KEY } : {}),
+            name: draft.name.trim(),
+            email: draft.email.trim(),
+            subject: `[Portfolio] ${draft.subject}`,
+            message: draft.message.trim(),
+            from_name: 'Portfolio janjawish.fr',
+          };
       const res = await fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          ...(ACCESS_KEY ? { access_key: ACCESS_KEY } : {}),
-          name: draft.name.trim(),
-          email: draft.email.trim(),
-          subject: `[Portfolio] ${draft.subject}`,
-          message: draft.message.trim(),
-          from_name: 'Portfolio janjawish.fr',
-        }),
+        body: JSON.stringify(body),
       });
       let ok = res.ok;
+      let serverMessage = '';
       try {
         const json = await res.clone().json();
         if (json && typeof json.success === 'boolean') ok = ok && json.success;
+        if (json && typeof json.ok === 'boolean') ok = ok && json.ok;
+        if (json && typeof json.error === 'string') serverMessage = json.error;
       } catch {
         /* réponse non JSON : on se fie au code HTTP */
       }
-      if (!ok) throw new Error(`Le service d’envoi a répondu ${res.status}.`);
+      if (!ok) throw new Error(serverMessage || `Le service d’envoi a répondu ${res.status}.`);
       setStatus({ kind: 'sent' });
       setDraft({ name: '', email: '', subject: SUBJECTS[0], message: '' });
     } catch (err) {
       setStatus({ kind: 'error', message: err instanceof Error ? err.message : 'Erreur réseau.' });
+    } finally {
+      turnstile.current?.reset(); // jeton à usage unique
     }
   };
 
@@ -143,9 +178,13 @@ export default function ContactForm({ email }: { email: string }) {
         <input id={`${id}-website`} name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
+      {INTRANET_KEY && <Turnstile ref={turnstile} />}
+
       <div className="cf__footer">
         <p id={`${id}-privacy`} className="cf__privacy">
-          Vos informations servent uniquement à vous répondre. Elles ne sont ni stockées sur ce site ni transmises à des tiers à des fins commerciales.
+          {INTRANET_KEY
+            ? 'Vos informations servent uniquement à vous répondre et ne sont jamais cédées à des tiers. Formulaire protégé contre les robots par Cloudflare Turnstile.'
+            : 'Vos informations servent uniquement à vous répondre. Elles ne sont ni stockées sur ce site ni transmises à des tiers à des fins commerciales.'}
         </p>
         {level !== 'full' ? (
           <button type="submit" className="btn btn--glass btn--lg" disabled={status.kind === 'sending'}>
