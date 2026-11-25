@@ -15,7 +15,6 @@ cover: "../../assets/projects/opticalpro-dashboard.png"
 coverAlt: "Tableau de bord d’OpticalPro"
 links:
   - { label: "Site vitrine", href: "https://oopticien-pro-vitrine.vercel.app/" }
-  - { label: "Code source sur GitHub", href: "https://github.com/janjawish/OpticalPro" }
 highlights:
   - { label: "Quoi", value: "Un cockpit interne qui réunit clients, dossiers lunettes et lentilles, PEC mutuelles, facturation, paiements, avoirs, commandes verriers et communications." }
   - { label: "Pour qui", value: "L’équipe d’une boutique d’optique dont le réseau s’agrandit, qui doit suivre chaque dossier et déclencher la bonne action au bon moment. Projet mené bénévolement." }

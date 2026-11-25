@@ -15,7 +15,6 @@ cover: "../../assets/projects/raja-dashboard.jpg"
 coverAlt: "Tableau de bord de Raja avec des données fictives"
 links:
   - { label: "Site vitrine", href: "https://raja-vitrine.vercel.app/" }
-  - { label: "Code source sur GitHub", href: "https://github.com/janjawish/raja-audition" }
 highlights:
   - { label: "Quoi", value: "Une application de suivi des dossiers : échéances, mutuelles, facturation et historique des actions." }
   - { label: "Pour qui", value: "L’équipe d’un centre d’audition, qui doit suivre chaque appareillage jusqu’à la facturation." }
