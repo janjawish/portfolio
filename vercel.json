@@ -28,6 +28,11 @@
       "permanent": true
     },
     {
+      "source": "/projets/chourak-consulting",
+      "destination": "/projets",
+      "permanent": true
+    },
+    {
       "source": "/projets/folio-cours",
       "destination": "/projets/folio",
       "permanent": true
