@@ -3,7 +3,7 @@ title: "À cours sûr"
 headline: "Enregistrer, transcrire, réviser"
 summary: "Application Windows locale qui réunit l’audio, les notes et la transcription d’un cours sur un même écran."
 year: 2026
-order: 7
+order: 3
 featured: true
 disciplines: ["web"]
 context: "Projet personnel"

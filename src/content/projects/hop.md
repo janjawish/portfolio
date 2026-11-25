@@ -3,7 +3,7 @@ title: "HOP"
 headline: "Faire de la RSE un jeu d’équipe"
 summary: "Application mobile B2B qui transforme les gestes écologiques du quotidien en missions courtes et collectives : parcours, gamification, maquettes Figma, charte, communication, 3D et site vitrine."
 year: 2026
-order: 3
+order: 7
 featured: true
 disciplines: ["ui-ux", "communication", "graphisme", "3d"]
 context: "Projet scolaire"
