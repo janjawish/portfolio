@@ -14,6 +14,7 @@ tools: ["PHP", "MySQL / MariaDB", "PDO", "Tesseract OCR", "Poppler"]
 cover: "../../assets/projects/raja-dashboard.jpg"
 coverAlt: "Tableau de bord de Raja avec des données fictives"
 links:
+  - { label: "Essayer la démo", href: "https://demo-raja.janjawish.fr/" }
   - { label: "Site vitrine", href: "https://raja-vitrine.vercel.app/" }
 highlights:
   - { label: "Quoi", value: "Une application de suivi des dossiers : échéances, mutuelles, facturation et historique des actions." }
@@ -46,4 +47,4 @@ Dans un centre d’audition, un dossier passe par plusieurs étapes sur plusieur
 - Import CSV avec prévisualisation et correspondance des colonnes ; lecture des fiches PDF Cosium avec un OCR local (Tesseract et Poppler).
 - Comptes nominatifs avec rôles et historique des actions.
 
-Une démonstration en ligne arrive bientôt.
+La démonstration en ligne utilise des données fictives.
